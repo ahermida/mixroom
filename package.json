@@ -2,14 +2,16 @@
   "name": "dartboard",
   "version": "0.0.1",
   "description": "An anonymous social app",
-  "main": "server.js",
+  "main": "dist/server.js",
   "scripts": {
-    "server_build": "babel lib -d dist --presets es2015,stage-2",
-    "server_watch": "nodemon lib/server.js --exec babel-node",
-    "client_build": "browserify -t [babelify] dartboard_app/main.js -o static/bundle.js",
-    "client_watch": "watchify -v -t [babelify] dartboard_app/main.js -o static/bundle.js",
-    "build": "npm run server_build && npm run client_build",
-    "watch": "npm run client_watch & npm run server_watch",
+    "server_build": "babel  --presets es2015,stage-2 --ignore dartboard_js -d dist src",
+    "server_watch": "nodemon src/server.js --exec \"babel-node --ignore src/dardboard_js\"",
+    "client_build": "browserify -t [babelify] src/dartboard_js/main.js -o static/bundle.js",
+    "client_watch": "nodemon --watch src/dartboard_js --exec \"npm run client_build\"",
+    "css_build": "node-sass assets/styles --output static/css",
+    "css_watch": "nodemon -e scss -x \"npm run css_build\"",
+    "build": "npm run server_build && npm run client_build && npm run css_build",
+    "watch": "npm run client_watch & npm run server_watch & npm run css_watch",
     "start": "node dist/server.js",
     "test": "mocha --compilers js:babel-register"
   },
@@ -23,6 +25,7 @@
     "radical",
     "blue",
     "node",
+    "fart-app",
     "social",
     "application"
   ],
@@ -40,6 +43,13 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "mocha": "^2.4.5",
+    "node-sass": "^3.4.2",
+    "babel-polyfill": "^6.7.2",
     "nodemon": "^1.9.1"
+  },
+  "dependencies": {
+    "koa": "^1.2.0",
+    "koa-route": "^2.4.2",
+    "koa-static": "^2.0.0"
   }
 }
