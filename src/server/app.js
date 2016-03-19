@@ -33,16 +33,11 @@ class Server {
       console.log(`${this.method} '${this.url}' -- ${ms} ms`);
     });
 
+    //make static folder static
     server.use(serve(__dirname + '/../../static'));
 
     //handle front page view
     server.use(_.get('/', routes.handleFP));
-
-    //handle group view
-    server.use(_.get('/:group', routes.handleGroup));
-
-    //handle thread view
-    server.use(_.get('/:group/:threadID', routes.handleThread));
 
     //handle login view
     server.use(_.get('/login', routes.handleLogin));
@@ -55,6 +50,12 @@ class Server {
 
     //handle user (settings)
     server.use(_.get('/user/:username', routes.handleSettings));
+
+    //handle group view
+    server.use(_.get('/:group', routes.handleGroup));
+
+    //handle thread view
+    server.use(_.get('/:group/:threadID', routes.handleThread));
 
   }
 

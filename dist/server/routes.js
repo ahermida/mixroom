@@ -4,18 +4,43 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _init = require('./init.js');
+
 var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var routes = {};
-
-//handle '/' route
+//filesystem for serving template
 /**
  * routes.js -- Handler functions for enpoints
  */
+
+var routes = {}; //route object that will be exported
+
+//Escape Content in JSON
+//DB represented as resolved promise
+function encodeHTML(str) {
+  var buf = [];
+  for (var i = str.length - 1; i >= 0; i--) {
+    buf.unshift(['&#', str[i].charCodeAt(), ';'].join(''));
+  }
+  return buf.join('');
+};
+
+//Render Content -- Returns Error or Resolved promise
+function render(content, data) {
+  return new Promise(function (resolve, reject) {
+    _fs2.default.readFile(__dirname + '/../../assets/template/index.html', { 'encoding': 'utf8' }, function (err, layout) {
+      if (err) reject(err);
+      var html = layout.replace('{{{body}}}', content).replace('{{{data}}}', encodeHTML(JSON.stringify(data)));
+      resolve(html);
+    });
+  });
+};
+
+//handle '/' route
 routes.handleFP = regeneratorRuntime.mark(function _callee() {
   return regeneratorRuntime.wrap(function _callee$(_context) {
     while (1) {
@@ -23,9 +48,12 @@ routes.handleFP = regeneratorRuntime.mark(function _callee() {
         case 0:
           _context.next = 2;
           return new Promise(function (resolve, reject) {
-            _fs2.default.readFile(__dirname + '/../../assets/template/index.html', { 'encoding': 'utf8' }, function (err, data) {
-              if (err) return reject(err);
-              resolve(data);
+            content = "<h1>Hello World!</h1>";
+            data = { bingo: "bongo" };
+            render(content, bingo).then(function (html) {
+              return resolve(html);
+            }).catch(function (err) {
+              return console.log(err);
             });
           });
 
