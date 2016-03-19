@@ -16,6 +16,6 @@ To watch for changes and build automatically, run:
 
  ```npm run watch```
 
-It requires a mongodb URI. This settings can be configured in src/server/```config.js```.
+It requires a mongodb URI. This settings can be configured in ```src/server/config.js```.
 
-It's setup to run on ```port:8080```. This can also be modified in src/server/```config.js```.
+It's setup to run on ```port:8080```. This can also be modified ```in src/server/config.js```.
