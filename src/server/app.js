@@ -19,17 +19,16 @@ class Server {
     //passed in -- option from config.js
     this.port = options.port;
 
-    //cache reference to class
-    const that = this;
-
     //keep track of active requests
     this.activeRequests = 0;
 
-    //log requests -- middleware
+    //log requests & track active -- middleware
     server.use(function *(next){
       var start = new Date;
+      this.activeRequests++;
       yield next;
       var ms = new Date - start;
+      this.activeRequests--;
       console.log(`${this.method} '${this.url}' -- ${ms} ms`);
     });
 

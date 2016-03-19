@@ -97,7 +97,7 @@ if (_cluster2.default.isMaster) {
     }
   });
 
-  //log
+  //Log Processes
   console.log('Master ID: ' + process.pid + '\nWorker IDs: ' + processes.join(','));
 } else {
 

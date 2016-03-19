@@ -3,7 +3,7 @@
  */
 
 import { db } from './init.js'; //DB represented as resolved promise
-import fs from 'fs'; //filesystem for serving template
+import fs from 'fs'; //filesystem used for serving templates
 
 //Route object that will be exported
 let routes = {};
@@ -17,7 +17,7 @@ function encodeHTML(str) {
   return buf.join('');
 }
 
-//Render Content -- Returns Error or Resolved promise
+//Render bakes content & data into HTML template -- Returns Error or Resolved promise (with doc)
 function render(content, data) {
   return new Promise((resolve, reject) => {
     fs.readFile(`${__dirname}/../../assets/template/index.html`, {'encoding': 'utf8'}, function (err, layout) {
@@ -32,8 +32,8 @@ function render(content, data) {
 routes.handleFP = function*() {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- FP</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
+    let content = "<h1>Hello World! -- FP</h1>"; //get content by running client-side JS
+    let data = { bingo: "bongo" };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -42,8 +42,8 @@ routes.handleFP = function*() {
 routes.handleGroup = function*(group) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- Group</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
+    let content = `<h1>Hello World! -- Group: ${group}</h1>`; //get content by running client-side JS
+    let data = { bingo: "bongo" };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -52,29 +52,29 @@ routes.handleGroup = function*(group) {
 routes.handleThread = function*(group, threadID) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- Thread</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
+    let content = `<h1>Hello World! -- Group: ${group}, Thread: ${threadID}</h1>`; //get content by running client-side JS
+    let data = { bingo: "bongo" };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
 
-//handle '/login' route -- [Static]
+//handle '/login' route -- [Static] simplicity
 routes.handleLogin = function*() {
   this.body = yield new Promise((resolve, reject) => {
-    //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- Login</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
-    render(content, data).then(html => resolve(html)).catch(err => console.log(err));
+    fs.readFile(`${__dirname}/../../assets/template/login.html`, {'encoding': 'utf8'}, function (err, layout) {
+      if (err) reject(err);
+      resolve(layout);
+    });
  });
 };
 
-//handle '/register' route -- [Static]
+//handle '/register' route -- [Static] for simplicity
 routes.handleRegister = function*() {
   this.body = yield new Promise((resolve, reject) => {
-    //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- Register</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
-    render(content, data).then(html => resolve(html)).catch(err => console.log(err));
+    fs.readFile(`${__dirname}/../../assets/template/register.html`, {'encoding': 'utf8'}, function (err, layout) {
+      if (err) reject(err);
+      resolve(layout);
+    });
  });
 };
 
@@ -82,8 +82,8 @@ routes.handleRegister = function*() {
 routes.handleSearch = function*(query) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- Search</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
+    let content = "<h1>Hello World! -- Search</h1>"; //get content by running client-side JS
+    let data = { bingo: "bongo" };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -92,8 +92,8 @@ routes.handleSearch = function*(query) {
 routes.handleSettings = function*(username) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    content = "<h1>Hello World! -- Settings</h1>"; //get content by running client-side JS
-    data = { bingo: "bongo" };
+    let content = "<h1>Hello World! -- Settings</h1>"; //get content by running client-side JS
+    let data = { bingo: "bongo" };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };

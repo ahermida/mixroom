@@ -4,6 +4,7 @@
 
 import mongodb from 'mongodb'; //database driver
 import os from 'os'; //to get numCPUs
+import config from './config.js';
 
 
 //connects to DB
@@ -12,7 +13,7 @@ let MongoClient = mongodb.MongoClient;
 //function to connect to DB -- default parameters
 function connect() {
   return new Promise((resolve, reject) => {
-    MongoClient.connect(`mongodb://localhost:27017/dartboard`,
+    MongoClient.connect(config.MongoDB_URI,
     (err, db) => {
       err ? reject(err) : resolve(db);
     });

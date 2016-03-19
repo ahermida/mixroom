@@ -49,13 +49,10 @@ var Server = function () {
     //passed in -- option from config.js
     this.port = options.port;
 
-    //cache reference to class
-    var that = this;
-
     //keep track of active requests
     this.activeRequests = 0;
 
-    //log requests -- middleware
+    //log requests & track active -- middleware
     server.use(regeneratorRuntime.mark(function _callee(next) {
       var start, ms;
       return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -63,15 +60,18 @@ var Server = function () {
           switch (_context.prev = _context.next) {
             case 0:
               start = new Date();
-              _context.next = 3;
+
+              this.activeRequests++;
+              _context.next = 4;
               return next;
 
-            case 3:
+            case 4:
               ms = new Date() - start;
 
+              this.activeRequests--;
               console.log(this.method + ' \'' + this.url + '\' -- ' + ms + ' ms');
 
-            case 5:
+            case 7:
             case 'end':
               return _context.stop();
           }
@@ -79,16 +79,11 @@ var Server = function () {
       }, _callee, this);
     }));
 
+    //make static folder static
     server.use((0, _koaStatic2.default)(__dirname + '/../../static'));
 
     //handle front page view
     server.use(_koaRoute2.default.get('/', _routes2.default.handleFP));
-
-    //handle group view
-    server.use(_koaRoute2.default.get('/:group', _routes2.default.handleGroup));
-
-    //handle thread view
-    server.use(_koaRoute2.default.get('/:group/:threadID', _routes2.default.handleThread));
 
     //handle login view
     server.use(_koaRoute2.default.get('/login', _routes2.default.handleLogin));
@@ -101,6 +96,12 @@ var Server = function () {
 
     //handle user (settings)
     server.use(_koaRoute2.default.get('/user/:username', _routes2.default.handleSettings));
+
+    //handle group view
+    server.use(_koaRoute2.default.get('/:group', _routes2.default.handleGroup));
+
+    //handle thread view
+    server.use(_koaRoute2.default.get('/:group/:threadID', _routes2.default.handleThread));
   }
 
   //log number of active requests

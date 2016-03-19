@@ -13,29 +13,25 @@ var _os = require('os');
 
 var _os2 = _interopRequireDefault(_os);
 
+var _config = require('./config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//to get numCPUs
-
 //connects to DB
+//database driver
+var MongoClient = _mongodb2.default.MongoClient;
+
+//function to connect to DB -- default parameters
+//to get numCPUs
 /**
  * dartboard initialization -- DB & Metadata
  */
 
-var MongoClient = _mongodb2.default.MongoClient;
-
-//function to connect to DB -- default parameters
-//database driver
-function connect(_ref) {
-  var _ref$host = _ref.host;
-  var host = _ref$host === undefined ? 'localhost' : _ref$host;
-  var _ref$port = _ref.port;
-  var port = _ref$port === undefined ? 27017 : _ref$port;
-  var _ref$database = _ref.database;
-  var database = _ref$database === undefined ? 'dartboard' : _ref$database;
-
+function connect() {
   return new Promise(function (resolve, reject) {
-    MongoClient.connect('mongodb://' + host + ':' + port + '/' + database, function (err, db) {
+    MongoClient.connect(_config2.default.MongoDB_URI, function (err, db) {
       err ? reject(err) : resolve(db);
     });
   });
