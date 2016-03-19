@@ -14,7 +14,7 @@ To save any changes (to SCSS/JS/Node), run:
 
 To watch for changes and build automatically, run:
 
- ```npm run watch```
+ ```npm run watch``` (this also starts up the server)
 
 It requires a mongodb URI. This settings can be configured in ```src/server/config.js```.
 
