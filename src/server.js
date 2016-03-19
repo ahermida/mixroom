@@ -1,5 +1,5 @@
 /**
- *  dartboard server -- serves webpages
+ *  dartboard server.js -- serves webpages
  *  @author Albert Hermida
  *  - es6 modules "use strict"; by default
  */
@@ -7,9 +7,9 @@
 //polyfill for generator
 import 'babel-polyfill';
 
-//Import DB Connection, numCPUs
-import { numCPUs, db } from './server/init.js';
+//Import DB Connection
 import Server from './server/app.js';
+import config from './server/config.js';
 import cluster from 'cluster';
 
 //Create New Server
@@ -23,7 +23,7 @@ function runServer(options) {
 let meta = {};
 meta.failedInstances = 0;
 meta.requestsServed = 0;
-meta.numCPUs = numCPUs;
+meta.numCPUs = config.numCPUs;
 
 // Log Error & Stats on uncaught exception
 process.on('uncaughtException', err => {
@@ -50,7 +50,7 @@ if (cluster.isMaster) {
   cluster.setupMaster();
 
   //spin up new clusters proportional to numCPUs -->
-  for (let i = 0; i < numCPUs; i++) {
+  for (let i = 0; i < config.numCPUs; i++) {
     let fork = cluster.fork();
 
     //push process id into processes
@@ -95,6 +95,6 @@ if (cluster.isMaster) {
   /**
    * Spin up new Server if not cluster master
    */
-  let server = runServer({port: 8080});
+  let server = runServer(config);
 
 }

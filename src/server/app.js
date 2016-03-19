@@ -6,6 +6,7 @@ import koa from 'koa';     //kinda like flask/express -- but with generators!
 import serve from 'koa-static'; //serve static routes -- /static in our case
 import _ from 'koa-route'; //small router by koa
 import routes from './routes.js'; //handler functions for routes
+import { connect } from './init.js';
 
 class Server {
 
@@ -63,8 +64,9 @@ class Server {
     console.log(`Active Requests: ${this.activeRequests}`);
   }
 
-  //go go server
+  //go go server & db connection
   start () {
+    connect();
     this.server.listen(this.port);
   }
 

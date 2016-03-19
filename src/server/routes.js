@@ -58,7 +58,7 @@ routes.handleThread = function*(group, threadID) {
  });
 };
 
-//handle '/login' route -- [Static] simplicity
+//handle '/login' route -- [Static] for simplicity
 routes.handleLogin = function*() {
   this.body = yield new Promise((resolve, reject) => {
     fs.readFile(`${__dirname}/../../assets/template/login.html`, {'encoding': 'utf8'}, function (err, layout) {

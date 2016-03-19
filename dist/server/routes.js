@@ -80,7 +80,7 @@ routes.handleGroup = regeneratorRuntime.mark(function _callee2(group) {
           _context2.next = 2;
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
-            var content = "<h1>Hello World! -- Group</h1>"; //get content by running client-side JS
+            var content = '<h1>Hello World! -- Group: ' + group + '</h1>'; //get content by running client-side JS
             var data = { bingo: "bongo" };
             render(content, data).then(function (html) {
               return resolve(html);
@@ -109,7 +109,7 @@ routes.handleThread = regeneratorRuntime.mark(function _callee3(group, threadID)
           _context3.next = 2;
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
-            var content = "<h1>Hello World! -- Thread</h1>"; //get content by running client-side JS
+            var content = '<h1>Hello World! -- Group: ' + group + ', Thread: ' + threadID + '</h1>'; //get content by running client-side JS
             var data = { bingo: "bongo" };
             render(content, data).then(function (html) {
               return resolve(html);

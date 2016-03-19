@@ -8,6 +8,10 @@ var _app = require('./server/app.js');
 
 var _app2 = _interopRequireDefault(_app);
 
+var _config = require('./server/config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
 var _cluster = require('cluster');
 
 var _cluster2 = _interopRequireDefault(_cluster);
@@ -15,13 +19,9 @@ var _cluster2 = _interopRequireDefault(_cluster);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Create New Server
-/**
- *  dartboard server -- serves webpages
- *  @author Albert Hermida
- *  - es6 modules "use strict"; by default
- */
 
-//polyfill for generator
+
+//Import DB Connection, numCPUs
 function runServer(options) {
   var server = new _app2.default(options);
   server.start();
@@ -29,9 +29,13 @@ function runServer(options) {
 }
 
 //Metadata object
+/**
+ *  dartboard server -- serves webpages
+ *  @author Albert Hermida
+ *  - es6 modules "use strict"; by default
+ */
 
-
-//Import DB Connection, numCPUs
+//polyfill for generator
 var meta = {};
 meta.failedInstances = 0;
 meta.requestsServed = 0;
@@ -104,5 +108,5 @@ if (_cluster2.default.isMaster) {
   /**
    * Spin up new Server if not cluster master
    */
-  var server = runServer({ port: 8080 });
+  var server = runServer(_config2.default);
 }

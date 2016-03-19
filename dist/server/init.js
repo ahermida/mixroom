@@ -39,6 +39,7 @@ function connect() {
 
 //export DB as promise
 var db = exports.db = connect();
+console.log('Connected to db');
 
 //get numCPUs -- (require syntax to make things simple)
 var numCPUs = exports.numCPUs = process.env.PROCESSES || _os2.default.cpus().length;

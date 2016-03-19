@@ -1,27 +1,26 @@
 /**
+ * init.js
  * dartboard initialization -- DB & Metadata
+ * pool db connections for each worker as render is query-intensive
  */
 
 import mongodb from 'mongodb'; //database driver
-import os from 'os'; //to get numCPUs
-import config from './config.js';
+import config from './config.js'; //get MongoDB URI
 
 
 //connects to DB
 let MongoClient = mongodb.MongoClient;
 
-//function to connect to DB -- default parameters
-function connect() {
-  return new Promise((resolve, reject) => {
+//will hold DB connection
+export let db;
+
+//function to connect to DB
+export function connect() {
+  db = new Promise((resolve, reject) => {
     MongoClient.connect(config.MongoDB_URI,
     (err, db) => {
       err ? reject(err) : resolve(db);
     });
   });
+  console.log(`Worker: ${process.pid} has connected to DB`);
 }
-
-//export DB as promise
-export const db = connect();
-
-//get numCPUs -- (require syntax to make things simple)
-export const numCPUs = process.env.PROCESSES || os.cpus().length;
