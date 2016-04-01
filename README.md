@@ -1,5 +1,5 @@
 # dartboard
-An anonymous social app. This is the code for the server and front-end. (API endpoints found elsewhere)
+An anonymous social app. This is the code for the server and front-end. (API endpoints found [here](https://github.com/ahermida/dartboardAPI))
 
 You're gonna need to use ```npm``` to get all of the dependencies. Just run
  ```npm install``` in the root directory to do this.
