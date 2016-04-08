@@ -11,6 +11,7 @@ import 'babel-polyfill';
 import Server from './server/app.js';
 import config from './server/config.js';
 import cluster from 'cluster';
+import readline from 'readline';
 
 //Create New Server
 function runServer(options) {
@@ -60,7 +61,7 @@ if (cluster.isMaster) {
   /**
    * Log Requests From Cluster
    */
-  cluster.on('message', message => {
+  cluster.on('message', msg => {
     if (msg.cmd && msg.cmd == 'notifyRequest') {
       meta.requestsServed++;
     }
@@ -87,14 +88,44 @@ if (cluster.isMaster) {
     }
   });
 
-  //Log Processes
-  console.log(`Master ID: ${process.pid}\nWorker IDs: ${processes.join(',')}`);
+  //set up user interface
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
+  //timestamp
+  let date = new Date();
+  //get hour
+  let hour = `${date.getHours() % 12}:${date.getMinutes()}${date.getHours() <= 12 ? 'AM' : 'PM'}`
+  //Log start
+  console.log(`Server started at: ${hour} on ${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`);
+
+  //create prompt
+  console.log(`You can type: "exit" or "quit" to shut down the app.\nType: "stats" to get info about the server.`);
+
+  let getLine = () => {
+  rl.question('Command: ', answer => {
+    if (answer == 'exit' || answer == 'quit') {
+      process.exit(0)
+    }
+    if (answer == 'stats') {
+
+      //Log metadata
+      console.log(`\nCPU cores: ${meta.numCPUs}\nRequests served: ${meta.requestsServed}\nFailed instances: ${meta.failedInstances}`);
+
+      //Log Processes
+      console.log(`Master ID: ${process.pid}\nWorker IDs: ${processes.join(',')}`);
+    }
+    getLine();
+    });
+  };
+
+  getLine();
 } else {
 
   /**
    * Spin up new Server if not cluster master
    */
   let server = runServer(config);
-
 }

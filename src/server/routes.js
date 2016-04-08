@@ -4,6 +4,9 @@
 
 import { db } from './init.js'; //DB represented as resolved promise
 import fs from 'fs'; //filesystem used for serving templates
+import path from 'path'; //helps manipulate filepaths
+import parse from 'co-busboy'; //handle multipart form data
+import uid from 'node-uuid' //make unique id's
 
 //Route object that will be exported
 let routes = {};
@@ -28,12 +31,24 @@ function render(content, data) {
   });
 }
 
+function legalFmt(extension) {
+  const ext = extension.toLowerCase()
+  let match = false;
+  const legal = ['.webm', '.mp4', '.gif', '.png', '.jpeg', '.jpg', '.mov', '.m4v'];
+  legal.forEach(item => {
+    if (ext === item) {
+      match = true;
+    }
+  });
+  return match;
+}
+
 //handle '/' route
 routes.handleFP = function*() {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    let content = "<h1>Hello World! -- FP</h1>"; //get content by running client-side JS
-    let data = { bingo: "bongo" };
+    let content = '<h1>Hello World! -- FP</h1>'; //get content by running client-side JS
+    let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -43,7 +58,7 @@ routes.handleGroup = function*(group) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
     let content = `<h1>Hello World! -- Group: ${group}</h1>`; //get content by running client-side JS
-    let data = { bingo: "bongo" };
+    let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -53,7 +68,7 @@ routes.handleThread = function*(group, threadID) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
     let content = `<h1>Hello World! -- Group: ${group}, Thread: ${threadID}</h1>`; //get content by running client-side JS
-    let data = { bingo: "bongo" };
+    let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -82,8 +97,8 @@ routes.handleRegister = function*() {
 routes.handleSearch = function*(query) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    let content = "<h1>Hello World! -- Search</h1>"; //get content by running client-side JS
-    let data = { bingo: "bongo" };
+    let content = '<h1>Hello World! -- Search</h1>'; //get content by running client-side JS
+    let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
 };
@@ -92,10 +107,39 @@ routes.handleSearch = function*(query) {
 routes.handleSettings = function*(username) {
   this.body = yield new Promise((resolve, reject) => {
     //do funky DB calls and stuff in here
-    let content = "<h1>Hello World! -- Settings</h1>"; //get content by running client-side JS
-    let data = { bingo: "bongo" };
+    let content = '<h1>Hello World! -- Settings</h1>'; //get content by running client-side JS
+    let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
+};
+
+//handle '/upload' route
+routes.handleUpload = function*() {
+
+  //handle multipart form data
+  let parts = parse(this, {
+    autoFields: true, // saves the fields to parts.field(s)
+    checkFile: function (fieldname, file, filename) {
+      if (!legalFmt(path.extname(filename))) {
+        var err = new Error('invalid upload type');
+        err.status = 400;
+        return err;
+      }
+    }
+  });
+
+  //get part (should only be one)
+  let part = yield parts;
+  const uuid = uid.v1();
+  var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}` );
+  part.pipe(stream);
+
+  //send back response as JSON
+  let resp = JSON.stringify({
+    "url": `http://localhost:8080/static/uploads/${uuid}`
+  });
+
+  this.body = resp;
 };
 
 export default routes;

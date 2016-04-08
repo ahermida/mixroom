@@ -11,6 +11,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 //kinda like flask/express -- but with generators!
 //serve static routes -- /static in our case
 //small router by koa
+//handler functions for routes
+//allows us to mount paths
 
 
 var _koa = require('koa');
@@ -29,11 +31,17 @@ var _routes = require('./routes.js');
 
 var _routes2 = _interopRequireDefault(_routes);
 
+var _koaMount = require('koa-mount');
+
+var _koaMount2 = _interopRequireDefault(_koaMount);
+
+var _init = require('./init.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-//handler functions for routes
+//function to connect to DB (so we don't on master process)
 
 var Server = function () {
 
@@ -70,8 +78,9 @@ var Server = function () {
 
               this.activeRequests--;
               console.log(this.method + ' \'' + this.url + '\' -- ' + ms + ' ms');
+              process.send({ 'cmd': 'notifyRequest' });
 
-            case 7:
+            case 8:
             case 'end':
               return _context.stop();
           }
@@ -80,10 +89,13 @@ var Server = function () {
     }));
 
     //make static folder static
-    server.use((0, _koaStatic2.default)(__dirname + '/../../static'));
+    server.use((0, _koaMount2.default)("/static", (0, _koaStatic2.default)(__dirname + '/../../static')));
 
     //handle front page view
     server.use(_koaRoute2.default.get('/', _routes2.default.handleFP));
+
+    //handle uploads
+    server.use(_koaRoute2.default.post('/upload', _routes2.default.handleUpload));
 
     //handle login view
     server.use(_koaRoute2.default.get('/login', _routes2.default.handleLogin));
@@ -113,11 +125,12 @@ var Server = function () {
       console.log('Active Requests: ' + this.activeRequests);
     }
 
-    //go go server
+    //go go server & db connection
 
   }, {
     key: 'start',
     value: function start() {
+      (0, _init.connect)();
       this.server.listen(this.port);
     }
   }]);

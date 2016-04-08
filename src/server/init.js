@@ -22,5 +22,4 @@ export function connect() {
       err ? reject(err) : resolve(db);
     });
   });
-  console.log(`Worker: ${process.pid} has connected to DB`);
 }

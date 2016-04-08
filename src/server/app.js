@@ -6,7 +6,8 @@ import koa from 'koa';     //kinda like flask/express -- but with generators!
 import serve from 'koa-static'; //serve static routes -- /static in our case
 import _ from 'koa-route'; //small router by koa
 import routes from './routes.js'; //handler functions for routes
-import { connect } from './init.js';
+import mount from 'koa-mount' //allows us to mount paths
+import { connect } from './init.js'; //function to connect to DB (so we don't on master process)
 
 class Server {
 
@@ -31,13 +32,17 @@ class Server {
       var ms = new Date - start;
       this.activeRequests--;
       console.log(`${this.method} '${this.url}' -- ${ms} ms`);
+      process.send({'cmd': 'notifyRequest'});
     });
 
     //make static folder static
-    server.use(serve(__dirname + '/../../static'));
+    server.use(mount("/static", serve(__dirname + '/../../static')));
 
     //handle front page view
     server.use(_.get('/', routes.handleFP));
+
+    //handle uploads
+    server.use(_.post('/upload', routes.handleUpload));
 
     //handle login view
     server.use(_.get('/login', routes.handleLogin));
@@ -56,7 +61,6 @@ class Server {
 
     //handle thread view
     server.use(_.get('/:group/:threadID', routes.handleThread));
-
   }
 
   //log number of active requests

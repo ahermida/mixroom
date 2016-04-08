@@ -10,19 +10,34 @@ var _fs = require('fs');
 
 var _fs2 = _interopRequireDefault(_fs);
 
+var _path = require('path');
+
+var _path2 = _interopRequireDefault(_path);
+
+var _coBusboy = require('co-busboy');
+
+var _coBusboy2 = _interopRequireDefault(_coBusboy);
+
+var _nodeUuid = require('node-uuid');
+
+var _nodeUuid2 = _interopRequireDefault(_nodeUuid);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//filesystem used for serving templates
+//make unique id's
 
 //Route object that will be exported
+//helps manipulate filepaths
+//DB represented as resolved promise
+var routes = {};
+
+//Escape Content in JSON
+//handle multipart form data
+//filesystem used for serving templates
 /**
  * routes.js -- Handler functions for enpoints
  */
 
-var routes = {};
-
-//Escape Content in JSON
-//DB represented as resolved promise
 function encodeHTML(str) {
   var buf = [];
   for (var i = str.length - 1; i >= 0; i--) {
@@ -42,6 +57,18 @@ function render(content, data) {
   });
 }
 
+function legalFmt(extension) {
+  var ext = extension.toLowerCase();
+  var match = false;
+  var legal = ['.webm', '.mp4', '.gif', '.png', '.jpeg', '.jpg', '.mov', '.m4v'];
+  legal.forEach(function (item) {
+    if (ext === item) {
+      match = true;
+    }
+  });
+  return match;
+}
+
 //handle '/' route
 routes.handleFP = regeneratorRuntime.mark(function _callee() {
   return regeneratorRuntime.wrap(function _callee$(_context) {
@@ -51,8 +78,8 @@ routes.handleFP = regeneratorRuntime.mark(function _callee() {
           _context.next = 2;
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
-            var content = "<h1>Hello World! -- FP</h1>"; //get content by running client-side JS
-            var data = { bingo: "bongo" };
+            var content = '<h1>Hello World! -- FP</h1>'; //get content by running client-side JS
+            var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
             }).catch(function (err) {
@@ -81,7 +108,7 @@ routes.handleGroup = regeneratorRuntime.mark(function _callee2(group) {
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- Group: ' + group + '</h1>'; //get content by running client-side JS
-            var data = { bingo: "bongo" };
+            var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
             }).catch(function (err) {
@@ -110,7 +137,7 @@ routes.handleThread = regeneratorRuntime.mark(function _callee3(group, threadID)
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- Group: ' + group + ', Thread: ' + threadID + '</h1>'; //get content by running client-side JS
-            var data = { bingo: "bongo" };
+            var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
             }).catch(function (err) {
@@ -129,7 +156,7 @@ routes.handleThread = regeneratorRuntime.mark(function _callee3(group, threadID)
   }, _callee3, this);
 });
 
-//handle '/login' route -- [Static] simplicity
+//handle '/login' route -- [Static] for simplicity
 routes.handleLogin = regeneratorRuntime.mark(function _callee4() {
   return regeneratorRuntime.wrap(function _callee4$(_context4) {
     while (1) {
@@ -188,8 +215,8 @@ routes.handleSearch = regeneratorRuntime.mark(function _callee6(query) {
           _context6.next = 2;
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
-            var content = "<h1>Hello World! -- Search</h1>"; //get content by running client-side JS
-            var data = { bingo: "bongo" };
+            var content = '<h1>Hello World! -- Search</h1>'; //get content by running client-side JS
+            var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
             }).catch(function (err) {
@@ -217,8 +244,8 @@ routes.handleSettings = regeneratorRuntime.mark(function _callee7(username) {
           _context7.next = 2;
           return new Promise(function (resolve, reject) {
             //do funky DB calls and stuff in here
-            var content = "<h1>Hello World! -- Settings</h1>"; //get content by running client-side JS
-            var data = { bingo: "bongo" };
+            var content = '<h1>Hello World! -- Settings</h1>'; //get content by running client-side JS
+            var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
             }).catch(function (err) {
@@ -235,6 +262,54 @@ routes.handleSettings = regeneratorRuntime.mark(function _callee7(username) {
       }
     }
   }, _callee7, this);
+});
+
+//handle '/upload' route
+routes.handleUpload = regeneratorRuntime.mark(function _callee8() {
+  var parts, part, uuid, stream, resp;
+  return regeneratorRuntime.wrap(function _callee8$(_context8) {
+    while (1) {
+      switch (_context8.prev = _context8.next) {
+        case 0:
+
+          //handle multipart form data
+          parts = (0, _coBusboy2.default)(this, {
+            autoFields: true, // saves the fields to parts.field(s)
+            checkFile: function checkFile(fieldname, file, filename) {
+              if (!legalFmt(_path2.default.extname(filename))) {
+                var err = new Error('invalid upload type');
+                err.status = 400;
+                return err;
+              }
+            }
+          });
+
+          //get part (should only be one)
+
+          _context8.next = 3;
+          return parts;
+
+        case 3:
+          part = _context8.sent;
+          uuid = _nodeUuid2.default.v1();
+          stream = _fs2.default.createWriteStream(__dirname + '/../../static/uploads/' + uuid);
+
+          part.pipe(stream);
+
+          //send back response as JSON
+          resp = JSON.stringify({
+            "url": 'http://localhost:8080/static/uploads/' + uuid
+          });
+
+
+          this.body = resp;
+
+        case 9:
+        case 'end':
+          return _context8.stop();
+      }
+    }
+  }, _callee8, this);
 });
 
 exports.default = routes;
