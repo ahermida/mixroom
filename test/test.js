@@ -5,7 +5,7 @@ import Server from '../src/server/app.js';
 
 describe('Testing Endpoints for Serving', () => {
   before(function(done) {
-    let server = new Server({ port: 8080 });
+    let server = new Server({ port: 8080, test: true });
     server.start();
     done();
   });

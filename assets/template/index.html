@@ -24,12 +24,18 @@
     <link href="##.png" rel="apple-touch-icon" sizes="152x152"/>
     <link href="##.png" rel="apple-touch-icon" sizes="180x180"/>
     -->
-    <title>dartboard</title>
+    <title>sudopost</title>
     <meta name="description" content="Posts and other stuff"/>
   </head>
   <body>
     <!-- Application -->
-    <div>{{{body}}}</div>
+    <div id="app-container">
+      <nav id="TopNav">
+      </nav>
+      <main>
+      {{{body}}}
+      </main>
+    </div>
     <!-- This javascript should be escaped -->
     <script type="text/javascript">
       var bootstrap = JSON.parse("{{{data}}}".replace(/&#(\d+);/g, function(match, dec) {

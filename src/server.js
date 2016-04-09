@@ -1,5 +1,5 @@
 /**
- *  dartboard server.js -- serves webpages
+ *  sudopost server.js -- serves webpages
  *  @author Albert Hermida
  *  - es6 modules "use strict"; by default
  */

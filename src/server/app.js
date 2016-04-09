@@ -2,7 +2,7 @@
  * app.js -- Server class --> Responds to requests for Client Side Routes
  */
 
-import koa from 'koa';     //kinda like flask/express -- but with generators!
+import koa from 'koa'; //kinda like flask/express -- but with generators!
 import serve from 'koa-static'; //serve static routes -- /static in our case
 import _ from 'koa-route'; //small router by koa
 import routes from './routes.js'; //handler functions for routes
@@ -32,7 +32,9 @@ class Server {
       var ms = new Date - start;
       this.activeRequests--;
       console.log(`${this.method} '${this.url}' -- ${ms} ms`);
-      process.send({'cmd': 'notifyRequest'});
+      if (!options.test) {
+        process.send({'cmd': 'notifyRequest'});
+      }
     });
 
     //make static folder static

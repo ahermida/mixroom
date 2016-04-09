@@ -21,7 +21,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //connects to DB
 /**
  * init.js
- * dartboard initialization -- DB & Metadata
+ * sudopost initialization -- DB & Metadata
  * pool db connections for each worker as render is query-intensive
  */
 

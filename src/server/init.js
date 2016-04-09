@@ -1,6 +1,6 @@
 /**
  * init.js
- * dartboard initialization -- DB & Metadata
+ * sudopost initialization -- DB & Metadata
  * pool db connections for each worker as render is query-intensive
  */
 
