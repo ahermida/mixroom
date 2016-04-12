@@ -4,6 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.db = undefined;
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
 exports.connect = connect;
 
 var _mongodb = require('mongodb');
@@ -33,7 +38,7 @@ var db = exports.db = void 0;
 
 //function to connect to DB
 function connect() {
-  exports.db = db = new Promise(function (resolve, reject) {
+  exports.db = db = new _promise2.default(function (resolve, reject) {
     MongoClient.connect(_config2.default.MongoDB_URI, function (err, db) {
       err ? reject(err) : resolve(db);
     });

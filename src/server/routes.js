@@ -1,5 +1,5 @@
 /**
- * routes.js -- Handler functions for enpoints
+ * routes.js -- Handler functions for enpoints -- must let that = this for shared client code
  */
 
 import { db } from './init.js'; //DB represented as resolved promise
@@ -46,6 +46,7 @@ function legalFmt(extension) {
 //handle '/' route
 routes.handleFP = function*() {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     //do funky DB calls and stuff in here
     let content = '<h1>Hello World! -- FP</h1>'; //get content by running client-side JS
     let data = { bingo: 'bongo' };
@@ -53,9 +54,10 @@ routes.handleFP = function*() {
  });
 };
 
-//handle '/:group' route
+//handle '/:group' route 5ud0
 routes.handleGroup = function*(group) {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     //do funky DB calls and stuff in here
     let content = `<h1>Hello World! -- Group: ${group}</h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
@@ -66,6 +68,7 @@ routes.handleGroup = function*(group) {
 //handle '/:group/:threadID' route
 routes.handleThread = function*(group, threadID) {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     //do funky DB calls and stuff in here
     let content = `<h1>Hello World! -- Group: ${group}, Thread: ${threadID}</h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
@@ -76,6 +79,7 @@ routes.handleThread = function*(group, threadID) {
 //handle '/login' route -- [Static] for simplicity
 routes.handleLogin = function*() {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     fs.readFile(`${__dirname}/../../assets/template/login.html`, {'encoding': 'utf8'}, function (err, layout) {
       if (err) reject(err);
       resolve(layout);
@@ -86,6 +90,7 @@ routes.handleLogin = function*() {
 //handle '/register' route -- [Static] for simplicity
 routes.handleRegister = function*() {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     fs.readFile(`${__dirname}/../../assets/template/register.html`, {'encoding': 'utf8'}, function (err, layout) {
       if (err) reject(err);
       resolve(layout);
@@ -96,6 +101,7 @@ routes.handleRegister = function*() {
 //handle '/search/:query' route
 routes.handleSearch = function*(query) {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     //do funky DB calls and stuff in here
     let content = '<h1>Hello World! -- Search</h1>'; //get content by running client-side JS
     let data = { bingo: 'bongo' };
@@ -106,6 +112,7 @@ routes.handleSearch = function*(query) {
 //handle '/user/:username' route
 routes.handleSettings = function*(username) {
   this.body = yield new Promise((resolve, reject) => {
+    let that = this;
     //do funky DB calls and stuff in here
     let content = '<h1>Hello World! -- Settings</h1>'; //get content by running client-side JS
     let data = { bingo: 'bongo' };
@@ -115,7 +122,6 @@ routes.handleSettings = function*(username) {
 
 //handle '/upload' route
 routes.handleUpload = function*() {
-
   //handle multipart form data
   let parts = parse(this, {
     autoFields: true, // saves the fields to parts.field(s)

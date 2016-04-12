@@ -4,6 +4,18 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
 var _init = require('./init.js');
 
 var _fs = require('fs');
@@ -48,10 +60,10 @@ function encodeHTML(str) {
 
 //Render bakes content & data into HTML template -- Returns Error or Resolved promise (with doc)
 function render(content, data) {
-  return new Promise(function (resolve, reject) {
+  return new _promise2.default(function (resolve, reject) {
     _fs2.default.readFile(__dirname + '/../../assets/template/index.html', { 'encoding': 'utf8' }, function (err, layout) {
       if (err) reject(err);
-      var html = layout.replace('{{{body}}}', content).replace('{{{data}}}', encodeHTML(JSON.stringify(data)));
+      var html = layout.replace('{{{body}}}', content).replace('{{{data}}}', encodeHTML((0, _stringify2.default)(data)));
       resolve(html);
     });
   });
@@ -70,13 +82,13 @@ function legalFmt(extension) {
 }
 
 //handle '/' route
-routes.handleFP = regeneratorRuntime.mark(function _callee() {
-  return regeneratorRuntime.wrap(function _callee$(_context) {
+routes.handleFP = _regenerator2.default.mark(function _callee() {
+  return _regenerator2.default.wrap(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- FP</h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
@@ -99,13 +111,13 @@ routes.handleFP = regeneratorRuntime.mark(function _callee() {
 });
 
 //handle '/:group' route
-routes.handleGroup = regeneratorRuntime.mark(function _callee2(group) {
-  return regeneratorRuntime.wrap(function _callee2$(_context2) {
+routes.handleGroup = _regenerator2.default.mark(function _callee2(group) {
+  return _regenerator2.default.wrap(function _callee2$(_context2) {
     while (1) {
       switch (_context2.prev = _context2.next) {
         case 0:
           _context2.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- Group: ' + group + '</h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
@@ -128,13 +140,13 @@ routes.handleGroup = regeneratorRuntime.mark(function _callee2(group) {
 });
 
 //handle '/:group/:threadID' route
-routes.handleThread = regeneratorRuntime.mark(function _callee3(group, threadID) {
-  return regeneratorRuntime.wrap(function _callee3$(_context3) {
+routes.handleThread = _regenerator2.default.mark(function _callee3(group, threadID) {
+  return _regenerator2.default.wrap(function _callee3$(_context3) {
     while (1) {
       switch (_context3.prev = _context3.next) {
         case 0:
           _context3.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- Group: ' + group + ', Thread: ' + threadID + '</h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
@@ -157,13 +169,13 @@ routes.handleThread = regeneratorRuntime.mark(function _callee3(group, threadID)
 });
 
 //handle '/login' route -- [Static] for simplicity
-routes.handleLogin = regeneratorRuntime.mark(function _callee4() {
-  return regeneratorRuntime.wrap(function _callee4$(_context4) {
+routes.handleLogin = _regenerator2.default.mark(function _callee4() {
+  return _regenerator2.default.wrap(function _callee4$(_context4) {
     while (1) {
       switch (_context4.prev = _context4.next) {
         case 0:
           _context4.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             _fs2.default.readFile(__dirname + '/../../assets/template/login.html', { 'encoding': 'utf8' }, function (err, layout) {
               if (err) reject(err);
               resolve(layout);
@@ -182,13 +194,13 @@ routes.handleLogin = regeneratorRuntime.mark(function _callee4() {
 });
 
 //handle '/register' route -- [Static] for simplicity
-routes.handleRegister = regeneratorRuntime.mark(function _callee5() {
-  return regeneratorRuntime.wrap(function _callee5$(_context5) {
+routes.handleRegister = _regenerator2.default.mark(function _callee5() {
+  return _regenerator2.default.wrap(function _callee5$(_context5) {
     while (1) {
       switch (_context5.prev = _context5.next) {
         case 0:
           _context5.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             _fs2.default.readFile(__dirname + '/../../assets/template/register.html', { 'encoding': 'utf8' }, function (err, layout) {
               if (err) reject(err);
               resolve(layout);
@@ -207,13 +219,13 @@ routes.handleRegister = regeneratorRuntime.mark(function _callee5() {
 });
 
 //handle '/search/:query' route
-routes.handleSearch = regeneratorRuntime.mark(function _callee6(query) {
-  return regeneratorRuntime.wrap(function _callee6$(_context6) {
+routes.handleSearch = _regenerator2.default.mark(function _callee6(query) {
+  return _regenerator2.default.wrap(function _callee6$(_context6) {
     while (1) {
       switch (_context6.prev = _context6.next) {
         case 0:
           _context6.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- Search</h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
@@ -236,13 +248,13 @@ routes.handleSearch = regeneratorRuntime.mark(function _callee6(query) {
 });
 
 //handle '/user/:username' route
-routes.handleSettings = regeneratorRuntime.mark(function _callee7(username) {
-  return regeneratorRuntime.wrap(function _callee7$(_context7) {
+routes.handleSettings = _regenerator2.default.mark(function _callee7(username) {
+  return _regenerator2.default.wrap(function _callee7$(_context7) {
     while (1) {
       switch (_context7.prev = _context7.next) {
         case 0:
           _context7.next = 2;
-          return new Promise(function (resolve, reject) {
+          return new _promise2.default(function (resolve, reject) {
             //do funky DB calls and stuff in here
             var content = '<h1>Hello World! -- Settings</h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
@@ -265,9 +277,9 @@ routes.handleSettings = regeneratorRuntime.mark(function _callee7(username) {
 });
 
 //handle '/upload' route
-routes.handleUpload = regeneratorRuntime.mark(function _callee8() {
+routes.handleUpload = _regenerator2.default.mark(function _callee8() {
   var parts, part, uuid, stream, resp;
-  return regeneratorRuntime.wrap(function _callee8$(_context8) {
+  return _regenerator2.default.wrap(function _callee8$(_context8) {
     while (1) {
       switch (_context8.prev = _context8.next) {
         case 0:
@@ -297,7 +309,7 @@ routes.handleUpload = regeneratorRuntime.mark(function _callee8() {
           part.pipe(stream);
 
           //send back response as JSON
-          resp = JSON.stringify({
+          resp = (0, _stringify2.default)({
             "url": 'http://localhost:8080/static/uploads/' + uuid
           });
 
