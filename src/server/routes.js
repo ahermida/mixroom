@@ -120,6 +120,17 @@ routes.handleSettings = function*(username) {
  });
 };
 
+//handle '/auth/:token' route
+routes.handleActivation = function*() {
+  this.body = yield new Promise((resolve, reject) => {
+    let that = this;
+    //do funky DB calls and stuff in here
+    let content = '<h1>Hello World! -- Activation</h1>'; //get content by running client-side JS
+    let data = { bingo: 'bongo' };
+    render(content, data).then(html => resolve(html)).catch(err => console.log(err));
+ });
+};
+
 //handle '/upload' route
 routes.handleUpload = function*() {
   //handle multipart form data

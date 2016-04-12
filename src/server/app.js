@@ -52,6 +52,9 @@ class Server {
     //handle register view (signup)
     server.use(_.get('/register', routes.handleRegister));
 
+    //handle account activation (signup)
+    server.use(_.get('/auth/:token', routes.handleActivation));
+
     //handle search view
     server.use(_.get('/search/:query', routes.handleSearch));
 

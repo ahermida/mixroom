@@ -40,20 +40,23 @@ const token = getCookie('access_token');
  * [Async] -- gets a user's data
  * @example
  * async function doStuffWithThisFunc() {
- *   let data = yield getUser();
- *   return data;
+ *   try {
+ *     let data = yield getUser();
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
  * }
  */
 export function getUser() {
-  let endpoint = "/user/"
+  let endpoint = "/user/";
   if (!token) {
     return;
   } else {
     let options = {
       url: `http://${apihost}${enpoint}`,
-      method: 'GET'
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json',
         'access_token': token
       }
     };
@@ -64,5 +67,250 @@ export function getUser() {
         error ? reject(error) : resolve(body);
       });
     });
- }
+  }
+}
+
+/**
+ * [Async] -- creates a user
+ * @example
+ * async function doStuffWithThisFunc(email, username, password){
+ *   try {
+ *     let data = yield createUser(email, username, password);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function createUser(email, username, password) {
+  let endpoint = "/auth/register";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    json: true,
+    body: JSON.stringify({
+      email: email,
+      username: username,
+      password: password
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- logs a user in
+ * @example
+ * async function doStuffWithThisFunc(email, password) {
+ *   try {
+ *     let data = yield loginUser(email, password);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function loginUser(email, password) {
+  let endpoint = "/auth/login";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    json: true,
+    body: JSON.stringify({
+      email: email,
+      password: password
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- Activates a user based on location
+ * @example
+ * async function doStuffWithThisFunc(location) {
+ *   try {
+ *     let data = yield activatUser(location);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function activateUser(location = window.location.pathname) {
+  let truePath = location.substring(6);
+  let endpoint = "/auth/activate";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'access_token': truePath
+    }
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- Deactivate user
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = yield deactivatUser();
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function deactivateUser() {
+  if (!token) {
+    return;
+  }
+  let endpoint = "/auth/remove";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      'access_token': token
+    }
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+     request(options, (error, response, body) => {
+       error ? reject(error) : resolve(body);
+     });
+  });
+}
+
+/**
+ * [Async] -- sends a recovery email to a user's account
+ * @example
+ * async function doStuffWithThisFunc(email) {
+ *   try {
+ *     let data = yield recoverUser(email);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function recoverUser(email) {
+  let endpoint = "/auth/recover";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    json: true,
+    body: JSON.stringify({
+      email: email
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- change password to a user's account
+ * @example
+ * async function doStuffWithThisFunc(password, newPassword) {
+ *   try {
+ *     let data = yield changePass(password, newPassword);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function changePass(pass, newPass) {
+  if (!token) {
+    return;
+  }
+  let endpoint = "/auth/changepass";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'access_token': token
+    },
+    json: true,
+    body: JSON.stringify({
+      password: pass,
+      newPassword: newPass
+    })
+
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- gets a user's saved threads
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = yield getSaved();
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function getSaved() {
+  let endpoint = "/user/saved";
+  if (!token) {
+    return;
+  } else {
+    let options = {
+      url: `http://${apihost}${enpoint}`,
+      method: 'GET',
+      headers: {
+        'access_token': token
+      }
+    };
+
+    //Send Request
+    return new Promise((resolve, reject) => {
+      request(options, (error, response, body) => {
+        error ? reject(error) : resolve(body);
+      });
+    });
+  }
 }
