@@ -1,3 +1,4 @@
 export default let config {
-  api: 'localhost:8000'
+  api: 'localhost:8000',
+  isNode: module !== 'undefined' && module.exports
 }

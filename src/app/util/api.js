@@ -5,7 +5,7 @@ import request from 'request';
 import config from '../config.js';
 
 //check if we're in a browser or not
-const isNode = module !== 'undefined' && module.exports;
+const isNode = config.isNode;
 
 //get cookie passed in by config
 function getCookie(cname) {
@@ -36,6 +36,10 @@ const apihost = config.api
 //get access_token from cookie
 const token = getCookie('access_token');
 
+/**                               Order
+ *                    auth -> user -> group -> thread
+ */
+
 //=============================================================================
 //                              /auth/ Routes
 //=============================================================================
@@ -45,7 +49,7 @@ const token = getCookie('access_token');
  * @example
  * async function doStuffWithThisFunc(email, username, password){
  *   try {
- *     let data = yield createUser(email, username, password);
+ *     let data = await createUser(email, username, password);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -81,7 +85,7 @@ export function createUser(email, username, password) {
  * @example
  * async function doStuffWithThisFunc(email, password) {
  *   try {
- *     let data = yield loginUser(email, password);
+ *     let data = await loginUser(email, password);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -116,7 +120,7 @@ export function loginUser(email, password) {
  * @example
  * async function doStuffWithThisFunc(location) {
  *   try {
- *     let data = yield activatUser(location);
+ *     let data = await activatUser(location);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -148,7 +152,7 @@ export function activateUser(location = window.location.pathname) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield deactivatUser();
+ *     let data = await deactivatUser();
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -182,7 +186,7 @@ export function deactivateUser() {
  * @example
  * async function doStuffWithThisFunc(email) {
  *   try {
- *     let data = yield recoverUser(email);
+ *     let data = await recoverUser(email);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -216,7 +220,7 @@ export function recoverUser(email) {
  * @example
  * async function doStuffWithThisFunc(password, newPassword) {
  *   try {
- *     let data = yield changePass(password, newPassword);
+ *     let data = await changePass(password, newPassword);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -260,7 +264,7 @@ export function changePass(pass, newPass) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield getUser();
+ *     let data = await getUser();
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -294,7 +298,7 @@ export function getUser() {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield getSaved();
+ *     let data = await getSaved();
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -328,7 +332,7 @@ export function getSaved() {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield addName('dingdong');
+ *     let data = await addName('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -366,7 +370,7 @@ export function addName(nm) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield saveThread('dingdong');
+ *     let data = await saveThread('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -404,7 +408,7 @@ export function addName(nm) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield unsaveThread('dingdong');
+ *     let data = await unsaveThread('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -442,7 +446,7 @@ export function unsaveThread(mthread) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield getUserThreads('dingdong');
+ *     let data = await getUserThreads('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -480,7 +484,7 @@ export function getUserThreads(page) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield addUsername('dingdong');
+ *     let data = await addUsername('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -518,7 +522,7 @@ export function getUserThreads(page) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield addUsername('dingdong');
+ *     let data = await addUsername('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -556,7 +560,7 @@ export function getUserThreads(page) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield rmUsername('dingdong');
+ *     let data = await rmUsername('dingdong');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -594,7 +598,7 @@ export function rmUsername(usrname) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield getNotifications();
+ *     let data = await getNotifications();
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -628,7 +632,7 @@ export function getNotifications() {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield getFriends();
+ *     let data = await getFriends();
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -662,7 +666,7 @@ export function getFriends() {
   * @example
   * async function doStuffWithThisFunc() {
   *   try {
-  *     let data = yield addFriend('friendname');
+  *     let data = await addFriend('friendname');
   *     console.log(data)
   *   } catch(error) {
   *     console.log(error);
@@ -701,7 +705,7 @@ export function addFriend(username, frnd) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield acceptFriend('friendname');
+ *     let data = await acceptFriend('friendname');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -740,7 +744,7 @@ export function acceptFriend(username, frnd) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield unfriend('friendname');
+ *     let data = await unfriend('friendname');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -795,7 +799,7 @@ function makeHeaders(token, json) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield getGroup('group', 0);
+ *     let data = await getGroup('group', 0);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -828,7 +832,7 @@ function makeHeaders(token, json) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield createGroup('group', false);
+ *     let data = await createGroup('group', false);
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -861,7 +865,7 @@ export function createGroup(grp, anon) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield deleteGroup('group');
+ *     let data = await deleteGroup('group');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -890,7 +894,7 @@ export function deleteGroup(grp) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield deleteGroup('group');
+ *     let data = await deleteGroup('group');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -922,7 +926,7 @@ export function getAuthGroup(grp) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield addAdmin('group', 'userid');
+ *     let data = await addAdmin('group', 'userid');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -951,7 +955,7 @@ export function addAdmin(grp, usr) {
  * @example
  * async function doStuffWithThisFunc() {
  *   try {
- *     let data = yield rmAdmin('group', 'userid');
+ *     let data = await rmAdmin('group', 'userid');
  *     console.log(data)
  *   } catch(error) {
  *     console.log(error);
@@ -979,3 +983,201 @@ export function rmAdmin(grp, usr) {
 //=============================================================================
 //                              /thread/ Routes
 //=============================================================================
+
+/**
+ * [Async] -- Get Thread
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await getThread('thread');
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function getThread(thrd) {
+  let endpoint = "/thread/";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: makeHeaders(token, true),
+    json: true,
+    body: JSON.stringify({ thread: thrd})
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+     error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- make thread
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await createThread("test","hello","test","linkhere",false);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function createThread(grp, bdy, authr, cont, anon) {
+  let endpoint = "/thread/modify";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: makeHeaders(token, true),
+    json: true,
+    body: JSON.stringify({
+      group: grp,
+      body: body,
+      author: authr,
+      content: cont,
+      anonymous: anon
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- remove thread
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     await rmThread("thread");
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function rmThread(thrd) {
+  let endpoint = "/thread/modify";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'DELETE',
+    headers: makeHeaders(token, true),
+    json: true,
+    body: JSON.stringify({
+      thread: thrd
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- Post to thread
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await post("thread","bdy", "cont", respTo, false, ".mp4");
+ *     console.log(data);
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function post(thrd, bdy, cont, respTo, anon, contType) {
+  let endpoint = "/thread/post";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'POST',
+    headers: makeHeaders(token, true),
+    json: true,
+    body: JSON.stringify({
+      thread: thrd,
+      body: bdy,
+      content: cont,
+      responseTo: respTo,
+      anonymous: anon,
+      contentType: contType
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- Edit post in thread
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await editPost("pstid1", "this is a cool new post");
+ *     console.log(data);
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function editPost(pst, bdy) {
+  let endpoint = "/thread/post";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'PUT',
+    headers: makeHeaders(token, true),
+    json: true,
+    body: JSON.stringify({
+      post: pst,
+      body: bdy
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}
+
+/**
+ * [Async] -- Delete post in thread
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     await rmPost("pstid1");
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function rmPost(pst) {
+  let endpoint = "/thread/post";
+  let options = {
+    url: `http://${apihost}${enpoint}`,
+    method: 'DELETE',
+    headers: makeHeaders(token, true),
+    json: true,
+    body: JSON.stringify({
+      post: pst,
+    })
+  };
+
+  //Send Request
+  return new Promise((resolve, reject) => {
+    request(options, (error, response, body) => {
+      error ? reject(error) : resolve(body);
+    });
+  });
+}

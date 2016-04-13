@@ -43,7 +43,7 @@
     </script>
     <!-- Application -->
     <div id="app-container">
-      <nav class="TopNav">
+      <nav class="TopNav" id="navbar">
         <span class="TopNav-left">
           <a href="/" class="TopNav-item">
             <span id="TopNav-icon">
@@ -61,11 +61,11 @@
           </a>
         </span>
         <span class="TopNav-right">
-          <a href="/">
+          <a href="/" id="TopNav-post">
             <span class="icon icon-pencil">
             </span>
           </a>
-          <a href="/">
+          <a href="/" id="TopNav-search">
             <span class="icon icon-search flip"></span>
           </a>
           <button id="TopNav-menu">
@@ -85,7 +85,7 @@
         </div>
       </div>
       <div id="nav-placeholder"></div>
-      <main id="Body">
+      <main id="main">
       {{{body}}}
       </main>
     </div>

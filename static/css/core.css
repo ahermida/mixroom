@@ -77,7 +77,7 @@ body, figure {
   padding-left: 30px; }
 
 .icon-comment:before {
-  margin: 8px; }
+  margin: 7px; }
 
 .flip {
   display: inline-block;
@@ -92,10 +92,10 @@ body, figure {
 
 #TopNav-icon {
   position: absolute;
-  top: 8px;
+  top: 8.3px;
   left: 10px;
   color: white;
-  background-color: #59CE62;
+  background-color: #42A8FF;
   font-size: 18px; }
 
 #TopNav-title-text {
@@ -107,9 +107,10 @@ body, figure {
   font-weight: 600; }
 
 #TopNav-down {
+  outline: none;
   position: absolute;
-  top: 14px;
-  left: 145px;
+  top: 15px;
+  left: 155px;
   background: #FCFCFB;
   border-radius: 100%;
   border: solid 1px #CCCCCA;
@@ -119,7 +120,8 @@ body, figure {
   background-color: transparent;
   border: none;
   padding: 0px;
-  padding-right: 8px; }
+  padding-right: 8px;
+  outline: none; }
 
 #TopNav-down-icon {
   font-size: 14px;

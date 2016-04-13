@@ -94,7 +94,7 @@ body, figure {
 }
 
 .icon-comment:before {
-    margin: 8px;
+    margin: 7px;
 }
 
 .flip {
@@ -112,10 +112,10 @@ body, figure {
 
 #TopNav-icon {
   position: absolute;
-  top: 8px;
+  top: 8.3px;
   left: 10px;
   color: white;
-  background-color: #59CE62;
+  background-color: #42A8FF;
   font-size: 18px;
 }
 
@@ -129,9 +129,10 @@ body, figure {
 }
 
 #TopNav-down {
+  outline: none;
   position: absolute;
-  top: 14px;
-  left: 145px;
+  top: 15px;
+  left: 155px;
   background: #FCFCFB;
   border-radius: 100%;
   border: solid 1px #CCCCCA;
@@ -143,6 +144,7 @@ body, figure {
   border: none;
   padding: 0px;
   padding-right: 8px;
+  outline: none;
 }
 
 #TopNav-down-icon {
