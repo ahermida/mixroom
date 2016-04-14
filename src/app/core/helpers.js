@@ -29,3 +29,24 @@ export function qsa(selector) {
 export function $on(target, type, callback, useCapture) {
   target.addEventListener(type, callback, !!useCapture);
 }
+
+//get context in writer
+export function getContext() {
+  const defaultRandom = [
+    'search',
+    'user',
+    ''
+  ];
+  let loc = this.location.pathname.substring(1).split('/');
+  defaultRandom.forEach(item => {
+    if (loc[0] === item) {
+      return '/random/';
+    }
+  });
+  if (loc[1]) {
+    return 'this thread';
+  } else if (loc[0]) {
+    return loc[0];
+  }
+  return '/random/';
+}

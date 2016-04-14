@@ -12,6 +12,8 @@ import Server from './server/app.js';
 import config from './server/config.js';
 import cluster from 'cluster';
 import readline from 'readline';
+import os from 'os';
+import dns from 'dns';
 
 //Create New Server
 function runServer(options) {
@@ -97,9 +99,15 @@ if (cluster.isMaster) {
   //timestamp
   let date = new Date();
   //get hour
-  let hour = `${date.getHours() % 12}:${date.getMinutes()}${date.getHours() <= 12 ? 'AM' : 'PM'}`
+  let hr = date.getHours() % 12;
+  let hour = `${hr === 0 ? 12 : hr}:${date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes()}${date.getHours() <= 12 ? 'AM' : 'PM'}`;
   //Log start
   console.log(`Server started at: ${hour} on ${date.getMonth()+1}/${date.getDate()}/${date.getFullYear()}`);
+
+  //Log IP
+  dns.lookup(os.hostname(), (err, address) => {
+    console.log(`IP Address: ${address}\n`);
+  })
 
   //create prompt
   console.log(`You can type: "exit" or "quit" to shut down the app.\nType: "stats" to get info about the server.`);
@@ -107,7 +115,7 @@ if (cluster.isMaster) {
   let getLine = () => {
   rl.question('Command: ', answer => {
     if (answer == 'exit' || answer == 'quit') {
-      process.exit(0)
+      process.exit(0);
     }
     if (answer == 'stats') {
 

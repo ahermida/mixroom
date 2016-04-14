@@ -18,6 +18,14 @@ var _readline = require('readline');
 
 var _readline2 = _interopRequireDefault(_readline);
 
+var _os = require('os');
+
+var _os2 = _interopRequireDefault(_os);
+
+var _dns = require('dns');
+
+var _dns2 = _interopRequireDefault(_dns);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //Create New Server
@@ -113,9 +121,15 @@ if (_cluster2.default.isMaster) {
     //timestamp
     var date = new Date();
     //get hour
-    var hour = date.getHours() % 12 + ':' + date.getMinutes() + (date.getHours() <= 12 ? 'AM' : 'PM');
+    var hr = date.getHours() % 12;
+    var hour = (hr === 0 ? 12 : hr) + ':' + (date.getMinutes() >= 10 ? date.getMinutes() : '0' + date.getMinutes()) + (date.getHours() <= 12 ? 'AM' : 'PM');
     //Log start
     console.log('Server started at: ' + hour + ' on ' + (date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+
+    //Log IP
+    _dns2.default.lookup(_os2.default.hostname(), function (err, address) {
+      console.log('IP Address: ' + address + '\n');
+    });
 
     //create prompt
     console.log('You can type: "exit" or "quit" to shut down the app.\nType: "stats" to get info about the server.');

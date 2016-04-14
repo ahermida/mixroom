@@ -7,6 +7,14 @@ html {
     -webkit-text-size-adjust: 100%;
 }
 
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    text-indent: 1px;
+    text-overflow: '';
+}
+
+
 *, :after, :before {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -110,6 +118,10 @@ body, figure {
   display:none;
 }
 
+.active {
+  color: #5FB5FF;
+}
+
 #TopNav-icon {
   position: absolute;
   top: 8.3px;
@@ -128,17 +140,6 @@ body, figure {
   font-weight: 600;
 }
 
-#TopNav-down {
-  outline: none;
-  position: absolute;
-  top: 15px;
-  left: 155px;
-  background: #FCFCFB;
-  border-radius: 100%;
-  border: solid 1px #CCCCCA;
-  padding: 0px;
-}
-
 #TopNav-menu {
   background-color: transparent;
   border: none;
@@ -147,18 +148,12 @@ body, figure {
   outline: none;
 }
 
-#TopNav-down-icon {
-  font-size: 14px;
-  color: #CCCCCA;
-}
-
 #TopNav-searchbox {
   height: 48px;
   width: 100%;
   display: block;
   background-color: #FCFCFB;
 }
-
 
 #TopNav-searchbox-box {
   height: 48px;
@@ -169,7 +164,7 @@ body, figure {
   border-color: Transparent;
   overflow: auto;
   outline: none;
-  font-size: 20px;
+  font-size: 16px;
 }
 
 #TopNav-searchbox-clear {
@@ -182,7 +177,11 @@ body, figure {
 
 #TopNav-searchbox-exit {
   position: absolute;
-  top: 4px;
+  top: 8px;
+}
+
+#TopNav-searchbox-exit-icon {
+  font-size: 22px !important;
 }
 
 #TopNav-searchbox-bg {
@@ -195,4 +194,193 @@ body, figure {
 
 #nav-placeholder {
   padding-top: 48px;
+}
+
+//style writer
+#TopNav-writer-mount {
+  top: 0;
+  left: 0;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  z-index: 12;
+  background-color: #FCFCFB;
+}
+
+//style writer
+#TopNav-writer-top {
+  height: 48px;
+  width: 100%;
+  background-color: #FCFCFB;
+  border-bottom: 1px solid #CCCCCA;
+}
+
+//save button
+#TopNav-writer-save {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+}
+
+//save button
+#TopNav-writer-cancel {
+  position: absolute;
+  right: 2px;
+  font-size: 32px !important;
+}
+
+//text on top
+#TopNav-writer-head {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  height: 48px;
+  font-size: 20px;
+  line-height: 48px;
+}
+
+//link input container
+#TopNav-writer-link {
+  height: 60px;
+  width: 100%;
+}
+
+//link input
+#TopNav-writer-link-box {
+  padding-right: 60px;
+  text-indent: 10px;
+  font-size: 16px;
+  height: 60px;
+  width: 100%;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #ccc;
+}
+
+//upload button
+#TopNav-writer-content {
+  position: absolute;
+  top: 55px;
+  right: 15px;
+}
+
+//upload
+#TopNav-writer-content-submit {
+  display: none;
+}
+
+//body section
+#TopNav-writer-main {
+  height: calc(100% - 108px);
+  width: 100%;
+  padding-bottom: 48px;
+}
+
+#TopNav-writer-input {
+  border: none;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  resize: none;
+  outline: none;
+}
+//footer area
+#TopNav-writer-foot {
+  border-top: solid 1px #CCCCCA;
+  position: absolute;
+  bottom: 0px;
+  height: 48px;
+  width: 100%;
+}
+
+#TopNav-writer-send {
+  float: right;
+  font-size: 16px;
+  padding: 5px 10px;
+  margin: 8px;
+  background-color: #5FB5FF;
+  color: white;
+}
+
+#TopNav-writer-group {
+  font-size: 16px;
+  float: left;
+  padding: 13px 13px 13px 8px;
+}
+
+#TopNav-writer-select{
+  color: #0A0A94;
+  border: none;
+  background: transparent;
+}
+
+#TopNav-writer-identity-select {
+  color: #CCCCCA;
+  border: none;
+  background: transparent;
+}
+
+#TopNav-writer-identity {
+  color: #CCCCCA;
+  border: none;
+  background: transparent;
+  position: absolute;
+  bottom: 60px;
+  right: 10px;
+}
+
+
+//menu
+#TopNav-menu-bg {
+  background-color: rgba(0, 0, 0, 0.4);
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding-bottom: 48px;
+  font-size: 15px;
+  overflow-y: scroll;
+}
+
+.dropdown {
+  margin: 0;
+  z-index: 3;
+  list-style: none;
+  background-color: #FCFCFB;
+  padding: 0px;
+}
+
+.ddnested {
+  margin-left: 20px;
+}
+
+.TopNav-menu-dropdown-row {
+  height: 48px;
+  background-color: #FCFCFB;
+  position: relative;
+}
+
+.ddicon {
+  font-size: 22px !important;
+  position: absolute;
+  left: 6px;
+  top: 6px;
+}
+
+.ddtext {
+  position: absolute;
+  left: 50px;
+  top: 12px;
+}
+
+#TopNav-dropdown-down {
+  position: absolute;
+  right: 10px;
+  top: 9px;
+  font-size: 20px !important;
 }
