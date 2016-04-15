@@ -298,7 +298,7 @@ export default class View {
           console.log('Hit relevant')
           break;
       }
-    }
+    };
 
     //bind events here
     $on($dropdown, 'click', handleDropdown, false);
