@@ -82,7 +82,7 @@ export function getThread(thrd) {
  *   }
  * }
  */
-export function createThread(grp, bdy, authr, cont, anon) {
+export function createThread(grp, bdy, authr, cont, contType, anon) {
   let endpoint = "/thread/modify";
   let options = {
     url: `http://${apihost}${enpoint}`,
@@ -94,6 +94,7 @@ export function createThread(grp, bdy, authr, cont, anon) {
       body: body,
       author: authr,
       content: cont,
+      contentType: contType,
       anonymous: anon
     })
   };

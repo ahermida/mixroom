@@ -65,8 +65,20 @@ async function handleSubmit(link, body, to, identity) {
   if (isgrp) {
     //is group
 
-    //get content from store -- check link
-    const resp = await createThread(to, body, identity, cont, anon);
+    //get content from store
+    try {
+
+      //attempt to send, should provide us with a json obj with id
+      const resp = await createThread(to, body, identity, cont, anon);
+
+      //send this on delete or edit if we do so
+      store.owned = resp.id;
+
+    } catch (e) {
+
+      //if something went wrong, let ourselves know
+      console.log(e);
+    }
   } else {
     //is thread
     const responseTo = getReferences(body);

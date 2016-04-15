@@ -27,6 +27,8 @@ const code = /\[code](.*?)\[\/code]/g;
 const ref = /\(post:(\S*?)\)/g;
 //regex for mentions
 const mention = /@(\S*?)\s/g
+//regex for links ('holy grail' via Matthew O'Riordan)
+const url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
 //returns html for a given body
 export default function parse(body) {
@@ -71,6 +73,9 @@ export default function parse(body) {
 
   //set mentions
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
+
+  //finally, set urls -- fails for javascript protocol (important)
+  htmlbody = htmlbody.replace(url, `<a class="Body-url" href="$1">$1</a>`);
 
   /*
     validate before sending back
