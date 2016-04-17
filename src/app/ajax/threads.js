@@ -1,7 +1,7 @@
 /*
   thread and post functions -- ajax utility functions #touchtips -- all are async functions
 */
-import request from 'request';
+import fetch from 'isomorphic-fetch';
 import config from '../config.js';
 
 //check if we're in a browser or not
@@ -38,6 +38,18 @@ const apihost = config.api
 //get access_token from cookie
 const token = getCookie('access_token');
 
+//make header for request
+function makeHeaders(token, json) {
+  let headers = {};
+  if (token) {
+    headers['access_token'] = token;
+  }
+  if (json) {
+    headers['Content-Type'] = 'application/json';
+  }
+  return headers;
+}
+
 //=============================================================================
 //                              /thread/ Routes
 //=============================================================================
@@ -56,19 +68,14 @@ const token = getCookie('access_token');
  */
 export function getThread(thrd) {
   let endpoint = "/thread/";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: makeHeaders(token, true),
-    json: true,
-    body: JSON.stringify({ thread: thrd})
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-     error ? reject(error) : resolve(body);
-    });
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
+    body: JSON.stringify({
+      thread: thrd
+    })
   });
 }
 
@@ -86,11 +93,11 @@ export function getThread(thrd) {
  */
 export function createThread(grp, bdy, authr, cont, contType, anon) {
   let endpoint = "/thread/modify";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: makeHeaders(token, true),
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
       group: grp,
       body: body,
@@ -99,13 +106,6 @@ export function createThread(grp, bdy, authr, cont, contType, anon) {
       contentType: contType,
       anonymous: anon
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
   });
 }
 
@@ -122,21 +122,16 @@ export function createThread(grp, bdy, authr, cont, contType, anon) {
  */
 export function rmThread(thrd) {
   let endpoint = "/thread/modify";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+
+  //Send Request
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'DELETE',
-    headers: makeHeaders(token, true),
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
       thread: thrd
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
   });
 }
 
@@ -154,11 +149,11 @@ export function rmThread(thrd) {
  */
 export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
   let endpoint = "/thread/post";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: makeHeaders(token, true),
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
       thread: thrd,
       body: bdy,
@@ -168,13 +163,6 @@ export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
       anonymous: anon,
       contentType: contType
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
   });
 }
 
@@ -192,22 +180,15 @@ export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
  */
 export function editPost(pst, bdy) {
   let endpoint = "/thread/post";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'PUT',
-    headers: makeHeaders(token, true),
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
       post: pst,
       body: bdy
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
   });
 }
 
@@ -224,20 +205,13 @@ export function editPost(pst, bdy) {
  */
 export function rmPost(pst) {
   let endpoint = "/thread/post";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'DELETE',
-    headers: makeHeaders(token, true),
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
-      post: pst,
+      post: pst
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
   });
 }

@@ -1,7 +1,7 @@
 /*
   Auth ajax utility functions #touchtips -- all are async functions
 */
-import request from 'request';
+import fetch from 'isomorphic-fetch';
 import config from '../config.js';
 
 let that = that || {};
@@ -56,26 +56,20 @@ const token = getCookie('access_token');
  */
 export function createUser(email, username, password) {
   let endpoint = "/auth/register";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'access_token': token
+    }),
     body: JSON.stringify({
       email: email,
       username: username,
       password: password
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -92,25 +86,18 @@ export function createUser(email, username, password) {
  */
 export function loginUser(email, password) {
   let endpoint = "/auth/login";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json'
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       email: email,
       password: password
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -128,21 +115,14 @@ export function loginUser(email, password) {
 export function activateUser(location = window.location.pathname) {
   let truePath = location.substring(6);
   let endpoint = "/auth/activate";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'access_token': truePath
-    }
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+    })
+  });
 }
 
 /**
@@ -162,21 +142,14 @@ export function deactivateUser() {
     return;
   }
   let endpoint = "/auth/remove";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'access_token': token
-    }
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-     request(options, (error, response, body) => {
-       error ? reject(error) : resolve(body);
-     });
-  });
+    })
+  });
 }
 
 /**
@@ -193,24 +166,18 @@ export function deactivateUser() {
  */
 export function recoverUser(email) {
   let endpoint = "/auth/recover";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    json: true,
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'access_token': token
+    }),
     body: JSON.stringify({
       email: email
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -230,25 +197,17 @@ export function changePass(pass, newPass) {
     return;
   }
   let endpoint = "/auth/changepass";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       password: pass,
       newPassword: newPass
     })
-
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }

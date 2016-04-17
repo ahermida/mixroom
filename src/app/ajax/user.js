@@ -1,7 +1,7 @@
 /*
   user functions -- ajax utility functions #touchtips -- all are async functions
 */
-import request from 'request';
+import fetch from 'isomorphic-fetch';
 import config from '../config.js';
 
 let that = that || {};
@@ -60,20 +60,14 @@ export function getUser() {
   if (!token) {
     return;
   } else {
-    let options = {
-      url: `http://${apihost}${enpoint}`,
-      method: 'GET',
-      headers: {
-        'access_token': token
-      }
-    };
-
-    //Send Request
-    return new Promise((resolve, reject) => {
-      request(options, (error, response, body) => {
-        error ? reject(error) : resolve(body);
-      });
-    });
+    return fetch(`http://${apihost}${enpoint}`, {
+    	method: 'GET',
+    	mode: 'cors',
+    	redirect: 'error',
+    	headers: new Headers({
+    		'access_token': token
+    	})
+    });
   }
 }
 
@@ -94,20 +88,14 @@ export function getSaved() {
   if (!token) {
     return;
   } else {
-    let options = {
-      url: `http://${apihost}${enpoint}`,
+    return fetch(`http://${apihost}${enpoint}`, {
       method: 'GET',
-      headers: {
+      mode: 'cors',
+      redirect: 'error',
+      headers: new Headers({
         'access_token': token
-      }
-    };
-
-    //Send Request
-    return new Promise((resolve, reject) => {
-      request(options, (error, response, body) => {
-        error ? reject(error) : resolve(body);
-      });
-    });
+      })
+    });
   }
 }
 
@@ -128,25 +116,18 @@ export function addName(nm) {
     return;
   }
   let endpoint = "/user/name";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       name: nm
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -166,25 +147,19 @@ export function addName(nm) {
      return;
    }
    let endpoint = "/user/saved";
-   let options = {
-     url: `http://${apihost}${enpoint}`,
+
+   return fetch(`http://${apihost}${enpoint}`, {
      method: 'POST',
-     headers: {
+     mode: 'cors',
+     redirect: 'error',
+     headers: new Headers({
        'Content-Type': 'application/json',
        'access_token': token
-     },
-     json: true,
+     }),
      body: JSON.stringify({
        thread: mthread
      })
-   };
-
-   //Send Request
-   return new Promise((resolve, reject) => {
-     request(options, (error, response, body) => {
-       error ? reject(error) : resolve(body);
-     });
-   });
+   });
  }
 
 /**
@@ -204,25 +179,19 @@ export function unsaveThread(mthread) {
     return;
   }
   let endpoint = "/user/saved";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'PUT',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       thread: mthread
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -242,25 +211,18 @@ export function getUserThreads(page) {
     return;
   }
   let endpoint = "/user/saved";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
-    method: 'PUT',
-    headers: {
+  return fetch(`http://${apihost}${enpoint}`, {
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       page: page
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -280,25 +242,18 @@ export function getUserThreads(page) {
      return;
    }
    let endpoint = "/user/username";
-   let options = {
-     url: `http://${apihost}${enpoint}`,
+   return fetch(`http://${apihost}${enpoint}`, {
      method: 'POST',
-     headers: {
+     mode: 'cors',
+     redirect: 'error',
+     headers: new Headers({
        'Content-Type': 'application/json',
        'access_token': token
-     },
-     json: true,
+     }),
      body: JSON.stringify({
        username: usrname
      })
-   };
-
-   //Send Request
-   return new Promise((resolve, reject) => {
-     request(options, (error, response, body) => {
-       error ? reject(error) : resolve(body);
-     });
-   });
+   });
  }
 
 /**
@@ -318,25 +273,18 @@ export function getUserThreads(page) {
       return;
     }
     let endpoint = "/user/username";
-    let options = {
-      url: `http://${apihost}${enpoint}`,
+    return fetch(`http://${apihost}${enpoint}`, {
       method: 'PUT',
-      headers: {
+      mode: 'cors',
+      redirect: 'error',
+      headers: new Headers({
         'Content-Type': 'application/json',
         'access_token': token
-      },
-      json: true,
+      }),
       body: JSON.stringify({
         username: usrname
       })
-    };
-
-    //Send Request
-    return new Promise((resolve, reject) => {
-      request(options, (error, response, body) => {
-        error ? reject(error) : resolve(body);
-      });
-    });
+    });
   }
 
 /**
@@ -356,25 +304,19 @@ export function rmUsername(usrname) {
     return;
   }
   let endpoint = "/user/username";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'DELETE',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       username: usrname
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -394,21 +336,14 @@ export function getNotifications() {
     return;
   }
   let endpoint = "/user/notifications";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'access_token': token
-    }
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+    }),
+  });
 }
 
 /**
@@ -428,21 +363,14 @@ export function getFriends() {
     return;
   }
   let endpoint = "/user/friends";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'access_token': token
-    }
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+    }),
+  });
 }
 
 /**
@@ -462,26 +390,20 @@ export function addFriend(username, frnd) {
     return;
   }
   let endpoint = "/user/username";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'POST',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       username: usrname,
       friend: frnd
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -501,26 +423,19 @@ export function acceptFriend(username, frnd) {
     return;
   }
   let endpoint = "/user/username";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'PUT',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       username: usrname,
       friend: frnd
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }
 
 /**
@@ -540,24 +455,18 @@ export function unfriend(username, frnd) {
     return;
   }
   let endpoint = "/user/username";
-  let options = {
-    url: `http://${apihost}${enpoint}`,
+
+  return fetch(`http://${apihost}${enpoint}`, {
     method: 'DELETE',
-    headers: {
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers({
       'Content-Type': 'application/json',
       'access_token': token
-    },
-    json: true,
+    }),
     body: JSON.stringify({
       username: usrname,
       friend: frnd
     })
-  };
-
-  //Send Request
-  return new Promise((resolve, reject) => {
-    request(options, (error, response, body) => {
-      error ? reject(error) : resolve(body);
-    });
-  });
+  });
 }

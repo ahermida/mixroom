@@ -4,20 +4,8 @@
 
 import view from './navv.js';
 import store from './store.js';
-import {getUser} from '../ajax/user.js';
 import {createThread, post} from '../ajax/threads.js';
 import fastclick from 'fastclick';
-
-//handle getting user (usernames, username) data via ajax
-async function doGetUser() {
-  try {
-    //attempt to get user
-    store.user = await getUser();
-  } catch (err) {
-    //let ourselves know if there was an error
-    console.log(err);
-  }
-}
 
 //handle doing upload via ajax -- should build this one ourselves
 async function handleUpload(file) {
@@ -124,9 +112,6 @@ async function handleSubmit(link, body, to, identity) {
 export default function start() {
   //adjust click events for mobile
   fastclick(document.body);
-
-  //get user
-  doGetUser();
 
   //options are functions passed into view handlers
   const options = {
