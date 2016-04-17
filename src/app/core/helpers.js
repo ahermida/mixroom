@@ -37,7 +37,7 @@ export function getContext() {
     'user',
     ''
   ];
-  let loc = this.location.pathname.substring(1).split('/');
+  let loc = location.pathname.substring(1).split('/');
   defaultRandom.forEach(item => {
     if (loc[0] === item) {
       return '/random/';

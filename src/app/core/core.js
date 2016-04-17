@@ -6,9 +6,10 @@ import view from './navv.js';
 import store from './store.js';
 import {getUser} from '../ajax/user.js';
 import {createThread, post} from '../ajax/threads.js';
+import fastclick from 'fastclick';
 
 //handle getting user (usernames, username) data via ajax
-async function getUser() {
+async function doGetUser() {
   try {
     //attempt to get user
     store.user = await getUser();
@@ -20,7 +21,7 @@ async function getUser() {
 
 //handle doing upload via ajax -- should build this one ourselves
 async function handleUpload(file) {
-  const uploadFile = (file) => {
+  async function uploadFile (file) {
     return new Promise((resolve, reject) => {
       var request = new XMLHttpRequest();
       request.onreadystatechange = () => {
@@ -36,29 +37,39 @@ async function handleUpload(file) {
       request.setRequestHeader("X-File-Type", file.type);
       request.setRequestHeader("X-File-Size", file.size);
       request.send(file);
-    };
-    try {
-      let data = await uploadFile(`http://localhost:8080/upload`, file);
-      return data;
-      //should set in form data
-    } catch (e) {
-      console.log(e);
-    }
-  });
-}
+    });
+  }
 
-//should return all references to other posts in thread
-function getReferences(body) {
-  //regex for reference (post: )
-  const ref = /\(post:(\S*?)\)/g;
-  matches = body.match(ref);
-  let idrefs = matches.map(match => match.slice(6, -1).trim());
-  return idrefs;
+  //send request
+  try {
+    let resp = await uploadFile(`http://localhost:8080/upload`, file);
+
+    //grab response & set it in store
+    store.upload = {
+      content: resp,
+      contentType: file.type
+    };
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 //handle form submission
 async function handleSubmit(link, body, to, identity) {
   const anon = identity === 'Anonymous' ? true : false;
+
+  const contentType = store.upload.contentType;
+  const cont = store.upload.content;
+
+  //should return all references to other posts in thread
+  const getReferences = (body) => {
+
+    //regex for reference (post: 12312)
+    const ref = /\(post:(\S*?)\)/g;
+    matches = body.match(ref);
+    let idrefs = matches.map(match => match.slice(6, -1).trim());
+    return idrefs;
+  }
 
   //sendMentions() --> WS stuff
   const isgrp = store.groups.includes(to);
@@ -69,10 +80,13 @@ async function handleSubmit(link, body, to, identity) {
     try {
 
       //attempt to send, should provide us with a json obj with id
-      const resp = await createThread(to, body, identity, cont, anon);
+      const resp = await createThread(to, body, identity, cont, contentType, anon);
 
       //send this on delete or edit if we do so
       store.owned = resp.id;
+
+      //clear upload in store
+      store.upload = false;
 
     } catch (e) {
 
@@ -81,7 +95,48 @@ async function handleSubmit(link, body, to, identity) {
     }
   } else {
     //is thread
+    let path = location.pathname.split('/');
+    let thread = path[path.length - 1];
+
+    //get references in body
     const responseTo = getReferences(body);
-    const resp = await post(to, bdy, cont, respTo, anon, contType);
+
+    //try to send post to thread
+    try {
+
+      //actually send post
+      const resp = await post(thread, identity, body, cont, responseTo, anon, contentType);
+
+      //send this on delete or edit if we do so
+      store.owned = resp.id;
+
+      //clear upload in store
+      store.upload = false;
+
+    } catch(e) {
+
+      //if something went wrong in trying to post it, let ourselves know
+      console.log(e);
+    }
   }
+}
+
+export default function start() {
+  //adjust click events for mobile
+  fastclick(document.body);
+
+  //get user
+  doGetUser();
+
+  //options are functions passed into view handlers
+  const options = {
+    'handleUpload': handleUpload,
+    'handleSubmit': handleSubmit
+  };
+
+  //create view
+  const nav = new view(store.groups, store.user, handleUpload, handleSubmit);
+
+  //bind handlers
+  nav.bind();
 }

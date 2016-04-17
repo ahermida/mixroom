@@ -156,15 +156,19 @@
 
 .icon-search:before {
   content: '\e811';
-  width: 30px;
-  margin-left: 4px; }
+  margin-left: 4px;
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg); }
 
 .icon-pencil:before {
   content: '\e806';
-  margin: 0px 3px 0px 0px;
-  width: 14px; }
+  width: 25px;
+  margin: 0px; }
 
 .icon-menu:before {
   content: '\e800';
-  width: 20px;
+  width: 14px;
   margin-left: 0px; }

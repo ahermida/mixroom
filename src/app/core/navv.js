@@ -22,6 +22,7 @@ export default class View {
     this.$pencil = $id('TopNav-post');
     this.$search = $id('TopNav-search');
     this.$menu = $id('TopNav-menu');
+    this.$menuicon = $id('TopNav-menu-icon');
     this.$searchbox = $id('TopNav-searchbox-box');
     this.$searchboxBg = $id('TopNav-searchbox-bg');
     this.$searchboxExit = $id('TopNav-searchbox-exit');
@@ -29,14 +30,28 @@ export default class View {
 
     //setup commands for view actions
 		this.viewCommands = {
-      showWriter: () => this._showWriter(groups, user, handleUpload, handleSubmit),
-      removeWriter: () => this._removeWriter(),
-			showSearch: () => this._showSearch(),
-      clearSearch: () => this._clearSearch(),
-      hideSearch: () => this._hideSearch(),
-      submitSearch: () => this._submitSearch(),
-      showMenu: () => this._showMenu(user),
-      removeMenu: () => this._removeMenu()
+      showWriter: (e) => {
+        e.preventDefault();
+        this._showWriter(groups, user, handleUpload, handleSubmit);
+      },
+      removeWriter: (e) => {
+        e.preventDefault();
+        this._removeWriter();
+      },
+			showSearch: (e) => {
+        e.preventDefault();
+        this._showSearch();
+      },
+      clearSearch: (e) => {
+        e.stopPropagation();
+        this._clearSearch()
+      },
+      hideSearch: (e) => {
+        this._hideSearch(e)
+      },
+      submitSearch: (e) => this._submitSearch(e),
+      showMenu: (e) => this._showMenu(user),
+      removeMenu: (e) => this._removeMenu()
 		};
 	}
 
@@ -65,11 +80,14 @@ export default class View {
   }
 
 	_showSearch() {
+    //remove menu
+    this._removeMenu();
     //remove hide from element's classname
-    this.searchboxBg.className = '';
+    this.$searchboxBg.className = '';
+    this.$searchbox.focus();
   }
 
-  _handleSearch(e) {
+  _submitSearch(e) {
     if (e.keyCode === ENTER_KEY) {
       //transition to search view
       //router.doSearch(e.target.value)
@@ -81,12 +99,19 @@ export default class View {
     this.$searchbox.value = '';
   }
 
-  _hideSearch() {
-    //add hide to element's class
-    this.searcboxBg.className = "hide"
+  _hideSearch(e) {
+    /*
+     since we don't have an event that we can stop from propating to close form,
+     we'll just cut it if the id of the click event target is the box
+    */
+    if (e.target.id === 'TopNav-searchbox-box') return;
+    //add hide to element's classiuhiuasd
+    this.$searchboxBg.className = "hide"
   }
 
   _showWriter(groups, user, handleUpload, handleSubmit) {
+    //remove menu
+    this._removeMenu();
 
     if (!$id("TopNav-writer-mount")) {
 
@@ -99,7 +124,7 @@ export default class View {
       };
 
       const getUsernames = (usernames) => {
-        return groups.map((username) => `<option>${username}</option>`).join(" ");
+        return usernames.map((username) => `<option>${username}</option>`).join(" ");
       };
 
       //show post submission form
@@ -165,7 +190,8 @@ export default class View {
     }
   }
 
-  _hideWriter() {
+  _hideWriter(e) {
+    e.stopPropagation();
     //set writer's display to none
     let writer = $id('TopNav-writer-mount');
     writer.className = "hide";
@@ -180,6 +206,7 @@ export default class View {
   _showMenu(user) {
     //check if menu exists
     if ($id("TopNav-menu-bg")) {
+      this.$menuicon.className = "icon icon-menu";
       this._removeMenu();
       return;
     }
@@ -189,7 +216,7 @@ export default class View {
     const menuMount = document.createElement('nav');
     menuMount.id = "TopNav-menu-bg";
 
-    this.$menu.className = "active";
+    this.$menuicon.className = "icon icon-menu active";
 
     //get template for either user logged in or not logged in
     const getSecretMenu = (user) => {
@@ -257,6 +284,8 @@ export default class View {
     //append menu
     this.$nav.appendChild(menuMount);
 
+		this.$nav.className = "TopNav opened"
+
     //get important dom elements
     let $dropdownBg = $id('TopNav-menu-bg');
     let $dropdown = $id('TopNav-menu-list');
@@ -265,11 +294,13 @@ export default class View {
 
     //handle dropdown click
     const handleDropdown = (e) => {
+      e.stopPropagation();
       const el = e.target.id ? e.target.id : e.target.parentNode.id;
       switch (el) {
         case 'TopNav-menu-about':
           console.log('About Hit');
           break;
+        case 'TopNav-dropdown-down':
         case 'TopNav-menu-secret':
           console.log('Hit Secret');
           const hidden = $secret.className === "dropdown hide";
@@ -307,9 +338,16 @@ export default class View {
 
   _removeMenu() {
     //unset color of menu button & remove menu
-    this.$menu.className = "";
     let menu = $id('TopNav-menu-bg');
-    menu.parentNode.removeChild(menu);
+    if (menu) {
+      //get $menuicon which is here too deep to reference by class
+			let nav = $id('navbar');
+      let $menuicon = $id('TopNav-menu-icon');
+			nav.className = "TopNav";
+      $menuicon.className = "icon icon-menu";
+      menu.className = "";
+      menu.parentNode.removeChild(menu);
+    }
   }
 
 }

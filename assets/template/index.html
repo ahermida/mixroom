@@ -30,7 +30,7 @@
     <link href="##.png" rel="apple-touch-icon" sizes="152x152"/>
     <link href="##.png" rel="apple-touch-icon" sizes="180x180"/>
     -->
-    <title>Sudopost</title>
+    <title>sudopost</title>
     <meta name="description" content="Posts and other stuff"/>
   </head>
   <body>
@@ -64,7 +64,7 @@
             <span class="icon icon-search flip"></span>
           </a>
           <button id="TopNav-menu">
-            <span class="icon icon-menu"></span>
+            <span id="TopNav-menu-icon" class="icon icon-menu"></span>
           </button>
         </span>
       </nav>
@@ -73,7 +73,7 @@
           <span id="TopNav-searchbox-exit">
             <span id="TopNav-searchbox-exit-icon" class="icon icon-left-open-big"></span>
           </span>
-          <input placeholder="Search sudopost" type="search" id="TopNav-searchbox-box"/>
+          <input placeholder="Search sudopost" type=search id="TopNav-searchbox-box">
           <span id="TopNav-searchbox-clear">
             <span class="icon-cancel-circled"></span>
           </span>
@@ -90,5 +90,7 @@
         return String.fromCharCode(dec);
       }));
     </script>
+    <!-- Include the App-->
+    <script type="text/javascript" src="/static/bundle.js"></script>
   </body>
 </html>

@@ -7,12 +7,12 @@ import config from '../config.js';
 const isNode = config.isNode;
 
 //export appStore, handles general user data
-export default let appStore = {
+export default {
   //initialize user as anon
   _user: {anonymous: true, username:'', usernames: []},
 
   //initialize groups
-  _groups: ['/cs','/music','/vid','/bored'],
+  _groups: ['/cs/','/music/','/vid/','/bored/'],
 
   //initialized owned data -- by id [threads and posts]
   _owned: [],
@@ -84,8 +84,13 @@ export default let appStore = {
   },
 
   set upload(c) {
-    this._uploadData.content = c.content;
-    this._uploadData.contentType = c.contentType;
+    if (!c) {
+      this._uploadData.content = '';
+      this._uploadData.contentType = '';
+    } else {
+      this._uploadData.content = c.content;
+      this._uploadData.contentType = c.contentType;
+    }
   },
 
   get upload() {

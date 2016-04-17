@@ -7,6 +7,8 @@ import config from '../config.js';
 //check if we're in a browser or not
 const isNode = config.isNode;
 
+let that = that || {};
+
 //get cookie passed in by config
 function getCookie(cname) {
 
@@ -150,7 +152,7 @@ export function rmThread(thrd) {
  *   }
  * }
  */
-export function post(thrd, bdy, cont, respTo, anon, contType) {
+export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
   let endpoint = "/thread/post";
   let options = {
     url: `http://${apihost}${enpoint}`,
@@ -160,6 +162,7 @@ export function post(thrd, bdy, cont, respTo, anon, contType) {
     body: JSON.stringify({
       thread: thrd,
       body: bdy,
+      author: identity,
       content: cont,
       responseTo: respTo,
       anonymous: anon,

@@ -5,6 +5,8 @@ html {
     font-family: sans-serif;
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
 }
 
 select {
@@ -69,6 +71,7 @@ body, figure {
 }
 
 .TopNav {
+    background-image: linear-gradient(to right,rgba(255,255,255,0) 0,#fff 15%);
     background-color: #FCFCFB;
     height: 48px;
     position: fixed;
@@ -77,6 +80,10 @@ body, figure {
     -webkit-user-select: none;
     top: 0;
     box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
+}
+
+.opened:after {
+    position: absolute !important;
 }
 
 .TopNav, .TopNav-item {
@@ -105,15 +112,6 @@ body, figure {
     margin: 7px;
 }
 
-.flip {
-  display: inline-block;
-  -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
-  -ms-transform: rotate(90deg);
-  -o-transform: rotate(90deg);
-  transform: rotate(90deg);
-}
-
 .hide {
   display:none;
 }
@@ -140,7 +138,24 @@ body, figure {
   font-weight: 600;
 }
 
+#TopNav-post {
+  right: 75px;
+  position: absolute;
+}
+
+#TopNav-search {
+  right: 33px;
+  position: absolute;
+  top: 0px;
+}
+
+#TopNav-search-icon {
+
+}
+
 #TopNav-menu {
+  right: 0px;
+  position: absolute;
   background-color: transparent;
   border: none;
   padding: 0px;
@@ -333,18 +348,19 @@ body, figure {
 //menu
 #TopNav-menu-bg {
   background-color: rgba(0, 0, 0, 0.4);
-  position: fixed;
-  z-index: 10;
+  position: absolute;
   width: 100%;
-  height: 100%;
-  z-index: 10;
-  top: 48px;
+  z-index: 11;
+  padding-bottom: 1500px;
+  top: 54px;
   left: 0;
-  right: 0;
-  bottom: 0;
-  padding-bottom: 48px;
   font-size: 15px;
   overflow-y: scroll;
+}
+
+//make up for 5px we space at the top for full shadow fix
+#TopNav-menu-list {
+  padding-bottom: 4px;
 }
 
 .dropdown {

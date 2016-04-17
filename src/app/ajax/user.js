@@ -4,6 +4,8 @@
 import request from 'request';
 import config from '../config.js';
 
+let that = that || {};
+
 //check if we're in a browser or not
 const isNode = config.isNode;
 
