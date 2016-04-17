@@ -8,14 +8,17 @@ import {getUser} from './ajax/user.js';
 
 //init
 //handle getting user (usernames, username) data via ajax
-async function user() {
-  try {
-    //attempt to get user
-    store.user = await getUser();
-  } catch (err) {
-    //let ourselves know if there was an error
-    console.log(err);
-  }
+{
+  //first order of business, get user data and store it
+  (async function user() {
+    try {
+      //attempt to get user
+      store.user = await getUser();
+    } catch (err) {
+      //let ourselves know if there was an error
+      console.log(err);
+    }
+  })()
+  
+  core();
 }
-
-core();

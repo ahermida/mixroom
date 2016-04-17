@@ -6,7 +6,7 @@
   "scripts": {
     "server_build": "babel --ignore app -d dist src",
     "server_watch": "nodemon --watch src/server.js --exec \"npm run server_build\"",
-    "client_build": "browserify -t [ babelify --presets [ es2015 stage-3 ] --plugins [ transform-runtime ] ] src/app/main.js -o static/bundle.js && npm run client_uglify",
+    "client_build": "browserify -t [ babelify --presets [ es2015 stage-3 ] --plugins [ transform-runtime ] ] src/app/main.js -o static/bundle.js",
     "client_uglify": "uglifyjs --compress --output static/bundle.js -- static/bundle.js",
     "client_watch": "nodemon --watch src/app --exec \"npm run client_build\"",
     "css_build": "node-sass assets/styles --output static/css",

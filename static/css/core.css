@@ -189,6 +189,7 @@ body, figure {
 
 #TopNav-writer-save {
   position: absolute;
+  z-index: 12;
   left: 4px;
   top: 4px; }
 

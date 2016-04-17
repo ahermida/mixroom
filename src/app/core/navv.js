@@ -112,8 +112,8 @@ export default class View {
   _showWriter(groups, user, handleUpload, handleSubmit) {
     //remove menu
     this._removeMenu();
-
-    if (!$id("TopNav-writer-mount")) {
+		const wm = $id("TopNav-writer-mount")
+    if (!wm) {
 
       //element that we'll use to get the writer
       const writerMount = document.createElement('div');
@@ -175,26 +175,15 @@ export default class View {
 
       //handle sending the form
       const handleSend = () => handleSubmit($link.value, $body.value, $group.value, $identity.value);
-
-      //bind writer events
-      $on($savebutton, 'click', this._hideWriter, false);
+			const handleHide = () => writerMount.className = "hide";
       $on($cancelbutton, 'click', this._removeWriter, false);
+			$on($savebutton, 'click', handleHide, false);
       $on($fileSubmit, 'change', handleUpload, false);
       $on($submit, 'click', handleSend, false);
 
     } else {
-
-      //if element is in the dom, make it visible
-      let writerMt = $id('TopNav-writer-mount');
-      writerMt.className = "";
+			wm.className = ""
     }
-  }
-
-  _hideWriter(e) {
-    e.stopPropagation();
-    //set writer's display to none
-    let writer = $id('TopNav-writer-mount');
-    writer.className = "hide";
   }
 
   _removeWriter() {
