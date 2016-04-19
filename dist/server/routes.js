@@ -331,7 +331,7 @@ routes.handleActivation = _regenerator2.default.mark(function _callee8() {
 
 //handle '/upload' route
 routes.handleUpload = _regenerator2.default.mark(function _callee9() {
-  var parts, part, uuid, stream, resp;
+  var parts, part, uuid, resp, stream;
   return _regenerator2.default.wrap(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
@@ -356,15 +356,14 @@ routes.handleUpload = _regenerator2.default.mark(function _callee9() {
         case 3:
           part = _context9.sent;
           uuid = _nodeUuid2.default.v1();
-          stream = _fs2.default.createWriteStream(__dirname + '/../../static/uploads/' + uuid);
+          //send back response as JSON
+
+          resp = (0, _stringify2.default)({
+            "url": 'http://localhost:8080/static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase()
+          });
+          stream = _fs2.default.createWriteStream(__dirname + '/../../static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase());
 
           part.pipe(stream);
-
-          //send back response as JSON
-          resp = (0, _stringify2.default)({
-            "url": 'http://localhost:8080/static/uploads/' + uuid
-          });
-
 
           this.body = resp;
 

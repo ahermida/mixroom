@@ -52,7 +52,10 @@
 
 .icon-menu:before { content: '\e800'; } /* '' */
 .icon-cancel:before { content: '\e801'; } /* '' */
-.icon-check:before { content: '\e802'; } /* '' */
+.icon-check:before {
+  content: '\e802';
+  color: #00E500;
+} /* '' */
 .icon-camera:before { content: '\e803'; } /* '' */
 .icon-down-open-big:before { content: '\e804'; } /* '' */
 .icon-up-open-big:before { content: '\e805'; } /* '' */
@@ -77,7 +80,9 @@
 .icon-chat:before { content: '\e818'; } /* '' */
 .icon-mail:before { content: '\e819'; } /* '' */
 .icon-help:before { content: '\e81a'; } /* '' */
-.icon-info:before { content: '\e81b'; } /* '' */
+.icon-info:before {
+  content: '\e81b';
+} /* '' */
 
 .icon {
   font-size: 28px;

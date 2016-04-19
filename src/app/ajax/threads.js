@@ -136,6 +136,32 @@ export function rmThread(thrd) {
 }
 
 /**
+ * [Async] -- Get Thread's length
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     await threadLength("thread");
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+export function threadLength(thrd) {
+  let endpoint = "/thread/length";
+  //Send Request
+  return fetch(`http://${apihost}${enpoint}`, {
+    method: 'POST',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
+    body: JSON.stringify({
+      thread: thrd
+    })
+  });
+}
+
+
+/**
  * [Async] -- Post to thread
  * @example
  * async function doStuffWithThisFunc() {

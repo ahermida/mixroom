@@ -11,8 +11,8 @@ export default class View {
 	constructor(groups, user, options) {
 
     //get functions from options
-    const handleUpload = options.handleUpload;
-    const handleSubmit = options.handleSubmit;
+    this.handleUpload = options.handleUpload;
+    this.handleSubmit = options.handleSubmit;
 
     //event.keyCode code for enter is 13
     const ENTER_KEY = 13;
@@ -28,17 +28,29 @@ export default class View {
     this.$searchboxExit = $id('TopNav-searchbox-exit');
     this.$searchboxClear = $id('TopNav-searchbox-clear');
 
+		//body handlers
+		const setActiveBody = () => {
+			document.body.className = 'menu-active';
+		};
+
+		const unsetActiveBody = () => {
+			document.body.className = '';
+		};
+
     //setup commands for view actions
 		this.viewCommands = {
       showWriter: (e) => {
         e.preventDefault();
-        this._showWriter(groups, user, handleUpload, handleSubmit);
+        this._showWriter(groups, user, this.handleUpload, this.handleSubmit);
       },
       removeWriter: (e) => {
+				unsetActiveBody();
         e.preventDefault();
         this._removeWriter();
+				document.body.className = '';
       },
 			showSearch: (e) => {
+				setActiveBody();
         e.preventDefault();
         this._showSearch();
       },
@@ -47,11 +59,18 @@ export default class View {
         this._clearSearch()
       },
       hideSearch: (e) => {
+				unsetActiveBody();
         this._hideSearch(e)
       },
       submitSearch: (e) => this._submitSearch(e),
-      showMenu: (e) => this._showMenu(user),
-      removeMenu: (e) => this._removeMenu()
+      showMenu: (e) => {
+				setActiveBody();
+				this._showMenu(user)
+			},
+      removeMenu: (e) => {
+				unsetActiveBody();
+				this._removeMenu()
+			}
 		};
 	}
 
@@ -62,6 +81,9 @@ export default class View {
 
     //hide search on outside click
     $on(this.$searchboxBg, 'click', this.viewCommands.hideSearch, false);
+
+		//hide search on outside click
+		$on(this.$searchbox, 'click', e => e.stopPropagation(), false);
 
     //hide search from button
     $on(this.$searchboxExit, 'click', this.viewCommands.hideSearch, false);
@@ -82,9 +104,29 @@ export default class View {
 	_showSearch() {
     //remove menu
     this._removeMenu();
-    //remove hide from element's classname
-    this.$searchboxBg.className = '';
-    this.$searchbox.focus();
+
+		const sleep = (ms = 10) => {
+  		return new Promise(resolve => setTimeout(resolve, ms));
+		};
+
+		const scrollTop = async () => {
+			if (window.scrollY <= 1) {
+				return;
+      }
+			while (window.scrollY > 0) {
+				var Break = -5 - window.scrollY / 5;
+				window.scrollBy(0, Break);
+				await sleep();
+			}
+			return true;
+		};
+
+		scrollTop().then(success => {
+			//remove hide from element's classname
+			this.$searchboxBg.className = '';
+			this.$searchbox.className = 'stay';
+			this.$searchbox.focus();
+		});
   }
 
   _submitSearch(e) {
@@ -114,6 +156,8 @@ export default class View {
     this._removeMenu();
 		const wm = $id("TopNav-writer-mount")
     if (!wm) {
+			//stop scroll on body
+			document.body.className = 'menu-active';
 
       //element that we'll use to get the writer
       const writerMount = document.createElement('div');
@@ -137,10 +181,10 @@ export default class View {
         <div id="TopNav-writer-link">
           <input placeholder="submit a link (or don't)" id="TopNav-writer-link-box"/>
           <span id="TopNav-writer-content">
-            <label for="TopNav-writer-content-submit">
-              <span class="icon icon-camera"></span>
+            <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">
+              <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>
+							<input id="TopNav-writer-content-submit" type="file"/>
             </label>
-            <input id="TopNav-writer-content-submit" type="file"/>
           </span>
         </div>
         <div id="TopNav-writer-main">
@@ -167,6 +211,7 @@ export default class View {
       let $savebutton = $id('TopNav-writer-save');
       let $cancelbutton = $id('TopNav-writer-cancel');
       let $fileSubmit = $id('TopNav-writer-content-submit');
+			let $submitIcon = $id('TopNav-writer-submit-icon');
       let $submit = $id('TopNav-writer-send');
       let $group = $id('TopNav-writer-select');
       let $identity = $id('TopNav-writer-identity-select');
@@ -175,10 +220,24 @@ export default class View {
 
       //handle sending the form
       const handleSend = () => handleSubmit($link.value, $body.value, $group.value, $identity.value);
-			const handleHide = () => writerMount.className = "hide";
+			const handleHide = () => {
+				writerMount.className = "hide";
+				document.body.className = "";
+			}
+
+			function handleContent(e) {
+				this.handleUpload($fileSubmit.files[0]);
+				console.log($fileSubmit.files[0]);
+				$submitIcon.className = 'icon icon-check';
+			}
+
+			this.handleUpload = handleUpload;
+
+			handleContent = handleContent.bind(this);
+
       $on($cancelbutton, 'click', this._removeWriter, false);
 			$on($savebutton, 'click', handleHide, false);
-      $on($fileSubmit, 'change', handleUpload, false);
+      $on($fileSubmit, 'change', handleContent, false);
       $on($submit, 'click', handleSend, false);
 
     } else {
@@ -187,6 +246,7 @@ export default class View {
   }
 
   _removeWriter() {
+		document.body.className = '';
     //remove writer from view
     let writer = $id('TopNav-writer-mount');
     writer.parentNode.removeChild(writer);
@@ -208,61 +268,63 @@ export default class View {
     this.$menuicon.className = "icon icon-menu active";
 
     //get template for either user logged in or not logged in
-    const getSecretMenu = (user) => {
+    const getUserMenu = (user) => {
       if (user.anonymous) {
           return `
-          <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddnested">
-            <span class="icon icon-book ddicon">
+          <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">
+            <span id="dd-icon-signup" class="icon icon-book ddicon">
             </span>
             <span class="ddtext">Signup for an account</span>
           </li>
-          <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row ddnested">
-            <span class="icon icon-book-open ddicon">
+          <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">
+            <span id="dd-icon-login" class="icon icon-book-open ddicon">
             </span>
             <span class="ddtext">Log in to your account</span>
           </li>`;
         } else {
           return`
-          <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddnested">
-            <span class="icon icon-cog ddicon">
+          <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">
+            <span id="dd-icon-user" class="icon icon-cog ddicon">
             </span>
             <span class="ddtext">${user.username}</span>
-          </li>`;
+          </li>
+					<span id="TopNav-dropdown-logout">logout</span>
+					`;
         }
     }
 
     //show menu -- submenu simply has class hide
     const menu = `
       <ul id="TopNav-menu-list" class="dropdown">
+				${getUserMenu(user)}
         <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">
-          <span class="icon icon-info ddicon"></span>
+          <span id="dd-icon-about" class="icon icon-info ddicon"></span>
           <span class="ddtext">About</span>
         </li>
-        <li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">
-          <span class="icon icon-comment ddicon"></span>
-          <span class="ddtext">Secret Menu</span>
-          <span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>
-        </li>
-        <ul id="TopNav-menu-secretmenu" class="dropdown hide">
-          ${getSecretMenu(user)}
-          <li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">
-            <span class="icon icon-help ddicon">
-            </span>
-            <span class="ddtext">How do I use this?</span>
-          </li>
-          <li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">
-            <span class="icon icon-plus-squared ddicon">
-            </span>
-            <span class="ddtext">Dragon or Wyvern?</span>
-          </li>
-        </ul>
         <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">
-          <span class="icon icon-chat ddicon"></span>
+          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
           <span class="ddtext">Privacy</span>
         </li>
+				<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">
+					<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
+					<span class="ddtext">Secret Menu</span>
+					<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>
+				</li>
+				<ul id="TopNav-menu-secretmenu" class="dropdown hide">
+					<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">
+						<span id="dd-icon-faq" class="icon icon-help ddicon">
+						</span>
+						<span class="ddtext">How do I use this?</span>
+					</li>
+					<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">
+						<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">
+						</span>
+						<span class="ddtext">Dragon or Wyvern?</span>
+					</li>
+				</ul>
         <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">
-          <span class="icon icon-check ddicon"></span>
-          <span class="ddtext">Relevant Information</span>
+          <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>
+          <span class="ddtext">Rules for Posting</span>
         </li>
       </ul>
     `;
@@ -289,13 +351,6 @@ export default class View {
         case 'TopNav-menu-about':
           console.log('About Hit');
           break;
-        case 'TopNav-dropdown-down':
-        case 'TopNav-menu-secret':
-          console.log('Hit Secret');
-          const hidden = $secret.className === "dropdown hide";
-          hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
-          hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
-          break;
         case 'TopNav-menu-username':
           console.log('Hit username');
           break;
@@ -308,6 +363,13 @@ export default class View {
         case 'TopNav-menu-faq':
           console.log('Hit faq');
           break;
+				case 'TopNav-dropdown-down':
+				case 'TopNav-menu-secret':
+					console.log('Hit Secret');
+					const hidden = $secret.className === "dropdown hide";
+					hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
+					hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
+					break;
         case 'TopNav-menu-dragons':
           console.log('Hit dragons');
           break;
@@ -330,6 +392,7 @@ export default class View {
     let menu = $id('TopNav-menu-bg');
     if (menu) {
       //get $menuicon which is here too deep to reference by class
+			document.body.className = '';
 			let nav = $id('navbar');
       let $menuicon = $id('TopNav-menu-icon');
 			nav.className = "TopNav";

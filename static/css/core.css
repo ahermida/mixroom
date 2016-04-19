@@ -1,12 +1,19 @@
 html {
-  -webkit-font-smoothing: antialiased;
   font-size: 10px;
   -webkit-tap-highlight-color: transparent;
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -ms-touch-action: manipulation;
-  touch-action: manipulation; }
+  touch-action: manipulation;
+  background-color: #FCFCFB;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+  text-rendering: optimizeLegibility; }
+
+label > * {
+  display: block;
+  pointer-events: none; }
 
 select {
   -webkit-appearance: none;
@@ -20,6 +27,8 @@ select {
   box-sizing: border-box; }
 
 body {
+  height: 100%;
+  width: 100%;
   background-color: #FCFCFB;
   color: #222;
   fill: #222; }
@@ -30,7 +39,6 @@ body.flux {
   fill: #cfd0ca; }
 
 body {
-  overflow: hidden;
   font-family: helvetica,arial,sans-serif;
   font-size: 14px;
   line-height: 1.428571429;
@@ -67,12 +75,6 @@ body, figure {
   top: 0;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.2); }
 
-.opened:after {
-  position: absolute !important; }
-
-.TopNav, .TopNav-item {
-  padding: 0 6px; }
-
 .icon-down-open-big:before {
   margin: 3px; }
 
@@ -93,6 +95,10 @@ body, figure {
 
 .hide {
   display: none; }
+
+.menu-active {
+  position: fixed;
+  overflow: hidden; }
 
 .active {
   color: #5FB5FF; }
@@ -140,6 +146,7 @@ body, figure {
 #TopNav-searchbox-box {
   height: 48px;
   float: right;
+  position: absolute;
   padding: 0px 40px;
   width: 100%;
   border-style: none;
@@ -157,6 +164,7 @@ body, figure {
 
 #TopNav-searchbox-exit {
   position: absolute;
+  z-index: 12;
   top: 8px; }
 
 #TopNav-searchbox-exit-icon {
@@ -167,6 +175,7 @@ body, figure {
   background-color: rgba(0, 0, 0, 0.4);
   width: 100%;
   position: fixed;
+  overflow-y: hidden;
   height: 100%; }
 
 #nav-placeholder {
@@ -197,6 +206,13 @@ body, figure {
   position: absolute;
   right: 2px;
   font-size: 32px !important; }
+
+#TopNav-writer-submit-label {
+  position: absolute;
+  right: 20px;
+  width: 20px;
+  height: 20px;
+  z-index: 15; }
 
 #TopNav-writer-head {
   position: absolute;
@@ -284,14 +300,14 @@ body, figure {
   position: absolute;
   width: 100%;
   z-index: 11;
-  padding-bottom: 1500px;
-  top: 54px;
+  padding-bottom: calc(100% + 50px);
+  top: 48px;
   left: 0;
   font-size: 15px;
-  overflow-y: scroll; }
+  overflow-y: hidden; }
 
-#TopNav-menu-list {
-  padding-bottom: 4px; }
+.ddtop {
+  box-shadow: inset 0 5px 4px -5px rgba(0, 0, 0, 0.2); }
 
 .dropdown {
   margin: 0;
@@ -324,3 +340,18 @@ body, figure {
   right: 10px;
   top: 9px;
   font-size: 20px !important; }
+
+#dd-icon-privacy {
+  color: #7BBDE6; }
+
+#dd-icon-signup {
+  color: #7BFF7B; }
+
+#dd-icon-login {
+  color: #5FB5FF; }
+
+#dd-icon-about {
+  color: #3DF3FF; }
+
+#dd-icon-secret {
+  color: #70CACA; }

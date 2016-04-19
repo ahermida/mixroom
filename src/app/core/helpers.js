@@ -46,7 +46,7 @@ export function getContext() {
   if (loc[1]) {
     return 'this thread';
   } else if (loc[0]) {
-    return loc[0];
+    return `/${loc[0]}/`;
   }
   return '/random/';
 }

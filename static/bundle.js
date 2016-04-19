@@ -3768,6 +3768,7 @@ var _stringify2 = _interopRequireDefault(_stringify);
 exports.getThread = getThread;
 exports.createThread = createThread;
 exports.rmThread = rmThread;
+exports.threadLength = threadLength;
 exports.post = post;
 exports.editPost = editPost;
 exports.rmPost = rmPost;
@@ -3908,6 +3909,31 @@ function rmThread(thrd) {
   //Send Request
   return (0, _isomorphicFetch2.default)('http://' + apihost + enpoint, {
     method: 'DELETE',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
+    body: (0, _stringify2.default)({
+      thread: thrd
+    })
+  });
+}
+
+/**
+ * [Async] -- Get Thread's length
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     await threadLength("thread");
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+function threadLength(thrd) {
+  var endpoint = "/thread/length";
+  //Send Request
+  return (0, _isomorphicFetch2.default)('http://' + apihost + enpoint, {
+    method: 'POST',
     mode: 'cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
@@ -4514,7 +4540,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = {
   api: 'localhost:8000',
-  isNode: module !== 'undefined' && module.exports
+  isNode: typeof window === 'undefined'
 };
 
 },{}],105:[function(require,module,exports){
@@ -4528,45 +4554,31 @@ var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 //handle doing upload via ajax -- should build this one ourselves
-/**
- * navc.js is pretty much the controller for the nav
- */
 
 var handleUpload = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(file) {
     var uploadFile = function () {
       var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(file) {
+        var data;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                return _context.abrupt('return', new _promise2.default(function (resolve, reject) {
-                  var request = new XMLHttpRequest();
-                  request.onreadystatechange = function () {
-                    if (req.status !== 200) {
-                      console.log('Error uploading file');
-                      reject(false);
-                    }
-                    resolve(JSON.parse(request.responseText));
-                  };
-                  request.open("post", uploadUrl, true);
-                  request.setRequestHeader("Content-Type", "multipart/form-data");
-                  request.setRequestHeader("X-File-Name", file.name);
-                  request.setRequestHeader("X-File-Type", file.type);
-                  request.setRequestHeader("X-File-Size", file.size);
-                  request.send(file);
+                data = new FormData();
+
+                data.append('file', file);
+
+                return _context.abrupt('return', (0, _isomorphicFetch2.default)('/upload', {
+                  method: 'POST',
+                  body: data
                 }));
 
-              case 1:
+              case 3:
               case 'end':
                 return _context.stop();
             }
@@ -4581,39 +4593,40 @@ var handleUpload = function () {
     //send request
 
 
-    var resp;
+    var res, _resp;
+
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.prev = 0;
             _context2.next = 3;
-            return uploadFile('http://localhost:8080/upload', file);
+            return uploadFile(file);
 
           case 3:
-            resp = _context2.sent;
-
-
+            res = _context2.sent;
+            _resp = JSON.parse(res);
             //grab response & set it in store
+
             _store2.default.upload = {
-              content: resp,
+              content: _resp.url,
               contentType: file.type
             };
-            _context2.next = 10;
+            _context2.next = 11;
             break;
 
-          case 7:
-            _context2.prev = 7;
+          case 8:
+            _context2.prev = 8;
             _context2.t0 = _context2['catch'](0);
 
             console.log(_context2.t0);
 
-          case 10:
+          case 11:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[0, 7]]);
+    }, _callee2, this, [[0, 8]]);
   }));
   return function handleUpload(_x) {
     return ref.apply(this, arguments);
@@ -4621,19 +4634,24 @@ var handleUpload = function () {
 }();
 
 //handle form submission
-
+/**
+ * navc.js is pretty much the controller for the nav
+ */
 
 var handleSubmit = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(link, body, to, identity) {
-    var anon, contentType, cont, getReferences, isgrp, resp, path, thread, responseTo, _resp;
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+    var link = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
+    var body = arguments[1];
+    var to = arguments[2];
+    var identity = arguments[3];
+
+    var anon, getReferences, cont, contentType, isgrp, res, getPath, path, thread, responseTo, _res;
 
     return _regenerator2.default.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
             anon = identity === 'Anonymous' ? true : false;
-            contentType = _store2.default.upload.contentType;
-            cont = _store2.default.upload.content;
 
             //should return all references to other posts in thread
 
@@ -4641,30 +4659,57 @@ var handleSubmit = function () {
 
               //regex for reference (post: 12312)
               var ref = /\(post:(\S*?)\)/g;
-              matches = body.match(ref);
+              var matches = body.match(ref);
               var idrefs = matches.map(function (match) {
                 return match.slice(6, -1).trim();
               });
-              return idrefs;
+              return idrefs || [];
             };
 
-            //sendMentions() --> WS stuff
+            //if there's no content, shove the link in there and set upload to link
 
+
+            if (!_store2.default.upload.content) {
+              _store2.default.upload = {
+                content: link,
+                contentType: 'link'
+              };
+            } else {
+
+              //if there's both a link and a pic, prioritize pic and show link as part of body
+              if (link) {
+                body = link + '\n' + body;
+              }
+            }
+
+            cont = _store2.default.upload.content;
+            contentType = _store2.default.upload.contentType;
+
+            //sendMentions() --> WS stuff
 
             isgrp = _store2.default.groups.includes(to);
 
             if (!isgrp) {
-              _context3.next = 19;
+              _context3.next = 22;
               break;
             }
 
-            _context3.prev = 6;
-            _context3.next = 9;
+            _context3.prev = 7;
+
+
+            //since it's a group, remove the for internal use
+            to = to.slice(1, -1);
+
+            //attempt to send, should provide us with a json obj with id
+            _context3.next = 11;
             return (0, _threads.createThread)(to, body, identity, cont, contentType, anon);
 
-          case 9:
-            resp = _context3.sent;
+          case 11:
+            res = _context3.sent;
 
+
+            //res isn't in json format
+            resp = JSON.parse(res);
 
             //send this on delete or edit if we do so
             _store2.default.owned = resp.id;
@@ -4672,24 +4717,31 @@ var handleSubmit = function () {
             //clear upload in store
             _store2.default.upload = false;
 
-            _context3.next = 17;
+            _context3.next = 20;
             break;
 
-          case 14:
-            _context3.prev = 14;
-            _context3.t0 = _context3['catch'](6);
+          case 17:
+            _context3.prev = 17;
+            _context3.t0 = _context3['catch'](7);
 
 
             //if something went wrong, let ourselves know
             console.log(_context3.t0);
 
-          case 17:
-            _context3.next = 33;
+          case 20:
+            _context3.next = 38;
             break;
 
-          case 19:
+          case 22:
             //is thread
-            path = location.pathname.split('/');
+
+            //get path (thread id)
+
+            getPath = function getPath() {
+              return location.pathname.split('/');
+            };
+
+            path = getPath();
             thread = path[path.length - 1];
 
             //get references in body
@@ -4698,37 +4750,40 @@ var handleSubmit = function () {
 
             //try to send post to thread
 
-            _context3.prev = 22;
-            _context3.next = 25;
+            _context3.prev = 26;
+            _context3.next = 29;
             return (0, _threads.post)(thread, identity, body, cont, responseTo, anon, contentType);
 
-          case 25:
-            _resp = _context3.sent;
+          case 29:
+            _res = _context3.sent;
 
+
+            //res isn't in json format
+            resp = JSON.parse(_res);
 
             //send this on delete or edit if we do so
-            _store2.default.owned = _resp.id;
+            _store2.default.owned = resp.id;
 
             //clear upload in store
             _store2.default.upload = false;
 
-            _context3.next = 33;
+            _context3.next = 38;
             break;
 
-          case 30:
-            _context3.prev = 30;
-            _context3.t1 = _context3['catch'](22);
+          case 35:
+            _context3.prev = 35;
+            _context3.t1 = _context3['catch'](26);
 
 
             //if something went wrong in trying to post it, let ourselves know
             console.log(_context3.t1);
 
-          case 33:
+          case 38:
           case 'end':
             return _context3.stop();
         }
       }
-    }, _callee3, this, [[6, 14], [22, 30]]);
+    }, _callee3, this, [[7, 17], [26, 35]]);
   }));
   return function handleSubmit(_x3, _x4, _x5, _x6) {
     return ref.apply(this, arguments);
@@ -4751,6 +4806,10 @@ var _fastclick = require('fastclick');
 
 var _fastclick2 = _interopRequireDefault(_fastclick);
 
+var _isomorphicFetch = require('isomorphic-fetch');
+
+var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function start() {
@@ -4764,13 +4823,13 @@ function start() {
   };
 
   //create view
-  var nav = new _navv2.default(_store2.default.groups, _store2.default.user, handleUpload, handleSubmit);
+  var nav = new _navv2.default(_store2.default.groups, _store2.default.user, options);
 
   //bind handlers
   nav.bind();
 }
 
-},{"../ajax/threads.js":102,"./navv.js":107,"./store.js":108,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/asyncToGenerator":8,"babel-runtime/regenerator":12,"fastclick":98}],106:[function(require,module,exports){
+},{"../ajax/threads.js":102,"./navv.js":107,"./store.js":108,"babel-runtime/helpers/asyncToGenerator":8,"babel-runtime/regenerator":12,"fastclick":98,"isomorphic-fetch":99}],106:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4830,7 +4889,7 @@ function getContext() {
   if (loc[1]) {
     return 'this thread';
   } else if (loc[0]) {
-    return loc[0];
+    return '/' + loc[0] + '/';
   }
   return '/random/';
 }
@@ -4841,6 +4900,18 @@ function getContext() {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -4867,8 +4938,8 @@ var View = function () {
 
 
     //get functions from options
-    var handleUpload = options.handleUpload;
-    var handleSubmit = options.handleSubmit;
+    this.handleUpload = options.handleUpload;
+    this.handleSubmit = options.handleSubmit;
 
     //event.keyCode code for enter is 13
     var ENTER_KEY = 13;
@@ -4884,17 +4955,29 @@ var View = function () {
     this.$searchboxExit = (0, _helpers.$id)('TopNav-searchbox-exit');
     this.$searchboxClear = (0, _helpers.$id)('TopNav-searchbox-clear');
 
+    //body handlers
+    var setActiveBody = function setActiveBody() {
+      document.body.className = 'menu-active';
+    };
+
+    var unsetActiveBody = function unsetActiveBody() {
+      document.body.className = '';
+    };
+
     //setup commands for view actions
     this.viewCommands = {
       showWriter: function showWriter(e) {
         e.preventDefault();
-        _this._showWriter(groups, user, handleUpload, handleSubmit);
+        _this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit);
       },
       removeWriter: function removeWriter(e) {
+        unsetActiveBody();
         e.preventDefault();
         _this._removeWriter();
+        document.body.className = '';
       },
       showSearch: function showSearch(e) {
+        setActiveBody();
         e.preventDefault();
         _this._showSearch();
       },
@@ -4903,16 +4986,19 @@ var View = function () {
         _this._clearSearch();
       },
       hideSearch: function hideSearch(e) {
+        unsetActiveBody();
         _this._hideSearch(e);
       },
       submitSearch: function submitSearch(e) {
         return _this._submitSearch(e);
       },
       showMenu: function showMenu(e) {
-        return _this._showMenu(user);
+        setActiveBody();
+        _this._showMenu(user);
       },
       removeMenu: function removeMenu(e) {
-        return _this._removeMenu();
+        unsetActiveBody();
+        _this._removeMenu();
       }
     };
   }
@@ -4926,6 +5012,11 @@ var View = function () {
 
       //hide search on outside click
       (0, _helpers.$on)(this.$searchboxBg, 'click', this.viewCommands.hideSearch, false);
+
+      //hide search on outside click
+      (0, _helpers.$on)(this.$searchbox, 'click', function (e) {
+        return e.stopPropagation();
+      }, false);
 
       //hide search from button
       (0, _helpers.$on)(this.$searchboxExit, 'click', this.viewCommands.hideSearch, false);
@@ -4945,11 +5036,70 @@ var View = function () {
   }, {
     key: '_showSearch',
     value: function _showSearch() {
+      var _this2 = this;
+
       //remove menu
       this._removeMenu();
-      //remove hide from element's classname
-      this.$searchboxBg.className = '';
-      this.$searchbox.focus();
+
+      var sleep = function sleep() {
+        var ms = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+
+        return new _promise2.default(function (resolve) {
+          return setTimeout(resolve, ms);
+        });
+      };
+
+      var scrollTop = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+          var Break;
+          return _regenerator2.default.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  if (!(window.scrollY <= 1)) {
+                    _context.next = 2;
+                    break;
+                  }
+
+                  return _context.abrupt('return');
+
+                case 2:
+                  if (!(window.scrollY > 0)) {
+                    _context.next = 9;
+                    break;
+                  }
+
+                  Break = -5 - window.scrollY / 5;
+
+                  window.scrollBy(0, Break);
+                  _context.next = 7;
+                  return sleep();
+
+                case 7:
+                  _context.next = 2;
+                  break;
+
+                case 9:
+                  return _context.abrupt('return', true);
+
+                case 10:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, _this2);
+        }));
+        return function scrollTop() {
+          return ref.apply(this, arguments);
+        };
+      }();
+
+      scrollTop().then(function (success) {
+        //remove hide from element's classname
+        _this2.$searchboxBg.className = '';
+        _this2.$searchbox.className = 'stay';
+        _this2.$searchbox.focus();
+      });
     }
   }, {
     key: '_submitSearch',
@@ -4979,13 +5129,21 @@ var View = function () {
   }, {
     key: '_showWriter',
     value: function _showWriter(groups, user, handleUpload, handleSubmit) {
-      var _this2 = this;
+      var _this3 = this;
 
       //remove menu
       this._removeMenu();
       var wm = (0, _helpers.$id)("TopNav-writer-mount");
       if (!wm) {
         (function () {
+          var handleContent = function handleContent(e) {
+            this.handleUpload($fileSubmit.files[0]);
+            console.log($fileSubmit.files[0]);
+            $submitIcon.className = 'icon icon-check';
+          };
+
+          //stop scroll on body
+          document.body.className = 'menu-active';
 
           //element that we'll use to get the writer
           var writerMount = document.createElement('div');
@@ -5004,18 +5162,19 @@ var View = function () {
           };
 
           //show post submission form
-          var writer = '\n        <div id="TopNav-writer-top">\n          <span id="TopNav-writer-save" class="icon icon-left-open-big"></span>\n          <span id="TopNav-writer-head">new post</span>\n          <span id="TopNav-writer-cancel" class="icon icon-cancel"></span>\n        </div>\n        <div id="TopNav-writer-link">\n          <input placeholder="submit a link (or don\'t)" id="TopNav-writer-link-box"/>\n          <span id="TopNav-writer-content">\n            <label for="TopNav-writer-content-submit">\n              <span class="icon icon-camera"></span>\n            </label>\n            <input id="TopNav-writer-content-submit" type="file"/>\n          </span>\n        </div>\n        <div id="TopNav-writer-main">\n          <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>\n        </div>\n        <div id="TopNav-writer-identity">\n          <span>posting as</span>\n          <select id="TopNav-writer-identity-select"><option>Anonymous</option>' + getUsernames(user.usernames) + '</select></span>\n        </div>\n        <div id="TopNav-writer-foot">\n          <span id="TopNav-writer-group">Posting to:\n            <select id="TopNav-writer-select"><option>' + (0, _helpers.getContext)() + '</option>' + getTopOptions(groups) + '</select></span>\n          <span id="TopNav-writer-send">send</span>\n        </div>\n      ';
+          var writer = '\n        <div id="TopNav-writer-top">\n          <span id="TopNav-writer-save" class="icon icon-left-open-big"></span>\n          <span id="TopNav-writer-head">new post</span>\n          <span id="TopNav-writer-cancel" class="icon icon-cancel"></span>\n        </div>\n        <div id="TopNav-writer-link">\n          <input placeholder="submit a link (or don\'t)" id="TopNav-writer-link-box"/>\n          <span id="TopNav-writer-content">\n            <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">\n              <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>\n\t\t\t\t\t\t\t<input id="TopNav-writer-content-submit" type="file"/>\n            </label>\n          </span>\n        </div>\n        <div id="TopNav-writer-main">\n          <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>\n        </div>\n        <div id="TopNav-writer-identity">\n          <span>posting as</span>\n          <select id="TopNav-writer-identity-select"><option>Anonymous</option>' + getUsernames(user.usernames) + '</select></span>\n        </div>\n        <div id="TopNav-writer-foot">\n          <span id="TopNav-writer-group">Posting to:\n            <select id="TopNav-writer-select"><option>' + (0, _helpers.getContext)() + '</option>' + getTopOptions(groups) + '</select></span>\n          <span id="TopNav-writer-send">send</span>\n        </div>\n      ';
 
           //set div's contents to the above
           writerMount.innerHTML = writer;
 
           //append writer
-          _this2.$nav.appendChild(writerMount);
+          _this3.$nav.appendChild(writerMount);
 
           //gonna want to add events to it as well here
           var $savebutton = (0, _helpers.$id)('TopNav-writer-save');
           var $cancelbutton = (0, _helpers.$id)('TopNav-writer-cancel');
           var $fileSubmit = (0, _helpers.$id)('TopNav-writer-content-submit');
+          var $submitIcon = (0, _helpers.$id)('TopNav-writer-submit-icon');
           var $submit = (0, _helpers.$id)('TopNav-writer-send');
           var $group = (0, _helpers.$id)('TopNav-writer-select');
           var $identity = (0, _helpers.$id)('TopNav-writer-identity-select');
@@ -5027,11 +5186,17 @@ var View = function () {
             return handleSubmit($link.value, $body.value, $group.value, $identity.value);
           };
           var handleHide = function handleHide() {
-            return writerMount.className = "hide";
+            writerMount.className = "hide";
+            document.body.className = "";
           };
-          (0, _helpers.$on)($cancelbutton, 'click', _this2._removeWriter, false);
+
+          _this3.handleUpload = handleUpload;
+
+          handleContent = handleContent.bind(_this3);
+
+          (0, _helpers.$on)($cancelbutton, 'click', _this3._removeWriter, false);
           (0, _helpers.$on)($savebutton, 'click', handleHide, false);
-          (0, _helpers.$on)($fileSubmit, 'change', handleUpload, false);
+          (0, _helpers.$on)($fileSubmit, 'change', handleContent, false);
           (0, _helpers.$on)($submit, 'click', handleSend, false);
         })();
       } else {
@@ -5041,6 +5206,7 @@ var View = function () {
   }, {
     key: '_removeWriter',
     value: function _removeWriter() {
+      document.body.className = '';
       //remove writer from view
       var writer = (0, _helpers.$id)('TopNav-writer-mount');
       writer.parentNode.removeChild(writer);
@@ -5063,16 +5229,16 @@ var View = function () {
       this.$menuicon.className = "icon icon-menu active";
 
       //get template for either user logged in or not logged in
-      var getSecretMenu = function getSecretMenu(user) {
+      var getUserMenu = function getUserMenu(user) {
         if (user.anonymous) {
-          return '\n          <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddnested">\n            <span class="icon icon-book ddicon">\n            </span>\n            <span class="ddtext">Signup for an account</span>\n          </li>\n          <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row ddnested">\n            <span class="icon icon-book-open ddicon">\n            </span>\n            <span class="ddtext">Log in to your account</span>\n          </li>';
+          return '\n          <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">\n            <span id="dd-icon-signup" class="icon icon-book ddicon">\n            </span>\n            <span class="ddtext">Signup for an account</span>\n          </li>\n          <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">\n            <span id="dd-icon-login" class="icon icon-book-open ddicon">\n            </span>\n            <span class="ddtext">Log in to your account</span>\n          </li>';
         } else {
-          return '\n          <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddnested">\n            <span class="icon icon-cog ddicon">\n            </span>\n            <span class="ddtext">' + user.username + '</span>\n          </li>';
+          return '\n          <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">\n            <span id="dd-icon-user" class="icon icon-cog ddicon">\n            </span>\n            <span class="ddtext">' + user.username + '</span>\n          </li>\n\t\t\t\t\t<span id="TopNav-dropdown-logout">logout</span>\n\t\t\t\t\t';
         }
       };
 
       //show menu -- submenu simply has class hide
-      var menu = '\n      <ul id="TopNav-menu-list" class="dropdown">\n        <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">\n          <span class="icon icon-info ddicon"></span>\n          <span class="ddtext">About</span>\n        </li>\n        <li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">\n          <span class="icon icon-comment ddicon"></span>\n          <span class="ddtext">Secret Menu</span>\n          <span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>\n        </li>\n        <ul id="TopNav-menu-secretmenu" class="dropdown hide">\n          ' + getSecretMenu(user) + '\n          <li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">\n            <span class="icon icon-help ddicon">\n            </span>\n            <span class="ddtext">How do I use this?</span>\n          </li>\n          <li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">\n            <span class="icon icon-plus-squared ddicon">\n            </span>\n            <span class="ddtext">Dragon or Wyvern?</span>\n          </li>\n        </ul>\n        <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">\n          <span class="icon icon-chat ddicon"></span>\n          <span class="ddtext">Privacy</span>\n        </li>\n        <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">\n          <span class="icon icon-check ddicon"></span>\n          <span class="ddtext">Relevant Information</span>\n        </li>\n      </ul>\n    ';
+      var menu = '\n      <ul id="TopNav-menu-list" class="dropdown">\n\t\t\t\t' + getUserMenu(user) + '\n        <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">\n          <span id="dd-icon-about" class="icon icon-info ddicon"></span>\n          <span class="ddtext">About</span>\n        </li>\n        <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">\n          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>\n          <span class="ddtext">Privacy</span>\n        </li>\n\t\t\t\t<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">\n\t\t\t\t\t<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>\n\t\t\t\t\t<span class="ddtext">Secret Menu</span>\n\t\t\t\t\t<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>\n\t\t\t\t</li>\n\t\t\t\t<ul id="TopNav-menu-secretmenu" class="dropdown hide">\n\t\t\t\t\t<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t\t<span id="dd-icon-faq" class="icon icon-help ddicon">\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span class="ddtext">How do I use this?</span>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t\t<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span class="ddtext">Dragon or Wyvern?</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n        <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">\n          <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>\n          <span class="ddtext">Rules for Posting</span>\n        </li>\n      </ul>\n    ';
 
       //set div's contents to the above
       menuMount.innerHTML = menu;
@@ -5096,13 +5262,6 @@ var View = function () {
           case 'TopNav-menu-about':
             console.log('About Hit');
             break;
-          case 'TopNav-dropdown-down':
-          case 'TopNav-menu-secret':
-            console.log('Hit Secret');
-            var hidden = $secret.className === "dropdown hide";
-            hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
-            hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
-            break;
           case 'TopNav-menu-username':
             console.log('Hit username');
             break;
@@ -5114,6 +5273,13 @@ var View = function () {
             break;
           case 'TopNav-menu-faq':
             console.log('Hit faq');
+            break;
+          case 'TopNav-dropdown-down':
+          case 'TopNav-menu-secret':
+            console.log('Hit Secret');
+            var hidden = $secret.className === "dropdown hide";
+            hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
+            hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
             break;
           case 'TopNav-menu-dragons':
             console.log('Hit dragons');
@@ -5138,6 +5304,7 @@ var View = function () {
       var menu = (0, _helpers.$id)('TopNav-menu-bg');
       if (menu) {
         //get $menuicon which is here too deep to reference by class
+        document.body.className = '';
         var nav = (0, _helpers.$id)('navbar');
         var $menuicon = (0, _helpers.$id)('TopNav-menu-icon');
         nav.className = "TopNav";
@@ -5154,7 +5321,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"./helpers.js":106,"babel-runtime/helpers/classCallCheck":9,"babel-runtime/helpers/createClass":10}],108:[function(require,module,exports){
+},{"./helpers.js":106,"babel-runtime/core-js/promise":5,"babel-runtime/helpers/asyncToGenerator":8,"babel-runtime/helpers/classCallCheck":9,"babel-runtime/helpers/createClass":10,"babel-runtime/regenerator":12}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5291,12 +5458,19 @@ var _store = require('./core/store.js');
 
 var _store2 = _interopRequireDefault(_store);
 
+var _router = require('./router/router.js');
+
+var _router2 = _interopRequireDefault(_router);
+
 var _user = require('./ajax/user.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //init
 //handle getting user (usernames, username) data via ajax
+/*
+  main.js -- entry point for the application
+*/
 {
   //first order of business, get user data and store it
   (function () {
@@ -5337,8 +5511,154 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   })()();
 
   (0, _core2.default)();
-} /*
-    main.js -- entry point for the application
-  */
 
-},{"./ajax/user.js":103,"./core/core.js":105,"./core/store.js":108,"babel-runtime/helpers/asyncToGenerator":8,"babel-runtime/regenerator":12}]},{},[109]);
+  _router2.default.start();
+}
+
+},{"./ajax/user.js":103,"./core/core.js":105,"./core/store.js":108,"./router/router.js":110,"babel-runtime/helpers/asyncToGenerator":8,"babel-runtime/regenerator":12}],110:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _config = require('../config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
+var _routes = require('./routes.js');
+
+var _routes2 = _interopRequireDefault(_routes);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * router.js helps handle clients-side routing (particularly, resolving routes)
+ * --only supporting the history api
+ * mostly from 'A modern JavaScript router in 100 lines' by Krasimir Tsonev
+ * modded so I could use it server side & only uses history api -- it's cool
+ * because it only uses regex matches to get paths
+ */
+
+var isNode = _config2.default.isNode;
+
+//this will be used server side for resolving routes
+if (!isNode && !(window.history && history.pushState)) {
+  throw new Error('History API not available');
+}
+
+//patch history api to trigger events on route change
+if (!isNode) {
+  var pushState = history.pushState;
+  window.history.pushState = function (state) {
+    if (typeof window.history.onpushstate == "function") {
+      window.history.onpushstate({ state: state });
+    }
+    //create 'route' event
+    var event = new CustomEvent('route');
+    var applied = pushState.apply(window.history, arguments);
+    document.dispatchEvent(event);
+    return applied;
+  };
+}
+
+function clearSlashes(path) {
+  return path.toString().replace(/\/$/, '').replace(/^\//, '');
+}
+
+var location = isNode ? { pathname: '' } : location;
+
+//router object, a singleton
+var router = {
+  root: '/',
+  routes: [],
+  getPath: function getPath() {
+    var fragment = '';
+    fragment = clearSlashes(decodeURI(window.location.pathname + window.location.search));
+    fragment = fragment.replace(/\?(.*)$/, '');
+    fragment = this.root != '/' ? fragment.replace(this.root, '') : fragment;
+    return clearSlashes(fragment);
+  },
+  add: function add(re, handler) {
+    if (typeof re == 'function') {
+      handler = re;
+      re = '';
+    }
+    this.routes.push({ re: re, handler: handler });
+    return this;
+  },
+  check: function check(f) {
+    var fragment = f || this.getPath();
+    for (var i = 0; i < this.routes.length; i++) {
+      var match = fragment.match(this.routes[i].re);
+      if (match) {
+        match.shift();
+        this.routes[i].handler.apply({}, match);
+        return this;
+      }
+    }
+    return this;
+  },
+
+  start: function start() {
+    var _this = this;
+
+    if (isNode) return;
+    // Add an event listener for 'route', navigates on route event
+    this.check();
+    var check = function check() {
+      return _this.check();
+    };
+    document.addEventListener("route", check);
+    return this;
+  },
+
+  navigate: function navigate(path) {
+    path = path ? path : '';
+    history.pushState(null, null, '' + this.root + clearSlashes(path));
+    return this;
+  }
+};
+
+//initialize routes in router
+(0, _routes2.default)(router);
+
+exports.default = router;
+
+window.router = router;
+
+},{"../config.js":104,"./routes.js":111}],111:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = setup;
+/**
+  Router init function (sets up routes)
+*/
+
+function setup(router) {
+
+  //route for user view and settings '/user/:username'
+  router.add(/user\/(.*)/, function (username) {
+    return console.log('user');
+  });
+
+  //search '/search/:search'
+  router.add(/search\/(.*)/, function (search) {
+    return console.log('search');
+  });
+
+  //route for threads '/:group/:thread'
+  router.add(/(.*)\/(.*)/, function (group, thread) {
+    return console.log('thread');
+  });
+
+  //route for groups '/:group'
+  router.add(/(.*)/, function (group) {
+    console.log('group');
+  });
+}
+
+},{}]},{},[109]);

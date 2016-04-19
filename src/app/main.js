@@ -2,8 +2,8 @@
   main.js -- entry point for the application
 */
 import core from './core/core.js';
-
 import store from './core/store.js';
+import router from './router/router.js';
 import {getUser} from './ajax/user.js';
 
 //init
@@ -19,6 +19,8 @@ import {getUser} from './ajax/user.js';
       console.log(err);
     }
   })()
-  
+
   core();
+
+  router.start();
 }

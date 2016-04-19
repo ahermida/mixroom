@@ -46,7 +46,8 @@
 
 /* '' */
 .icon-check:before {
-  content: '\e802'; }
+  content: '\e802';
+  color: #00E500; }
 
 /* '' */
 .icon-camera:before {

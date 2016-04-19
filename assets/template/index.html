@@ -35,10 +35,7 @@
   </head>
   <body>
     <script type="text/javascript">
-    document.ontouchmove = function(event){
-      if (event.target.className !== "scroll") {
-        event.preventDefault();
-      }
+    document.body.ontouchmove = function(event){
     }
     </script>
     <!-- Application -->
@@ -80,8 +77,20 @@
         </div>
       </div>
       <div id="nav-placeholder"></div>
-      <main id="main">
+      <main id="main" class="scroll">
       {{{body}}}
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
+      <h1>tbody</h1>
       </main>
     </div>
     <!-- This javascript is escaped -->

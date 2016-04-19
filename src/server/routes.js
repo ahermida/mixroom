@@ -148,13 +148,13 @@ routes.handleUpload = function*() {
   //get part (should only be one)
   let part = yield parts;
   const uuid = uid.v1();
-  var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}` );
-  part.pipe(stream);
-
   //send back response as JSON
   let resp = JSON.stringify({
-    "url": `http://localhost:8080/static/uploads/${uuid}`
+    "url": `http://localhost:8080/static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`
   });
+
+  var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}` );
+  part.pipe(stream);
 
   this.body = resp;
 };
