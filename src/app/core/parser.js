@@ -27,26 +27,52 @@ const code = /\[code](.*?)\[\/code]/g;
 const ref = /\(post:(\S*?)\)/g;
 //regex for mentions
 const mention = /@(\S*?)\s/g
+//regex for getting links back into place
+const links = /`l`i`n`k`/g
 //regex for links ('holy grail' via Matthew O'Riordan)
 const url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
 //returns html for a given body
 export default function parse(body) {
+  //array of links that we'll keep for later
+  let matches = [];
+  //set urls -- fails for javascript protocol (important) --> this way links won't be broken
+  body = body.replace(url, (match, $1) => {
+    matches.push(`<a class="Body-url" href="${$1}">${$1}</a>`)
+    return '`l`i`n`k`';
+  });
 
   //clean body before we even parse
   body = escapeHTML(body);
 
+  /*remove newlines between mutiline
+  body.replace(code, (match) => {
+    match.indexO
+  });*/
+
   //split by newlines
   let text = body.split(/\r\n|\r|\n/);
 
-  //deliver styles for whole-line styles -- each newline should be a div
+  //don't generate title or greentext inside of code
+  let wait = false;
+
+  //deliver styles for whole-line styles -- each newline should be a p
   for (let i = 0; i < text.length; i++) {
-    if (text[i].trim()[0] === '#') {
-      text[i] = `<div class="Body-title">${text[i]}</div>`;
-    } else if (text[i].trim()[0] === '>'){
-      text[i] = `<div class="Body-green">${text[i]}</div>`;
+    let txt = text[i].trim();
+    if (txt.indexOf('[code]') != -1) {
+      wait = !wait;
+    }
+
+    if (txt[0] === '#' && !wait) {
+      text[i] = `<p class="Body-title">${text[i]}</p>`;
+    } else if (txt.indexOf('&gt;') === 0 && !wait) {
+      text[i] = `<p class="Body-green">${text[i]}</p>`;
     } else {
-      text[i] = `<div class="Body-normal">${text[i]}</div>`;
+      text[i] = `<p>${text[i]}`;
+    }
+
+    if (txt.indexOf('[/code]') != -1) {
+      wait = !wait;
     }
   }
 
@@ -57,49 +83,32 @@ export default function parse(body) {
   let safe = htmlbody;
 
   //set bold text
-  htmlbody = htmlbody.replace(bold, '<span class="Body-bold">$1</span>');
+  htmlbody = htmlbody.replace(bold, '<b class="Body-bold">$1</b>');
 
   //set underline text
-  htmlbody = htmlbody.replace(underline, '<span class="Body-underline">$1</span>');
+  htmlbody = htmlbody.replace(underline, '<em class="Body-underline">$1</em>');
 
   //set underline text
-  htmlbody = htmlbody.replace(italics, '<span class="Body-italics">$1</span>');
+  htmlbody = htmlbody.replace(italics, '<i class="Body-italics">$1</i>');
 
   //set underline text
   htmlbody = htmlbody.replace(code, '<span class="Body-code">$1</span>');
 
   //set refs
-  htmlbody = htmlbody.replace(refs, '<span class="Body-ref">$1</span>');
+  htmlbody = htmlbody.replace(ref, '<span class="Body-ref">$1</span>');
 
   //set mentions
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
 
-  //finally, set urls -- fails for javascript protocol (important)
-  htmlbody = htmlbody.replace(url, `<a class="Body-url" href="$1">$1</a>`);
+  //set links
+  htmlbody = htmlbody.replace(links, match => {
+    let mat = matches.shift();
+    let rematch = mat ? mat : '';
+    return rematch;
+  });
 
-  /*
-    validate before sending back
-    we won't render invalid html -- if it tries, we'll just return unstyled markup body
-  */
-  if (!validateHTML(htmlbody)) {
-    return safe;
-  }
-
-  return htmlbody;
-}
-
-//Sould fail for some elements, but use to check generally bad html
-function validateHTML(html) {
-  if (isNode) {
-
-    //if we're doing this in node, we'll just assume it's OK (validating it client side anyways +it's escaped)
-    return true;
-  }
-
-  //if we're doing this client-side, then we should try to salvage what we can (by returning safe)
-  let el = document.createElement('div');
-  el.innerHTML = html;
-  return el.innerHTML === html;
+  //return html wrapped in parent div
+  return `<div>${htmlbody}</div>`;
 }
 
 //precompile regex

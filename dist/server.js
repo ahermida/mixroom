@@ -2,9 +2,9 @@
 
 require('babel-polyfill');
 
-var _app = require('./server/app.js');
+var _Server = require('./server/Server.js');
 
-var _app2 = _interopRequireDefault(_app);
+var _Server2 = _interopRequireDefault(_Server);
 
 var _config = require('./server/config.js');
 
@@ -33,7 +33,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 //Import DB Connection
 function runServer(options) {
-  var server = new _app2.default(options);
+  var server = new _Server2.default(options);
   server.start();
   return server;
 }

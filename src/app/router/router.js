@@ -38,7 +38,9 @@ let location = isNode ? { pathname: ''} : location;
 //router object, a singleton
 const router = {
   root: '/',
+  rootfn: null,
   routes: [],
+  callbacks: [],
   getPath: function() {
     let fragment = '';
     fragment = clearSlashes(decodeURI(window.location.pathname + window.location.search));
@@ -54,7 +56,11 @@ const router = {
     this.routes.push({ re: re, handler: handler});
     return this;
   },
+  onRoot: function(callback) {
+    this.rootfn = callback;
+  },
   check: function(f) {
+    if (window.location.pathname === '/') return this.rootfn();
     let fragment = f || this.getPath();
     for (let i = 0; i < this.routes.length; i++) {
         let match = fragment.match(this.routes[i].re);
@@ -77,9 +83,15 @@ const router = {
   },
 
   navigate: function(path) {
+    //call registered callbacks
+    this.callbacks.forEach(fn => fn(path));
     path = path ? path : '';
     history.pushState(null, null,`${this.root}${clearSlashes(path)}`);
     return this;
+  },
+
+  onNavigate: function(callback) {
+    this.callbacks.push(callback);
   }
 }
 

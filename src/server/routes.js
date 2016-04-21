@@ -6,7 +6,8 @@ import { db } from './init.js'; //DB represented as resolved promise
 import fs from 'fs'; //filesystem used for serving templates
 import path from 'path'; //helps manipulate filepaths
 import parse from 'co-busboy'; //handle multipart form data
-import uid from 'node-uuid' //make unique id's
+import uid from 'node-uuid'; //make unique id's
+import request from 'koa-request'; //koa request wrapper for oembed
 
 //Route object that will be exported
 let routes = {};
@@ -54,7 +55,7 @@ routes.handleFP = function*() {
  });
 };
 
-//handle '/:group' route 5ud0
+//handle '/:group' route 
 routes.handleGroup = function*(group) {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
@@ -157,6 +158,19 @@ routes.handleUpload = function*() {
   part.pipe(stream);
 
   this.body = resp;
+};
+
+//handle post to '/oembed'
+routes.handleEmbed = function*() {
+  let body = this.request.body;
+  let url = body.url;
+  var options = {
+    	url: url,
+      method: "GET"
+	};
+  let response = yield request(options);
+  this.status = response.statusCode;
+  this.body = response.body;
 };
 
 export default routes;

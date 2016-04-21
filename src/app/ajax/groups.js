@@ -69,9 +69,9 @@ function makeHeaders(token, json) {
  */
  export function getGroup(grp, pg) {
    let endpoint = "/group/";
-   return fetch(`http://${apihost}${enpoint}`, {
+   return fetch(`http://${apihost}${endpoint}`, {
      method: 'POST',
-     mode: 'cors',
+     mode: 'no-cors',
      redirect: 'error',
      headers: new Headers(makeHeaders(token, true)),
      body: JSON.stringify({
@@ -95,9 +95,9 @@ function makeHeaders(token, json) {
  */
 export function createGroup(grp, anon) {
   let endpoint = "/group/modify";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -122,9 +122,9 @@ export function createGroup(grp, anon) {
 export function deleteGroup(grp) {
   let endpoint = "/group/modify";
   //Send Request
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({ group: grp})
@@ -143,14 +143,14 @@ export function deleteGroup(grp) {
  *   }
  * }
  */
-export function getAuthGroup(grp) {
+export function getAuth(grp) {
   let endpoint = "/group/auth";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
-    body: JSON.stringify({ group: grp})
+    body: JSON.stringify({ 'group': grp })
   });
 }
 
@@ -169,9 +169,9 @@ export function getAuthGroup(grp) {
 export function addAdmin(grp, usr) {
   let endpoint = "/group/modify";
   //Send Request
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({ group: grp, user: usr })
@@ -192,9 +192,9 @@ export function addAdmin(grp, usr) {
  */
 export function rmAdmin(grp, usr) {
   let endpoint = "/group/modify";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'PUT',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({ group: grp, user: usr })

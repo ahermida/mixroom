@@ -34,22 +34,27 @@ var _nodeUuid = require('node-uuid');
 
 var _nodeUuid2 = _interopRequireDefault(_nodeUuid);
 
+var _koaRequest = require('koa-request');
+
+var _koaRequest2 = _interopRequireDefault(_koaRequest);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//make unique id's
+//koa request wrapper for oembed
 
 //Route object that will be exported
-//helps manipulate filepaths
-//DB represented as resolved promise
-var routes = {};
-
-//Escape Content in JSON
 //handle multipart form data
 //filesystem used for serving templates
 /**
  * routes.js -- Handler functions for enpoints -- must let that = this for shared client code
  */
 
+var routes = {};
+
+//Escape Content in JSON
+//make unique id's
+//helps manipulate filepaths
+//DB represented as resolved promise
 function encodeHTML(str) {
   var buf = [];
   for (var i = str.length - 1; i >= 0; i--) {
@@ -373,6 +378,36 @@ routes.handleUpload = _regenerator2.default.mark(function _callee9() {
       }
     }
   }, _callee9, this);
+});
+
+//handle post to '/oembed'
+routes.handleEmbed = _regenerator2.default.mark(function _callee10() {
+  var body, url, options, response;
+  return _regenerator2.default.wrap(function _callee10$(_context10) {
+    while (1) {
+      switch (_context10.prev = _context10.next) {
+        case 0:
+          body = this.request.body;
+          url = body.url;
+          options = {
+            url: url,
+            method: "GET"
+          };
+          _context10.next = 5;
+          return (0, _koaRequest2.default)(options);
+
+        case 5:
+          response = _context10.sent;
+
+          this.status = response.statusCode;
+          this.body = response.body;
+
+        case 8:
+        case 'end':
+          return _context10.stop();
+      }
+    }
+  }, _callee10, this);
 });
 
 exports.default = routes;

@@ -1,5 +1,5 @@
 /**
- * navc.js is pretty much the controller for the nav
+ * core.js is pretty much the controller for the nav & basic app functionality
  */
 
 import view from './navv.js';
@@ -80,7 +80,7 @@ async function handleSubmit(link = '', body, to, identity) {
       const res = await createThread(to, body, identity, cont, contentType, anon);
 
       //res isn't in json format
-      resp = JSON.parse(res);
+      resp = await res.json();
 
       //send this on delete or edit if we do so
       store.owned = resp.id;
@@ -111,7 +111,7 @@ async function handleSubmit(link = '', body, to, identity) {
       const res = await post(thread, identity, body, cont, responseTo, anon, contentType);
 
       //res isn't in json format
-      resp = JSON.parse(res);
+      resp = await res.json();
 
       //send this on delete or edit if we do so
       store.owned = resp.id;

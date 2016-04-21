@@ -60,9 +60,9 @@ export function getUser() {
   if (!token) {
     return;
   } else {
-    return fetch(`http://${apihost}${enpoint}`, {
+    return fetch(`http://${apihost}${endpoint}`, {
     	method: 'GET',
-    	mode: 'cors',
+    	mode: 'no-cors',
     	redirect: 'error',
     	headers: new Headers({
     		'access_token': token
@@ -88,9 +88,9 @@ export function getSaved() {
   if (!token) {
     return;
   } else {
-    return fetch(`http://${apihost}${enpoint}`, {
+    return fetch(`http://${apihost}${endpoint}`, {
       method: 'GET',
-      mode: 'cors',
+      mode: 'no-cors',
       redirect: 'error',
       headers: new Headers({
         'access_token': token
@@ -116,9 +116,9 @@ export function addName(nm) {
     return;
   }
   let endpoint = "/user/name";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -148,9 +148,9 @@ export function addName(nm) {
    }
    let endpoint = "/user/saved";
 
-   return fetch(`http://${apihost}${enpoint}`, {
+   return fetch(`http://${apihost}${endpoint}`, {
      method: 'POST',
-     mode: 'cors',
+     mode: 'no-cors',
      redirect: 'error',
      headers: new Headers({
        'Content-Type': 'application/json',
@@ -180,9 +180,9 @@ export function unsaveThread(mthread) {
   }
   let endpoint = "/user/saved";
 
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'PUT',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -211,9 +211,9 @@ export function getUserThreads(page) {
     return;
   }
   let endpoint = "/user/saved";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -242,9 +242,9 @@ export function getUserThreads(page) {
      return;
    }
    let endpoint = "/user/username";
-   return fetch(`http://${apihost}${enpoint}`, {
+   return fetch(`http://${apihost}${endpoint}`, {
      method: 'POST',
-     mode: 'cors',
+     mode: 'no-cors',
      redirect: 'error',
      headers: new Headers({
        'Content-Type': 'application/json',
@@ -273,9 +273,9 @@ export function getUserThreads(page) {
       return;
     }
     let endpoint = "/user/username";
-    return fetch(`http://${apihost}${enpoint}`, {
+    return fetch(`http://${apihost}${endpoint}`, {
       method: 'PUT',
-      mode: 'cors',
+      mode: 'no-cors',
       redirect: 'error',
       headers: new Headers({
         'Content-Type': 'application/json',
@@ -305,9 +305,9 @@ export function rmUsername(usrname) {
   }
   let endpoint = "/user/username";
 
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -336,9 +336,9 @@ export function getNotifications() {
     return;
   }
   let endpoint = "/user/notifications";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'GET',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'access_token': token
@@ -363,9 +363,9 @@ export function getFriends() {
     return;
   }
   let endpoint = "/user/friends";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'GET',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'access_token': token
@@ -391,9 +391,9 @@ export function addFriend(username, frnd) {
   }
   let endpoint = "/user/username";
 
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -423,9 +423,9 @@ export function acceptFriend(username, frnd) {
     return;
   }
   let endpoint = "/user/username";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'PUT',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -456,9 +456,9 @@ export function unfriend(username, frnd) {
   }
   let endpoint = "/user/username";
 
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',

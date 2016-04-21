@@ -1,5 +1,5 @@
 /**
- * navView.js is the view for the navbar and app-container
+ * navv.js is the view for the navbar and app-container
  */
 
 import {$id, $on, getContext} from './helpers.js';
@@ -82,6 +82,9 @@ export default class View {
     //hide search on outside click
     $on(this.$searchboxBg, 'click', this.viewCommands.hideSearch, false);
 
+		//do nothing on touchmove
+		$on(this.$searchboxBg, 'touchmove', e => e.preventDefault(), false);
+
 		//hide search on outside click
 		$on(this.$searchbox, 'click', e => e.stopPropagation(), false);
 
@@ -110,23 +113,22 @@ export default class View {
 		};
 
 		const scrollTop = async () => {
-			if (window.scrollY <= 1) {
+			if (window.scrollY <= 5) {
 				return;
       }
-			while (window.scrollY > 0) {
-				var Break = -5 - window.scrollY / 5;
+			while (window.scrollY > 6) {
+				var Break = -20 - window.scrollY / 5;
 				window.scrollBy(0, Break);
 				await sleep();
 			}
 			return true;
 		};
 
-		scrollTop().then(success => {
+		scrollTop()
 			//remove hide from element's classname
 			this.$searchboxBg.className = '';
 			this.$searchbox.className = 'stay';
 			this.$searchbox.focus();
-		});
   }
 
   _submitSearch(e) {
@@ -239,7 +241,8 @@ export default class View {
 			$on($savebutton, 'click', handleHide, false);
       $on($fileSubmit, 'change', handleContent, false);
       $on($submit, 'click', handleSend, false);
-
+			$on(writerMount, 'touchmove', e => e.preventDefault(), false);
+			
     } else {
 			wm.className = ""
     }
@@ -335,8 +338,6 @@ export default class View {
     //append menu
     this.$nav.appendChild(menuMount);
 
-		this.$nav.className = "TopNav opened"
-
     //get important dom elements
     let $dropdownBg = $id('TopNav-menu-bg');
     let $dropdown = $id('TopNav-menu-list');
@@ -385,6 +386,7 @@ export default class View {
     //bind events here
     $on($dropdown, 'click', handleDropdown, false);
     $on($dropdownBg, 'click', this._removeMenu, false);
+		$on($dropdownBg, 'touchmove', e => e.preventDefault(), false);
   }
 
   _removeMenu() {
@@ -393,9 +395,7 @@ export default class View {
     if (menu) {
       //get $menuicon which is here too deep to reference by class
 			document.body.className = '';
-			let nav = $id('navbar');
       let $menuicon = $id('TopNav-menu-icon');
-			nav.className = "TopNav";
       $menuicon.className = "icon icon-menu";
       menu.className = "";
       menu.parentNode.removeChild(menu);

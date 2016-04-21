@@ -68,9 +68,9 @@ function makeHeaders(token, json) {
  */
 export function getThread(thrd) {
   let endpoint = "/thread/";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -93,9 +93,9 @@ export function getThread(thrd) {
  */
 export function createThread(grp, bdy, authr, cont, contType, anon) {
   let endpoint = "/thread/modify";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -124,9 +124,9 @@ export function rmThread(thrd) {
   let endpoint = "/thread/modify";
 
   //Send Request
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -149,9 +149,9 @@ export function rmThread(thrd) {
 export function threadLength(thrd) {
   let endpoint = "/thread/length";
   //Send Request
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -175,9 +175,9 @@ export function threadLength(thrd) {
  */
 export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
   let endpoint = "/thread/post";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -206,9 +206,9 @@ export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
  */
 export function editPost(pst, bdy) {
   let endpoint = "/thread/post";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'PUT',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -231,9 +231,9 @@ export function editPost(pst, bdy) {
  */
 export function rmPost(pst) {
   let endpoint = "/thread/post";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({

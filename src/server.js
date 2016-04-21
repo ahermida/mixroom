@@ -8,7 +8,7 @@
 import 'babel-polyfill';
 
 //Import DB Connection
-import Server from './server/app.js';
+import Server from './server/Server.js';
 import config from './server/config.js';
 import cluster from 'cluster';
 import readline from 'readline';

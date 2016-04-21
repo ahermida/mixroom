@@ -1,4 +1,4 @@
 export default {
-  api: 'localhost:8000',
+  api: 'localhost/api',
   isNode: typeof window === 'undefined'
 }

@@ -56,9 +56,9 @@ const token = getCookie('access_token');
  */
 export function createUser(email, username, password) {
   let endpoint = "/auth/register";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -86,9 +86,9 @@ export function createUser(email, username, password) {
  */
 export function loginUser(email, password) {
   let endpoint = "/auth/login";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json'
@@ -115,9 +115,9 @@ export function loginUser(email, password) {
 export function activateUser(location = window.location.pathname) {
   let truePath = location.substring(6);
   let endpoint = "/auth/activate";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'GET',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'access_token': truePath
@@ -142,9 +142,9 @@ export function deactivateUser() {
     return;
   }
   let endpoint = "/auth/remove";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'access_token': token
@@ -166,9 +166,9 @@ export function deactivateUser() {
  */
 export function recoverUser(email) {
   let endpoint = "/auth/recover";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -197,9 +197,9 @@ export function changePass(pass, newPass) {
     return;
   }
   let endpoint = "/auth/changepass";
-  return fetch(`http://${apihost}${enpoint}`, {
+  return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'cors',
+    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',

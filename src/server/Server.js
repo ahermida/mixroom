@@ -8,6 +8,7 @@ import _ from 'koa-route'; //small router by koa
 import routes from './routes.js'; //handler functions for routes
 import mount from 'koa-mount' //allows us to mount paths
 import { connect } from './init.js'; //function to connect to DB (so we don't on master process)
+import bodyParser from 'koa-bodyparser'; //easy access to json body
 
 class Server {
 
@@ -37,11 +38,17 @@ class Server {
       }
     });
 
+    //set up body parser for easy-access to json
+    server.use(bodyParser());
+
     //make static folder static
     server.use(mount("/static", serve(__dirname + '/../../static')));
 
-    //handle front page view
+    //handle front page view -- proxy for /random/ until we (I) get some metric for rating -- switches on page 1
     server.use(_.get('/', routes.handleFP));
+
+    //handle oembed -- kind of a proxy for oembed endpoints
+    server.use(_.post('/embed', routes.handleEmbed));
 
     //handle uploads
     server.use(_.post('/upload', routes.handleUpload));
@@ -61,11 +68,12 @@ class Server {
     //handle user (settings)
     server.use(_.get('/user/:username', routes.handleSettings));
 
-    //handle group view
-    server.use(_.get('/:group', routes.handleGroup));
-
     //handle thread view
-    server.use(_.get('/:group/:threadID', routes.handleThread));
+    server.use(_.get('/:group/t/:threadID', routes.handleThread));
+
+    //handle group view
+    server.use(_.get('/:group/:page', routes.handleGroup));
+
   }
 
   //log number of active requests
