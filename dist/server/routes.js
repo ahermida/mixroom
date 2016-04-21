@@ -118,7 +118,7 @@ routes.handleFP = _regenerator2.default.mark(function _callee() {
   }, _callee, this);
 });
 
-//handle '/:group' route 5ud0
+//handle '/:group' route
 routes.handleGroup = _regenerator2.default.mark(function _callee2(group) {
   var _this2 = this;
 
@@ -336,7 +336,7 @@ routes.handleActivation = _regenerator2.default.mark(function _callee8() {
 
 //handle '/upload' route
 routes.handleUpload = _regenerator2.default.mark(function _callee9() {
-  var parts, part, uuid, resp, stream;
+  var parts, uuid, url, part, stream, resp;
   return _regenerator2.default.wrap(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
@@ -352,27 +352,38 @@ routes.handleUpload = _regenerator2.default.mark(function _callee9() {
               }
             }
           });
+          uuid = _nodeUuid2.default.v1();
+          url = void 0;
+          part = void 0;
 
-          //get part (should only be one)
-
-          _context9.next = 3;
+        case 4:
+          _context9.next = 6;
           return parts;
 
-        case 3:
-          part = _context9.sent;
-          uuid = _nodeUuid2.default.v1();
-          //send back response as JSON
+        case 6:
+          if (!(part = _context9.sent)) {
+            _context9.next = 12;
+            break;
+          }
 
-          resp = (0, _stringify2.default)({
-            "url": 'http://localhost:8080/static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase()
-          });
           stream = _fs2.default.createWriteStream(__dirname + '/../../static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase());
 
+          url = 'http://localhost:8080/static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase();
           part.pipe(stream);
+          _context9.next = 4;
+          break;
+
+        case 12:
+
+          //send back response as JSON
+          resp = (0, _stringify2.default)({
+            "url": url
+          });
+
 
           this.body = resp;
 
-        case 9:
+        case 14:
         case 'end':
           return _context9.stop();
       }

@@ -9,8 +9,7 @@ html {
   background-color: #FCFCFB;
   -webkit-font-smoothing: antialiased;
   font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
-  overflow: hidden; }
+  text-rendering: optimizeLegibility; }
 
 label > * {
   display: block;
@@ -28,7 +27,6 @@ select {
   box-sizing: border-box; }
 
 body {
-  overflow: hidden;
   height: 100%;
   width: 100%;
   background-color: #FCFCFB;
@@ -99,9 +97,6 @@ body, figure {
   display: none; }
 
 .menu-active {
-  max-width: 100%;
-  max-height: 100%;
-  position: static;
   overflow: hidden; }
 
 .active {

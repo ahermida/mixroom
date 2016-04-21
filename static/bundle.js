@@ -4817,72 +4817,56 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 //handle doing upload via ajax -- should build this one ourselves
 
 var handleUpload = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(file) {
-    var uploadFile = function () {
-      var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(file) {
-        var data;
-        return _regenerator2.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                data = new FormData();
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(file) {
+    var uploadFile, res, _resp;
 
-                data.append('file', file);
-
-                return _context.abrupt('return', (0, _isomorphicFetch2.default)('/upload', {
-                  method: 'POST',
-                  body: data
-                }));
-
-              case 3:
-              case 'end':
-                return _context.stop();
-            }
-          }
-        }, _callee, this);
-      }));
-      return function uploadFile(_x2) {
-        return ref.apply(this, arguments);
-      };
-    }();
-
-    //send request
-
-
-    var res, _resp;
-
-    return _regenerator2.default.wrap(function _callee2$(_context2) {
+    return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context.prev = _context.next) {
           case 0:
-            _context2.prev = 0;
-            _context2.next = 3;
+            uploadFile = function uploadFile(file) {
+              var data = new FormData();
+              data.append('file', file);
+
+              return (0, _isomorphicFetch2.default)('/upload', {
+                method: 'POST',
+                body: data
+              });
+            };
+
+            _context.prev = 1;
+            _context.next = 4;
             return uploadFile(file);
 
-          case 3:
-            res = _context2.sent;
-            _resp = JSON.parse(res);
-            //grab response & set it in store
+          case 4:
+            res = _context.sent;
+            _context.next = 7;
+            return res.json();
 
+          case 7:
+            _resp = _context.sent;
+
+            //grab response & set it in store
             _store2.default.upload = {
               content: _resp.url,
               contentType: file.type
             };
-            _context2.next = 11;
+            console.log(file.type);
+            _context.next = 15;
             break;
 
-          case 8:
-            _context2.prev = 8;
-            _context2.t0 = _context2['catch'](0);
+          case 12:
+            _context.prev = 12;
+            _context.t0 = _context['catch'](1);
 
-            console.log(_context2.t0);
+            console.log(_context.t0);
 
-          case 11:
+          case 15:
           case 'end':
-            return _context2.stop();
+            return _context.stop();
         }
       }
-    }, _callee2, this, [[0, 8]]);
+    }, _callee, this, [[1, 12]]);
   }));
   return function handleUpload(_x) {
     return ref.apply(this, arguments);
@@ -4895,7 +4879,7 @@ var handleUpload = function () {
  */
 
 var handleSubmit = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
     var link = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
     var body = arguments[1];
     var to = arguments[2];
@@ -4903,9 +4887,9 @@ var handleSubmit = function () {
 
     var anon, getReferences, cont, contentType, isgrp, res, getPath, path, thread, responseTo, _res;
 
-    return _regenerator2.default.wrap(function _callee3$(_context3) {
+    return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context2.prev = _context2.next) {
           case 0:
             anon = identity === 'Anonymous' ? true : false;
 
@@ -4946,27 +4930,27 @@ var handleSubmit = function () {
             isgrp = _store2.default.groups.includes(to);
 
             if (!isgrp) {
-              _context3.next = 24;
+              _context2.next = 24;
               break;
             }
 
-            _context3.prev = 7;
+            _context2.prev = 7;
 
 
             //since it's a group, remove the for internal use
             to = to.slice(1, -1);
 
             //attempt to send, should provide us with a json obj with id
-            _context3.next = 11;
+            _context2.next = 11;
             return (0, _threads.createThread)(to, body, identity, cont, contentType, anon);
 
           case 11:
-            res = _context3.sent;
-            _context3.next = 14;
+            res = _context2.sent;
+            _context2.next = 14;
             return res.json();
 
           case 14:
-            resp = _context3.sent;
+            resp = _context2.sent;
 
 
             //send this on delete or edit if we do so
@@ -4975,19 +4959,19 @@ var handleSubmit = function () {
             //clear upload in store
             _store2.default.upload = false;
 
-            _context3.next = 22;
+            _context2.next = 22;
             break;
 
           case 19:
-            _context3.prev = 19;
-            _context3.t0 = _context3['catch'](7);
+            _context2.prev = 19;
+            _context2.t0 = _context2['catch'](7);
 
 
             //if something went wrong, let ourselves know
-            console.log(_context3.t0);
+            console.log(_context2.t0);
 
           case 22:
-            _context3.next = 42;
+            _context2.next = 42;
             break;
 
           case 24:
@@ -5008,17 +4992,17 @@ var handleSubmit = function () {
 
             //try to send post to thread
 
-            _context3.prev = 28;
-            _context3.next = 31;
+            _context2.prev = 28;
+            _context2.next = 31;
             return (0, _threads.post)(thread, identity, body, cont, responseTo, anon, contentType);
 
           case 31:
-            _res = _context3.sent;
-            _context3.next = 34;
+            _res = _context2.sent;
+            _context2.next = 34;
             return _res.json();
 
           case 34:
-            resp = _context3.sent;
+            resp = _context2.sent;
 
 
             //send this on delete or edit if we do so
@@ -5027,25 +5011,25 @@ var handleSubmit = function () {
             //clear upload in store
             _store2.default.upload = false;
 
-            _context3.next = 42;
+            _context2.next = 42;
             break;
 
           case 39:
-            _context3.prev = 39;
-            _context3.t1 = _context3['catch'](28);
+            _context2.prev = 39;
+            _context2.t1 = _context2['catch'](28);
 
 
             //if something went wrong in trying to post it, let ourselves know
-            console.log(_context3.t1);
+            console.log(_context2.t1);
 
           case 42:
           case 'end':
-            return _context3.stop();
+            return _context2.stop();
         }
       }
-    }, _callee3, this, [[7, 19], [28, 39]]);
+    }, _callee2, this, [[7, 19], [28, 39]]);
   }));
-  return function handleSubmit(_x3, _x4, _x5, _x6) {
+  return function handleSubmit(_x2, _x3, _x4, _x5) {
     return ref.apply(this, arguments);
   };
 }();

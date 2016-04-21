@@ -55,7 +55,7 @@ routes.handleFP = function*() {
  });
 };
 
-//handle '/:group' route 
+//handle '/:group' route
 routes.handleGroup = function*(group) {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
@@ -146,16 +146,19 @@ routes.handleUpload = function*() {
     }
   });
 
-  //get part (should only be one)
-  let part = yield parts;
   const uuid = uid.v1();
+  let url;
+  let part
+  while (part = yield parts) {
+    var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`);
+    url = `http://localhost:8080/static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`;
+    part.pipe(stream);
+  }
+
   //send back response as JSON
   let resp = JSON.stringify({
-    "url": `http://localhost:8080/static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`
+    "url": url
   });
-
-  var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}` );
-  part.pipe(stream);
 
   this.body = resp;
 };

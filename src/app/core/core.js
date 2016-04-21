@@ -10,7 +10,7 @@ import fetch from 'isomorphic-fetch';
 
 //handle doing upload via ajax -- should build this one ourselves
 async function handleUpload(file) {
-  async function uploadFile (file) {
+  function uploadFile (file) {
     let data = new FormData();
     data.append('file', file);
 
@@ -23,12 +23,13 @@ async function handleUpload(file) {
   //send request
   try {
     let res = await uploadFile(file);
-    let resp = JSON.parse(res);
+    let resp = await res.json();
     //grab response & set it in store
     store.upload = {
       content: resp.url,
       contentType: file.type
     };
+    console.log(file.type);
   } catch (e) {
     console.log(e);
   }
