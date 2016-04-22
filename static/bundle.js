@@ -5386,7 +5386,6 @@ var View = function () {
         (function () {
           var handleContent = function handleContent(e) {
             this.handleUpload($fileSubmit.files[0]);
-            console.log($fileSubmit.files[0]);
             $submitIcon.className = 'icon icon-check';
           };
 
@@ -5644,9 +5643,18 @@ var extract = function extract(str) {
       break;
     }
   }
+
   if (!oembedUrl) {
-    return;
+    //still a legitimate url, so let's fetch the title
+    return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: (0, _stringify2.default)({ url: str, title: true })
+    });
   }
+
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
     headers: new Headers({
@@ -5928,7 +5936,7 @@ function parse(body) {
   });
 
   //return html wrapped in parent div
-  return '<div>' + htmlbody + '</div>';
+  return '<div class="Body-content">' + htmlbody + '</div>';
 }
 
 //precompile regex

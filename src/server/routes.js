@@ -163,14 +163,36 @@ routes.handleUpload = function*() {
   this.body = resp;
 };
 
-//handle post to '/oembed'
+//handle post to '/oembed' -- really just a solution to cors
 routes.handleEmbed = function*() {
   let body = this.request.body;
   let url = body.url;
-  var options = {
-    	url: url,
-      method: "GET"
-	};
+  let title = body.title;
+  if (title) {
+    var options = {
+      	url: url,
+        method: "GET"
+  	};
+    let res = yield request(options);
+    //from stackoverflow for convenience --> trying to finish this by next week.
+    //http://stackoverflow.com/questions/13087888/getting-the-page-title-from-a-scraped-webpage
+    var reg = /(<\s*title[^>]*>(.+?)<\s*\/\s*title)>/gi;
+    let match = reg.exec(response.body);
+
+    //might as well format the link here like oembed
+    let head = match[2];
+
+    //send body
+    this.body = JSON.stringify({
+      html: `<a class="Content-link" href="${url}">${head}</a>`
+    });
+    return;
+  } else {
+    var options = {
+        url: url,
+        method: "GET"
+    };
+  }
   let response = yield request(options);
   this.status = response.statusCode;
   this.body = response.body;

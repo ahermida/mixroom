@@ -40,9 +40,18 @@ const extract = (str) => {
         break;
       }
     }
+    
     if (!oembedUrl) {
-      return;
+      //still a legitimate url, so let's fetch the title
+      return fetch(`http://${apihost}${endpoint}`, {
+        method: 'POST',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+        body: JSON.stringify({ url: str, title: true })
+      });
     }
+
     return fetch(`http://${apihost}${endpoint}`, {
       method: 'POST',
       headers: new Headers({

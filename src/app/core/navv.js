@@ -229,7 +229,6 @@ export default class View {
 
 			function handleContent(e) {
 				this.handleUpload($fileSubmit.files[0]);
-				console.log($fileSubmit.files[0]);
 				$submitIcon.className = 'icon icon-check';
 			}
 
@@ -242,7 +241,7 @@ export default class View {
       $on($fileSubmit, 'change', handleContent, false);
       $on($submit, 'click', handleSend, false);
 			$on(writerMount, 'touchmove', e => e.preventDefault(), false);
-			
+
     } else {
 			wm.className = ""
     }

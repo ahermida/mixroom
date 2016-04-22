@@ -108,7 +108,7 @@ export default function parse(body) {
   });
 
   //return html wrapped in parent div
-  return `<div>${htmlbody}</div>`;
+  return `<div class="Body-content">${htmlbody}</div>`;
 }
 
 //precompile regex
