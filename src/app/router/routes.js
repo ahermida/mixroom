@@ -10,7 +10,7 @@
 */
 
 import {getAuth} from '../ajax/groups.js';
-
+import grp from '../group/group.js';
 //this is where views are set up
 export default function setup(router) {
 
@@ -23,6 +23,7 @@ export default function setup(router) {
 
   //set up root handler '/'
   router.onRoot(() => {
+    grp('/random/', 0);
     console.log('get fp ---> /random/');
   });
 
@@ -52,7 +53,7 @@ export default function setup(router) {
 
   //route for pagination on groups '/:group/:page'
   router.add(/(.*)\/(.*)/, async (group, page) => {
-    group = group ? group : '/';
+    group = `/${group}/`;
     let res = await getAuth(group);
     let resp = await res.json();
     if (!resp.allowed && group != "404") return router.navigate('/404');
@@ -61,11 +62,13 @@ export default function setup(router) {
 
   //route for group (page:0) '/:group' || if integer --> pagination for FP
   router.add(/(.*)/, async (group) => {
-    group = group ? group : '/';
+    group = `/${group}/`;
     console.log('group');
     let res = await getAuth(group);
     let resp = await res.json();
     if (!resp.allowed && group != "404") return router.navigate('/404');
     //setup group
+    grp(group, 0);
+    console.log('get fp ---> /random/');
   });
 }

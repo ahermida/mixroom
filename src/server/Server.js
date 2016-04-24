@@ -3,7 +3,7 @@
  */
 
 import koa from 'koa'; //kinda like flask/express -- but with generators!
-import serve from 'koa-static'; //serve static routes -- /static in our case
+import serve from 'koa-send'; //serve static routes -- /static in our case
 import _ from 'koa-route'; //small router by koa
 import routes from './routes.js'; //handler functions for routes
 import mount from 'koa-mount' //allows us to mount paths
@@ -41,8 +41,10 @@ class Server {
     //set up body parser for easy-access to json
     server.use(bodyParser());
 
+  //  server.use(*()=> yield send(this, this.path, { root: __dirname + '/../../static' }))
+
     //make static folder static
-    server.use(mount("/static", serve(__dirname + '/../../static')));
+    server.use(mount('/static', function *() { yield serve(this, this.path, { root: `${__dirname}/../../static`})}));
 
     //handle front page view -- proxy for /random/ until we (I) get some metric for rating -- switches on page 1
     server.use(_.get('/', routes.handleFP));
@@ -68,11 +70,14 @@ class Server {
     //handle user (settings)
     server.use(_.get('/user/:username', routes.handleSettings));
 
-    //handle thread view
-    server.use(_.get('/:group/t/:threadID', routes.handleThread));
-
     //handle group view
     server.use(_.get('/:group/:page', routes.handleGroup));
+
+    //handle group view
+    server.use(_.get('/:group', routes.handleGroup));
+
+    //handle thread view
+    server.use(_.get('/:group/t/:threadID', routes.handleThread));
 
   }
 

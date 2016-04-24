@@ -20,9 +20,9 @@ var _koa = require('koa');
 
 var _koa2 = _interopRequireDefault(_koa);
 
-var _koaStatic = require('koa-static');
+var _koaSend = require('koa-send');
 
-var _koaStatic2 = _interopRequireDefault(_koaStatic);
+var _koaSend2 = _interopRequireDefault(_koaSend);
 
 var _koaRoute = require('koa-route');
 
@@ -101,8 +101,24 @@ var Server = function () {
     //set up body parser for easy-access to json
     server.use((0, _koaBodyparser2.default)());
 
+    //  server.use(*()=> yield send(this, this.path, { root: __dirname + '/../../static' }))
+
     //make static folder static
-    server.use((0, _koaMount2.default)("/static", (0, _koaStatic2.default)(__dirname + '/../../static')));
+    server.use((0, _koaMount2.default)('/static', _regenerator2.default.mark(function _callee2() {
+      return _regenerator2.default.wrap(function _callee2$(_context2) {
+        while (1) {
+          switch (_context2.prev = _context2.next) {
+            case 0:
+              _context2.next = 2;
+              return (0, _koaSend2.default)(this, this.path, { root: __dirname + '/../../static' });
+
+            case 2:
+            case 'end':
+              return _context2.stop();
+          }
+        }
+      }, _callee2, this);
+    })));
 
     //handle front page view -- proxy for /random/ until we (I) get some metric for rating -- switches on page 1
     server.use(_koaRoute2.default.get('/', _routes2.default.handleFP));
@@ -128,11 +144,14 @@ var Server = function () {
     //handle user (settings)
     server.use(_koaRoute2.default.get('/user/:username', _routes2.default.handleSettings));
 
-    //handle thread view
-    server.use(_koaRoute2.default.get('/:group/t/:threadID', _routes2.default.handleThread));
-
     //handle group view
     server.use(_koaRoute2.default.get('/:group/:page', _routes2.default.handleGroup));
+
+    //handle group view
+    server.use(_koaRoute2.default.get('/:group', _routes2.default.handleGroup));
+
+    //handle thread view
+    server.use(_koaRoute2.default.get('/:group/t/:threadID', _routes2.default.handleThread));
   }
 
   //log number of active requests

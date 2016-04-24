@@ -2,9 +2,9 @@
  * dom template helpers
  */
 
-import { threadLength } from '../ajax/thread.js';
+import { threadLength } from '../ajax/threads.js';
 import store from './store.js';
-
+import oembed from './oembed.js';
 // type Post struct {
 // 	Id          bson.ObjectId   `bson:"_id,omitempty" json:"-"`
 //   SId         string          `bson:"id,omitempty" json:"id"`
@@ -36,13 +36,13 @@ export function generatePost(post) {
       <footer class="Footer">
       ${generatePostHeadFooter(threadID, store.user.anonymous)}
       </footer>
-    </div>
-  `
+    </div>`;
+
   return headpost;
 }
 
 //creates a head post's html given we have the data
-export function generateHeadPost(thread) {
+export async function generateHeadPost(thread) {
   const post = thread.head;
   const threadID = thread.thread;
   const timestamp = thread.created;
@@ -51,19 +51,20 @@ export function generateHeadPost(thread) {
   let headpost = `
     <div id="${threadID}" class="HeadPost">
       <header class="Header">
-      ${generatePostHeadHeader(thread.group, thread.author, timestamp, true)}
+      ${generatePostHeadHeader(thread.group, post.author, timestamp, post, true)}
       </header>
       <div class="Content">
-      ${generateContent(post.content, post.contentType)}
+      ${await generateContent(post.content, post.contentType)}
       </div>
       <div class="Body">
       ${generateBody(post.body)}
       </div>
       <footer class="Footer">
-      ${generatePostHeadFooter(threadID, store.user.anonymous)}
+      ${await generatePostHeadFooter(threadID, store.user.anonymous)}
       </footer>
     </div>
-  `
+  `;
+
   return headpost;
 }
 
@@ -78,8 +79,8 @@ function generateTimestamp(timestamp) {
   hours <= 12 ? ampm = 'AM' : ampm = 'PM';
   let now = new Date();
   let date = [time.getMonth() + 1, time.getDate()].join('/');
-  let yr = time.getFullYear()
-  let fullyr = now.getFullYear() === yr ? "" : yr.slice(2,4);
+  let yr = time.getFullYear();
+  let fullyr = now.getFullYear() === `${yr}` ? "" : `${yr}`.slice(2,4);
   //formatted timestamp
   return `${hour}:${minutesString}${ampm} ${fullyr}`;
 }
@@ -104,14 +105,14 @@ function generatePostHeadHeader(group, author, created, head) {
 }
 
 //generate the header for a post --> don't show replies if head
-function generatePostHeader(group, author, created, head) {
+function generatePostHeader(group, author, created, post, head) {
   //title for each of the posts, replies should be overflow-x
   return `
     <div class="Head-content">
       <span class="Head-left">
         <span class="Head-author">${author}</span>
         -
-        <span class="Head-contentType">${post.contentType || 'text'}</span>
+        <span class="Head-contentType">${post.contentType !== "" ? post.contentType : 'text'}</span>
         -
         <span class="Head-created">${generateTimestamp(created)}</span>
       </span>
@@ -123,65 +124,53 @@ function generatePostHeader(group, author, created, head) {
 }
 
 //return html content section --> video or img
-function generateContent(content, contentType) {
-  if (!content) return;
+async function generateContent(content, contentType) {
+  if (!content || contentType == "") return "";
   let html;
   if (contentType === 'link') {
-    html = `<div class="Content-iframe">${oembed(content)}</div>`
+    html = `<div class="Content-frame">${await oembed(content)}</div>`
   } else {
     //treat video and images differently
     if (contentType.split('/')[0] === 'video') {
       html = `
-      <video loop autoplay class="Content-iv" controls>
+      <video preload="auto" controls="controls" muted class="Content-iv">
         <source src="${content}" type="${contentType}">
       </video>`;
+    } else if (contentType == "text") {
+      html = `<h4 class="Content-text">${content}</h4>`
     } else {
       html = `<img class="Content-img" src="${content}">`;
     }
   }
 
   //if all works out, return proper html
-  return `<div class="Content-wrapper"><div class="Content">${html}</div></div>`;
+  return `<div class="Content-wrapper">${html}</div>`;
 }
 
 //handle body of post
 function generateBody(str) {
-  return `<div class="Body-content">${parser(str)}</div>`
+  if (str) {
+    return `<div class="Body-content">${parser(str)}</div>`
+  } else {
+    return '';
+  }
 }
 
-//gets thread's length via ajax
-function getThreadLength(thread) {
-  let length;
-  (async (thread) => {
-    try {
-      let res = await threadLength(thread);
-      let resp = await res.json();
-      length = resp.size;
-    } catch (e) {
-      console.log(e);
-    }
-  })(thread);
-  return length;
-}
 
 //handle footer of thread post (head)
-function generatePostHeadFooter(thread, loggedIn) {
-  let length = getThreadLength(thread);
+async function generatePostHeadFooter(thread, anonymous) {
+  let length = thread.size - 1;
   let footer = `
   <div class="Footer-content">
     <span class="Footer-left">
-      <span class="icon-comment Footer-left-icon"></span>
-      <span class="Footer-left-size">${length} posts</span>
+      <span class="icon-chat Footer-left-icon"></span>
+      <span class="Footer-left-size">${length || 0} ${length != 1 ? 'posts' : 'post'}</span>
     </span>
     <span class="Footer-right">
-      ${loggedIn ? `<span class="Footer-right-save">save</span>` : ''}
-      <span class="Footer-right-reply">
-        <span class="icon-reply"></span>
-        reply
-      </span>
-      <span class="Footer-open">
-        open
-      </span>
+      ${anonymous ? '' : '<span class="Footer-right-save">save</span>'}
+      <span class="report space">report</span>
+      <span class="Footer-right-reply space">reply</span>
+      <span class="Footer-open space">open</span>
     </span>
   </div>
   `;
@@ -194,7 +183,7 @@ function generatePostFooter(replies) {
   let footer = `
   <div class="Footer-content">
     <span class="Footer-left">
-      <span class="icon-comment Footer-left-icon"></span>
+      <span class="icon-chat Footer-left-icon"></span>
       <span class="Footer-left-size">${replies} replies</span>
     </span>
     <span class="Footer-right">
@@ -202,7 +191,6 @@ function generatePostFooter(replies) {
         report
       </span>
       <span class="Footer-right-reply">
-        <span class="icon-reply"></span>
         reply
       </span>
     </span>

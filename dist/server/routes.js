@@ -391,9 +391,9 @@ routes.handleUpload = _regenerator2.default.mark(function _callee9() {
   }, _callee9, this);
 });
 
-//handle post to '/oembed'
+//handle post to '/oembed' -- really just a solution to cors
 routes.handleEmbed = _regenerator2.default.mark(function _callee10() {
-  var body, url, options, response;
+  var body, url, options, response, resp;
   return _regenerator2.default.wrap(function _callee10$(_context10) {
     while (1) {
       switch (_context10.prev = _context10.next) {
@@ -404,14 +404,20 @@ routes.handleEmbed = _regenerator2.default.mark(function _callee10() {
             url: url,
             method: "GET"
           };
+          //real hacky
+
           _context10.next = 5;
           return (0, _koaRequest2.default)(options);
 
         case 5:
           response = _context10.sent;
+          resp = {
+            embed: response.body,
+            success: response.statusCode
+          };
 
-          this.status = response.statusCode;
-          this.body = response.body;
+
+          this.body = (0, _stringify2.default)(resp);
 
         case 8:
         case 'end':

@@ -7,6 +7,7 @@ import store from './store.js';
 import {createThread, post} from '../ajax/threads.js';
 import fastclick from 'fastclick';
 import fetch from 'isomorphic-fetch';
+import {validate} from './oembed.js';
 
 //handle doing upload via ajax -- should build this one ourselves
 async function handleUpload(file) {
@@ -36,7 +37,8 @@ async function handleUpload(file) {
 }
 
 //handle form submission
-async function handleSubmit(link = '', body, to, identity) {
+async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
+
   const anon = identity === 'Anonymous' ? true : false;
 
   //should return all references to other posts in thread
@@ -44,22 +46,26 @@ async function handleSubmit(link = '', body, to, identity) {
 
     //regex for reference (post: 12312)
     const ref = /\(post:(\S*?)\)/g;
+    let idrefs;
     let matches = body.match(ref);
-    let idrefs = matches.map(match => match.slice(6, -1).trim());
+    if (matches) {
+      idrefs = matches.map(match => match.slice(6, -1).trim());
+    }
     return idrefs || [];
   }
 
   //if there's no content, shove the link in there and set upload to link
-  if (!store.upload.content) {
-    store.upload = {
-      content: link,
-      contentType: 'link'
-    }
-  } else {
-
-    //if there's both a link and a pic, prioritize pic and show link as part of body
-    if (link) {
-      body = `${link}\n${body}`;
+  if (!store.upload.content && link) {
+    if (validate(link)) {
+      store.upload = {
+        content: link,
+        contentType: 'link'
+      }
+    } else {
+      store.upload = {
+        content: link,
+        contentType: 'text'
+      }
     }
   }
 
@@ -74,20 +80,19 @@ async function handleSubmit(link = '', body, to, identity) {
     //get content from store
     try {
 
-      //since it's a group, remove the for internal use
-      to = to.slice(1, -1);
-
       //attempt to send, should provide us with a json obj with id
       const res = await createThread(to, body, identity, cont, contentType, anon);
 
       //res isn't in json format
-      resp = await res.json();
+      let resp = await res.json();
 
       //send this on delete or edit if we do so
       store.owned = resp.id;
 
       //clear upload in store
       store.upload = false;
+
+      return;
 
     } catch (e) {
 

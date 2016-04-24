@@ -4139,7 +4139,7 @@ function createThread(grp, bdy, authr, cont, contType, anon) {
     headers: new Headers(makeHeaders(token, true)),
     body: (0, _stringify2.default)({
       group: grp,
-      body: body,
+      body: bdy,
       author: authr,
       content: cont,
       contentType: contType,
@@ -4815,6 +4815,9 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 //handle doing upload via ajax -- should build this one ourselves
+/**
+ * core.js is pretty much the controller for the nav & basic app functionality
+ */
 
 var handleUpload = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(file) {
@@ -4874,18 +4877,16 @@ var handleUpload = function () {
 }();
 
 //handle form submission
-/**
- * core.js is pretty much the controller for the nav & basic app functionality
- */
+
 
 var handleSubmit = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
     var link = arguments.length <= 0 || arguments[0] === undefined ? '' : arguments[0];
     var body = arguments[1];
     var to = arguments[2];
-    var identity = arguments[3];
+    var identity = arguments.length <= 3 || arguments[3] === undefined ? 'Anonymous' : arguments[3];
 
-    var anon, getReferences, cont, contentType, isgrp, res, getPath, path, thread, responseTo, _res;
+    var anon, getReferences, cont, contentType, isgrp, res, _resp2, getPath, path, thread, responseTo, _res;
 
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -4899,26 +4900,30 @@ var handleSubmit = function () {
 
               //regex for reference (post: 12312)
               var ref = /\(post:(\S*?)\)/g;
+              var idrefs = void 0;
               var matches = body.match(ref);
-              var idrefs = matches.map(function (match) {
-                return match.slice(6, -1).trim();
-              });
+              if (matches) {
+                idrefs = matches.map(function (match) {
+                  return match.slice(6, -1).trim();
+                });
+              }
               return idrefs || [];
             };
 
             //if there's no content, shove the link in there and set upload to link
 
 
-            if (!_store2.default.upload.content) {
-              _store2.default.upload = {
-                content: link,
-                contentType: 'link'
-              };
-            } else {
-
-              //if there's both a link and a pic, prioritize pic and show link as part of body
-              if (link) {
-                body = link + '\n' + body;
+            if (!_store2.default.upload.content && link) {
+              if ((0, _oembed.validate)(link)) {
+                _store2.default.upload = {
+                  content: link,
+                  contentType: 'link'
+                };
+              } else {
+                _store2.default.upload = {
+                  content: link,
+                  contentType: 'text'
+                };
               }
             }
 
@@ -4935,32 +4940,25 @@ var handleSubmit = function () {
             }
 
             _context2.prev = 7;
-
-
-            //since it's a group, remove the for internal use
-            to = to.slice(1, -1);
-
-            //attempt to send, should provide us with a json obj with id
-            _context2.next = 11;
+            _context2.next = 10;
             return (0, _threads.createThread)(to, body, identity, cont, contentType, anon);
 
-          case 11:
+          case 10:
             res = _context2.sent;
-            _context2.next = 14;
+            _context2.next = 13;
             return res.json();
 
-          case 14:
-            resp = _context2.sent;
+          case 13:
+            _resp2 = _context2.sent;
 
 
             //send this on delete or edit if we do so
-            _store2.default.owned = resp.id;
+            _store2.default.owned = _resp2.id;
 
             //clear upload in store
             _store2.default.upload = false;
 
-            _context2.next = 22;
-            break;
+            return _context2.abrupt('return');
 
           case 19:
             _context2.prev = 19;
@@ -5054,6 +5052,8 @@ var _isomorphicFetch = require('isomorphic-fetch');
 
 var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
+var _oembed = require('./oembed.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function start() {
@@ -5073,7 +5073,7 @@ function start() {
   nav.bind();
 }
 
-},{"../ajax/threads.js":107,"./navv.js":112,"./store.js":115,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],111:[function(require,module,exports){
+},{"../ajax/threads.js":107,"./navv.js":112,"./oembed.js":113,"./store.js":115,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5430,7 +5430,10 @@ var View = function () {
 
           //handle sending the form
           var handleSend = function handleSend() {
-            return handleSubmit($link.value, $body.value, $group.value, $identity.value);
+            //no posts smaller than 8, yay for arbitrary rules!
+            if ($body.value > 8) return;
+            handleSubmit($link.value, $body.value, $group.value, $identity.value);
+            _this3._removeWriter();
           };
           var handleHide = function handleHide() {
             writerMount.className = "hide";
@@ -5576,6 +5579,7 @@ exports.default = View;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.validate = undefined;
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -5613,7 +5617,7 @@ var isNode = _config2.default.isNode;
 var apihost = 'localhost';
 var endpoint = '/embed';
 
-var validate = function validate(url) {
+var validate = exports.validate = function validate(url) {
   var pattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
   return pattern.test(url);
 };
@@ -5621,9 +5625,7 @@ var validate = function validate(url) {
 var extract = function extract(str) {
   var oembedUrl = void 0,
       patternMatch = void 0;
-  if (!validate(str)) {
-    return '<p class="Content-broken-link">' + str + '</p>';
-  }
+
   //tried not to touch this block
   var urls = (0, _keys2.default)(providers);
   for (var i = 0; i < urls.length; i++) {
@@ -5646,22 +5648,25 @@ var extract = function extract(str) {
 
   if (!oembedUrl) {
     //still a legitimate url, so let's fetch the title
-    return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: (0, _stringify2.default)({ url: str, title: true })
-    });
-  }
+    return {
+      oembed: false,
+      html: '<a href="' + str + '">' + str + '</a>'
+    };
+  } else {
 
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
-    method: 'POST',
-    headers: new Headers({
-      'Content-Type': 'application/json'
-    }),
-    body: (0, _stringify2.default)({ url: oembedUrl })
-  });
+    return {
+      oembed: true,
+      embed: function embed() {
+        return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+          method: 'POST',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          body: (0, _stringify2.default)({ url: oembedUrl })
+        });
+      }
+    };
+  }
 };
 
 //whietlisted oembed providers
@@ -5686,131 +5691,231 @@ var special = {
 };
 
 //throws if page gets 404 -- checks if it's a single img vs album
-var imgur = function imgur(url) {
-  var valid = false;
-  var check = function () {
-    var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(url) {
-      var im;
-      return _regenerator2.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.prev = 0;
-              _context.next = 3;
-              return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
-                method: 'POST',
-                headers: new Headers({
-                  'Content-Type': 'application/json'
-                }),
-                body: (0, _stringify2.default)({ url: url + '.jpg' })
-              });
+var imgur = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(url) {
+    var ur, _url, im, imj;
 
-            case 3:
-              im = _context.sent;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            ur = /\/gallery\//i;
+            _url = _url.replace(ur, '/');
+            //translated to a GET Server Side --> only do this for whitelist
 
-              if (im.status != 200) {
-                valid = false;
-              }
-              valid = true;
+            _context.next = 5;
+            return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+              method: 'POST',
+              headers: new Headers({
+                'Content-Type': 'application/json'
+              }),
+              body: (0, _stringify2.default)({ url: _url + '.jpg' })
+            });
+
+          case 5:
+            im = _context.sent;
+            _context.next = 8;
+            return im.json();
+
+          case 8:
+            imj = _context.sent;
+
+            if (!(imj.success != 200)) {
               _context.next = 11;
               break;
+            }
 
-            case 8:
-              _context.prev = 8;
-              _context.t0 = _context['catch'](0);
+            return _context.abrupt('return', false);
 
-              valid = false;
+          case 11:
+            return _context.abrupt('return', true);
 
-            case 11:
-            case 'end':
-              return _context.stop();
-          }
+          case 14:
+            _context.prev = 14;
+            _context.t0 = _context['catch'](0);
+            return _context.abrupt('return', false);
+
+          case 17:
+            return _context.abrupt('return', valid);
+
+          case 18:
+          case 'end':
+            return _context.stop();
         }
-      }, _callee, undefined, [[0, 8]]);
-    }));
-    return function check(_x) {
-      return ref.apply(this, arguments);
-    };
-  }();
-  check(url);
-  return valid;
-};
+      }
+    }, _callee, undefined, [[0, 14]]);
+  }));
+  return function imgur(_x) {
+    return ref.apply(this, arguments);
+  };
+}();
 
 //get html
-var oembed = function oembed(url) {
-  var html = void 0;
-  var match = void 0;
-  var specials = (0, _keys2.default)(special);
+var oembed = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(url) {
+    var html, match, specials, i, spec, _ref, j, re, embed;
 
-  //get match
-  for (var i = 0; i < specials.length; i++) {
-    var spec = specials[i];
-    var ref = special[spec];
-    for (var j = 0; j < ref.length; j++) {
-      var re = new RegExp(ref[j]);
-      if (re.test(url)) {
-        match = url[i];
-        break;
-      }
-    }
-    if (match) break;
-  }
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            html = void 0;
+            match = void 0;
+            specials = (0, _keys2.default)(special);
 
-  //if it's a special case, treat it as such -- imgur is a total hack
-  if (match) {
-    switch (match) {
-      //if it's a single image or vid, return this, otherwise oembed the player (kinda ugly)
-      case 'imgur':
-        if (imgur(url)) return '\n        <video loop autoplay poster="' + url + '.jpg" class="Content-iv" controls>\n          <source src="' + url + '.webm" type="video/webm">\n          <source src="' + url + '.mp4" type="video/mp4">\n        </video>';
-        break;
-    }
-  }
+            //get match
 
-  //send request to get oembed html
-  (function () {
-    var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(url) {
-      var content, jresp;
-      return _regenerator2.default.wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _context2.prev = 0;
-              _context2.next = 3;
-              return extract(url);
+            i = 0;
 
-            case 3:
-              content = _context2.sent;
-              _context2.next = 6;
-              return content.json();
-
-            case 6:
-              jresp = _context2.sent;
-
-              html = jresp.html;
-              _context2.next = 13;
+          case 4:
+            if (!(i < specials.length)) {
+              _context3.next = 21;
               break;
+            }
 
-            case 10:
-              _context2.prev = 10;
-              _context2.t0 = _context2['catch'](0);
+            spec = specials[i];
+            _ref = special[spec];
+            j = 0;
 
-              console.log(_context2.t0);
+          case 8:
+            if (!(j < _ref.length)) {
+              _context3.next = 16;
+              break;
+            }
 
-            case 13:
-            case 'end':
-              return _context2.stop();
-          }
+            re = new RegExp(_ref[j]);
+
+            if (!re.test(url)) {
+              _context3.next = 13;
+              break;
+            }
+
+            match = specials[i];
+            return _context3.abrupt('break', 16);
+
+          case 13:
+            j++;
+            _context3.next = 8;
+            break;
+
+          case 16:
+            if (!match) {
+              _context3.next = 18;
+              break;
+            }
+
+            return _context3.abrupt('break', 21);
+
+          case 18:
+            i++;
+            _context3.next = 4;
+            break;
+
+          case 21:
+            if (!match) {
+              _context3.next = 35;
+              break;
+            }
+
+            _context3.t0 = match;
+            _context3.next = _context3.t0 === 'imgur' ? 25 : 35;
+            break;
+
+          case 25:
+            _context3.next = 27;
+            return imgur(url);
+
+          case 27:
+            if (!_context3.sent) {
+              _context3.next = 35;
+              break;
+            }
+
+            _context3.t1 = console;
+            _context3.next = 31;
+            return imgur(url);
+
+          case 31:
+            _context3.t2 = _context3.sent;
+
+            _context3.t1.log.call(_context3.t1, _context3.t2);
+
+            return _context3.abrupt('return', '\n        <video loop autoplay poster="' + url + '.jpg" class="Content-iv" muted controls>\n          <source src="' + url + '.webm" type="video/webm">\n          <source src="' + url + '.mp4" type="video/mp4">\n        </video>');
+
+          case 35:
+
+            //send request to get oembed html
+
+            embed = function () {
+              var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(url) {
+                var extracted, followEmbed, content, resp, jresp;
+                return _regenerator2.default.wrap(function _callee2$(_context2) {
+                  while (1) {
+                    switch (_context2.prev = _context2.next) {
+                      case 0:
+                        extracted = extract(url);
+
+                        if (extracted.oembed) {
+                          _context2.next = 3;
+                          break;
+                        }
+
+                        return _context2.abrupt('return', extracted.html);
+
+                      case 3:
+                        _context2.prev = 3;
+                        followEmbed = extracted.embed;
+                        //attempt to get user
+
+                        _context2.next = 7;
+                        return followEmbed(url);
+
+                      case 7:
+                        content = _context2.sent;
+                        _context2.next = 10;
+                        return content.json();
+
+                      case 10:
+                        resp = _context2.sent;
+                        jresp = JSON.parse(resp.embed);
+                        return _context2.abrupt('return', jresp.html);
+
+                      case 15:
+                        _context2.prev = 15;
+                        _context2.t0 = _context2['catch'](3);
+
+                        console.log(_context2.t0);
+
+                      case 18:
+                      case 'end':
+                        return _context2.stop();
+                    }
+                  }
+                }, _callee2, undefined, [[3, 15]]);
+              }));
+              return function embed(_x3) {
+                return ref.apply(this, arguments);
+              };
+            }();
+
+            _context3.next = 38;
+            return embed(url);
+
+          case 38:
+            return _context3.abrupt('return', _context3.sent);
+
+          case 39:
+          case 'end':
+            return _context3.stop();
         }
-      }, _callee2, undefined, [[0, 10]]);
-    }));
-    return function (_x2) {
-      return ref.apply(this, arguments);
-    };
-  })()(url);
-
-  //we'll run embedded scripts inside iframe after load -- here we're just getting some html
-  return html;
-};
+      }
+    }, _callee3, undefined);
+  }));
+  return function oembed(_x2) {
+    return ref.apply(this, arguments);
+  };
+}();
 
 exports.default = oembed;
 
@@ -5985,7 +6090,7 @@ exports.default = {
   _user: { anonymous: true, username: '', usernames: [] },
 
   //initialize groups
-  _groups: ['/cs/', '/music/', '/vid/', '/bored/'],
+  _groups: ['/cs/', '/music/', '/vid/', '/bored/', '/random/'],
 
   //initialized owned data -- by id [threads and posts]
   _owned: [],
@@ -6079,6 +6184,483 @@ exports.default = {
 };
 
 },{"../config.js":109}],116:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.generateHeadPost = undefined;
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+//creates a head post's html given we have the data
+
+var generateHeadPost = exports.generateHeadPost = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(thread) {
+    var post, threadID, timestamp, postID, headpost;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            post = thread.head;
+            threadID = thread.thread;
+            timestamp = thread.created;
+            postID = post.id;
+            _context.t0 = '\n    <div id="' + threadID + '" class="HeadPost">\n      <header class="Header">\n      ' + generatePostHeadHeader(thread.group, post.author, timestamp, post, true) + '\n      </header>\n      <div class="Content">\n      ';
+            _context.next = 7;
+            return generateContent(post.content, post.contentType);
+
+          case 7:
+            _context.t1 = _context.sent;
+            _context.t2 = _context.t0 + _context.t1;
+            _context.t3 = _context.t2 + '\n      </div>\n      <div class="Body">\n      ';
+            _context.t4 = generateBody(post.body);
+            _context.t5 = _context.t3 + _context.t4;
+            _context.t6 = _context.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
+            _context.next = 15;
+            return generatePostHeadFooter(threadID, _store2.default.user.anonymous);
+
+          case 15:
+            _context.t7 = _context.sent;
+            _context.t8 = _context.t6 + _context.t7;
+            headpost = _context.t8 + '\n      </footer>\n    </div>\n  ';
+            return _context.abrupt('return', headpost);
+
+          case 19:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return function generateHeadPost(_x) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//return html content section --> video or img
+
+var generateContent = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(content, contentType) {
+    var html;
+    return _regenerator2.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            if (!(!content || contentType == "")) {
+              _context2.next = 2;
+              break;
+            }
+
+            return _context2.abrupt('return', "");
+
+          case 2:
+            html = void 0;
+
+            if (!(contentType === 'link')) {
+              _context2.next = 11;
+              break;
+            }
+
+            _context2.next = 6;
+            return (0, _oembed2.default)(content);
+
+          case 6:
+            _context2.t0 = _context2.sent;
+            _context2.t1 = '<div class="Content-frame">' + _context2.t0;
+            html = _context2.t1 + '</div>';
+            _context2.next = 12;
+            break;
+
+          case 11:
+            //treat video and images differently
+            if (contentType.split('/')[0] === 'video') {
+              html = '\n      <video preload="auto" controls="controls" muted class="Content-iv">\n        <source src="' + content + '" type="' + contentType + '">\n      </video>';
+            } else if (contentType == "text") {
+              html = '<h4 class="Content-text">' + content + '</h4>';
+            } else {
+              html = '<img class="Content-img" src="' + content + '">';
+            }
+
+          case 12:
+            return _context2.abrupt('return', '<div class="Content-wrapper">' + html + '</div>');
+
+          case 13:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return function generateContent(_x2, _x3) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//handle body of post
+
+
+//handle footer of thread post (head)
+
+var generatePostHeadFooter = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(thread, anonymous) {
+    var length, footer;
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            length = thread.size - 1;
+            footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + (length || 0) + ' ' + (length != 1 ? 'posts' : 'post') + '</span>\n    </span>\n    <span class="Footer-right">\n      ' + (anonymous ? '' : '<span class="Footer-right-save">save</span>') + '\n      <span class="report space">report</span>\n      <span class="Footer-right-reply space">reply</span>\n      <span class="Footer-open space">open</span>\n    </span>\n  </div>\n  ';
+            return _context3.abrupt('return', footer);
+
+          case 3:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return function generatePostHeadFooter(_x4, _x5) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//handle footer of thread post (head)
+
+
+exports.generatePost = generatePost;
+
+var _threads = require('../ajax/threads.js');
+
+var _store = require('./store.js');
+
+var _store2 = _interopRequireDefault(_store);
+
+var _oembed = require('./oembed.js');
+
+var _oembed2 = _interopRequireDefault(_oembed);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// type Post struct {
+// 	Id          bson.ObjectId   `bson:"_id,omitempty" json:"-"`
+//   SId         string          `bson:"id,omitempty" json:"id"`
+//   Thread      bson.ObjectId   `bson:"thread,omitempty" json:"-"`
+//   Created     time.Time       `bson:"created" json:"created"`
+// 	Author      string          `bson:"author" json:"author"`
+//   AuthorId    bson.ObjectId   `bson:"authorId,omitempty" json:"-"`
+//   Replies     []bson.ObjectId `bson:"replies" json:"replies"`
+//   ResponseTo  []bson.ObjectId `bson:"responseTo" json:"responseTo"`
+//   Content     string          `bson:"content,omitempty" json:"content"`
+//   ContentType string          `bson:"contentType,omitempty" json:"contentType"`
+//   Body        string          `bson:"body" json:"body"`
+// }
+//creates a post's html
+function generatePost(post) {
+  var postID = post.id;
+
+  var headpost = '\n    <div id="' + postID + '" class="HeadPost">\n      <header class="Header">\n      ' + generateHeader(thread.group, thread.author, timestamp, true) + '\n      </header>\n      <div class="Content">\n      ' + generateContent(post.content, post.contentType) + '\n      </div>\n      <div class="Body">\n      ' + generateBody(post.body) + '\n      </div>\n      <footer class="Footer">\n      ' + generatePostHeadFooter(threadID, _store2.default.user.anonymous) + '\n      </footer>\n    </div>';
+
+  return headpost;
+} /**
+   * dom template helpers
+   */
+
+function generateTimestamp(timestamp) {
+  //create & format timestampstring
+  var ampm = '';
+  var time = new Date(timestamp); // timestamp in minutes
+  var hours = time.getHours();
+  var minutes = time.getMinutes();
+  var minutesString = minutes < 10 ? '0' + minutes : '' + minutes;
+  var hour = hours % 12 == 0 ? 12 : hours % 12;
+  hours <= 12 ? ampm = 'AM' : ampm = 'PM';
+  var now = new Date();
+  var date = [time.getMonth() + 1, time.getDate()].join('/');
+  var yr = time.getFullYear();
+  var fullyr = now.getFullYear() === '' + yr ? "" : ('' + yr).slice(2, 4);
+  //formatted timestamp
+  return hour + ':' + minutesString + ampm + ' ' + fullyr;
+}
+
+//generate the header for a post --> don't show replies if head
+function generatePostHeadHeader(group, author, created, head) {
+  //title for each of the posts, replies should be overflow-x
+  return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span class="Head-author">' + author + '</span>\n        -\n        <a class="Head-group">' + group + '</a>\n        -\n        <span class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span class="Head-rm">\n        <span class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
+}
+
+//generate the header for a post --> don't show replies if head
+function generatePostHeader(group, author, created, post, head) {
+  //title for each of the posts, replies should be overflow-x
+  return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span class="Head-author">' + author + '</span>\n        -\n        <span class="Head-contentType">' + (post.contentType !== "" ? post.contentType : 'text') + '</span>\n        -\n        <span class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span class="Head-rm">\n        <span class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
+}function generateBody(str) {
+  if (str) {
+    return '<div class="Body-content">' + parser(str) + '</div>';
+  } else {
+    return '';
+  }
+}function generatePostFooter(replies) {
+  //might make calls in here later -> that's why it's a function
+  var footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + replies + ' replies</span>\n    </span>\n    <span class="Footer-right">\n      <span class="report">\n        report\n      </span>\n      <span class="Footer-right-reply">\n        reply\n      </span>\n    </span>\n  </div>\n  ';
+  return footer;
+}
+
+},{"../ajax/threads.js":107,"./oembed.js":113,"./store.js":115,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],117:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _groups = require('../ajax/groups.js');
+
+var _store = require('../core/store.js');
+
+var _store2 = _interopRequireDefault(_store);
+
+var _groupv = require('./groupv.js');
+
+var _groupv2 = _interopRequireDefault(_groupv);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//init for group controller (or whatever you'd like to call it)
+
+exports.default = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(group, page) {
+    var threads, res, jres, grp;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            threads = void 0;
+            _context.prev = 1;
+            _context.next = 4;
+            return (0, _groups.getGroup)(group, page);
+
+          case 4:
+            res = _context.sent;
+            _context.next = 7;
+            return res.json();
+
+          case 7:
+            jres = _context.sent;
+
+            //get array of threads
+            threads = jres.threads;
+            console.log(threads);
+            _context.next = 15;
+            break;
+
+          case 12:
+            _context.prev = 12;
+            _context.t0 = _context['catch'](1);
+
+            console.log(_context.t0);
+
+          case 15:
+
+            console.log(threads);
+            //group administrator ? -> group settings link
+            //pass threads, along with thread actions
+            //thread actions: save thread, delete ?, nav to thread
+            grp = new _groupv2.default(threads);
+
+            grp.render();
+            grp.bind();
+            return _context.abrupt('return', grp);
+
+          case 20:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, this, [[1, 12]]);
+  }));
+
+  function start(_x, _x2) {
+    return ref.apply(this, arguments);
+  }
+
+  return start;
+}(); /**
+      * group.js is a controller for group (kinda)
+      */
+
+},{"../ajax/groups.js":106,"../core/store.js":115,"./groupv.js":118,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],118:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _helpers = require('../core/helpers.js');
+
+var _oembed = require('../core/oembed.js');
+
+var _oembed2 = _interopRequireDefault(_oembed);
+
+var _template = require('../core/template.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//view for posts & threads
+
+var View = function () {
+
+  //pass in top groups and user -- with username, id, notifications
+
+  function View(threads, auth) {
+    (0, _classCallCheck3.default)(this, View);
+
+
+    //event.keyCode code for enter is 13
+    var ENTER_KEY = 13;
+    this.threads = threads;
+    console.log(this.generateStaticView(this.threads));
+    //setup commands for view actions
+    this.viewCommands = {};
+  }
+
+  //binds events --> mostly delegated events up in here
+
+
+  (0, _createClass3.default)(View, [{
+    key: 'bind',
+    value: function bind() {}
+
+    //generate html
+
+  }, {
+    key: 'generateStaticView',
+    value: function generateStaticView(threads, auth) {
+      var _this = this;
+
+      var getposts = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+          var promises, results;
+          return _regenerator2.default.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  promises = threads.map(function (thread) {
+                    return (0, _template.generateHeadPost)(thread);
+                  });
+                  _context.next = 3;
+                  return _promise2.default.all(promises);
+
+                case 3:
+                  results = _context.sent;
+                  return _context.abrupt('return', results.join(''));
+
+                case 5:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, _this);
+        }));
+        return function getposts() {
+          return ref.apply(this, arguments);
+        };
+      }();
+
+      var buildView = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+          var header, list, footer;
+          return _regenerator2.default.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  //main header
+                  header = '\n        <div>\n        </div>\n      ';
+                  //wrapper for listing
+
+                  _context2.next = 3;
+                  return getposts();
+
+                case 3:
+                  _context2.t0 = _context2.sent;
+                  _context2.t1 = '\n      <div class="List">\n      ' + _context2.t0;
+                  list = _context2.t1 + '\n      </div>\n      ';
+
+
+                  //pagination controls
+                  footer = '\n      <div>\n        <a onclick="router.navigate(\'/random/\')"></a>\n        <a onclick="router.navigate(\'/bored/\')"></a>\n      </div>\n      ';
+
+                  //final template for section
+
+                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+
+                case 8:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, _this);
+        }));
+        return function buildView() {
+          return ref.apply(this, arguments);
+        };
+      }();
+
+      return buildView();
+    }
+
+    //bake html into view
+
+  }, {
+    key: 'render',
+    value: function render() {
+      var tmp = this.generateStaticView(this.threads);
+      tmp.then(function (tmp) {
+        return (0, _helpers.$id)('main').innerHTML = tmp;
+      });
+    }
+  }]);
+  return View;
+}(); /**
+      * groupv.js is the view for the group
+      */
+
+
+exports.default = View;
+
+},{"../core/helpers.js":111,"../core/oembed.js":113,"../core/template.js":116,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}],119:[function(require,module,exports){
 'use strict';
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -6182,7 +6764,7 @@ window.parser = _parser2.default;
   _router2.default.start();
 }
 
-},{"./ajax/user.js":108,"./core/core.js":110,"./core/oembed.js":113,"./core/parser.js":114,"./core/store.js":115,"./router/router.js":117,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],117:[function(require,module,exports){
+},{"./ajax/user.js":108,"./core/core.js":110,"./core/oembed.js":113,"./core/parser.js":114,"./core/store.js":115,"./router/router.js":120,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],120:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6308,7 +6890,7 @@ exports.default = router;
 
 window.router = router;
 
-},{"../config.js":109,"./routes.js":118}],118:[function(require,module,exports){
+},{"../config.js":109,"./routes.js":121}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6327,9 +6909,24 @@ exports.default = setup;
 
 var _groups = require('../ajax/groups.js');
 
+var _group = require('../group/group.js');
+
+var _group2 = _interopRequireDefault(_group);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //this is where views are set up
+/**
+  Router init function (sets up routes)
+
+  layout:
+          / --> home (pg 0 for /random/)
+          /:group --> grp
+          /t/:thread --> front page threads
+          /:group/:page --> group view for page
+          /:group/t/:thread --> thread view for group
+*/
+
 function setup(router) {
   var _this = this;
 
@@ -6342,6 +6939,7 @@ function setup(router) {
 
   //set up root handler '/'
   router.onRoot(function () {
+    (0, _group2.default)('/random/', 0);
     console.log('get fp ---> /random/');
   });
 
@@ -6409,7 +7007,7 @@ function setup(router) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              group = group ? group : '/';
+              group = '/' + group + '/';
               _context2.next = 3;
               return (0, _groups.getAuth)(group);
 
@@ -6450,7 +7048,7 @@ function setup(router) {
         while (1) {
           switch (_context3.prev = _context3.next) {
             case 0:
-              group = group ? group : '/';
+              group = '/' + group + '/';
               console.log('group');
               _context3.next = 4;
               return (0, _groups.getAuth)(group);
@@ -6471,6 +7069,11 @@ function setup(router) {
               return _context3.abrupt('return', router.navigate('/404'));
 
             case 10:
+              //setup group
+              (0, _group2.default)(group, 0);
+              console.log('get fp ---> /random/');
+
+            case 12:
             case 'end':
               return _context3.stop();
           }
@@ -6481,15 +7084,6 @@ function setup(router) {
       return ref.apply(this, arguments);
     };
   }());
-} /**
-    Router init function (sets up routes)
-  
-    layout:
-            / --> home (pg 0 for /random/)
-            /:group --> grp
-            /t/:thread --> front page threads
-            /:group/:page --> group view for page
-            /:group/t/:thread --> thread view for group
-  */
+}
 
-},{"../ajax/groups.js":106,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}]},{},[116]);
+},{"../ajax/groups.js":106,"../group/group.js":117,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}]},{},[119]);

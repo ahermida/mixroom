@@ -12,7 +12,7 @@ export default {
   _user: {anonymous: true, username:'', usernames: []},
 
   //initialize groups
-  _groups: ['/cs/','/music/','/vid/','/bored/'],
+  _groups: ['/cs/','/music/','/vid/','/bored/', '/random/'],
 
   //initialized owned data -- by id [threads and posts]
   _owned: [],

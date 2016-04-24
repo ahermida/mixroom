@@ -11,16 +11,14 @@ const isNode = config.isNode;
 const apihost = `localhost`;
 const endpoint = '/embed';
 
-const validate = (url) => {
+export const validate = (url) => {
   let pattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
   return pattern.test(url);
 };
 
 const extract = (str) => {
     let oembedUrl, patternMatch;
-    if (!validate(str)) {
-      return `<p class="Content-broken-link">${str}</p>`;
-    }
+
     //tried not to touch this block
     let urls = Object.keys(providers);
     for (let i = 0; i < urls.length; i++) {
@@ -40,25 +38,27 @@ const extract = (str) => {
         break;
       }
     }
-    
+
     if (!oembedUrl) {
       //still a legitimate url, so let's fetch the title
-      return fetch(`http://${apihost}${endpoint}`, {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({ url: str, title: true })
-      });
-    }
+      return {
+        oembed: false,
+        html: `<a href="${str}">${str}</a>`
+      };
 
-    return fetch(`http://${apihost}${endpoint}`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({ url: oembedUrl })
-    });
+    } else {
+
+    return {
+      oembed: true,
+      embed: () => fetch(`http://${apihost}${endpoint}`, {
+          method: 'POST',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          body: JSON.stringify({ url: oembedUrl })
+        })
+    };
+  }
 };
 
 //whietlisted oembed providers
@@ -124,32 +124,31 @@ const special = {
 };
 
 //throws if page gets 404 -- checks if it's a single img vs album
-const imgur = (url) => {
-  let valid = false;
-  const check = async (url) => {
-    try {
-      //translated to a GET Server Side --> only do this for whitelist
-      let im = await fetch(`http://${apihost}${endpoint}`, {
-        method: 'POST',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
-        body: JSON.stringify({ url: `${url}.jpg` })
-      });
-      if (im.status != 200) {
-        valid = false;
-      }
-      valid = true;
-    } catch (e) {
-      valid = false;
+const imgur = async (url) => {
+  try {
+    let ur = /\/gallery\//i;
+    let url = url.replace(ur, '/');
+    //translated to a GET Server Side --> only do this for whitelist
+    let im = await fetch(`http://${apihost}${endpoint}`, {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+      body: JSON.stringify({ url: `${url}.jpg` })
+    });
+    let imj = await im.json();
+    if (imj.success != 200) {
+      return false;
     }
+    return true;
+  } catch (e) {
+    return false;
   }
-  check(url);
   return valid;
 }
 
 //get html
-const oembed = (url) => {
+const oembed = async (url) => {
   let html;
   let match;
   let specials = Object.keys(special);
@@ -161,7 +160,7 @@ const oembed = (url) => {
     for (let j = 0; j < ref.length; j++) {
       let re = new RegExp(ref[j]);
       if (re.test(url)) {
-        match = url[i];
+        match = specials[i];
         break;
       }
     }
@@ -173,29 +172,35 @@ const oembed = (url) => {
     switch (match) {
       //if it's a single image or vid, return this, otherwise oembed the player (kinda ugly)
       case 'imgur':
-      if (imgur(url)) return `
-        <video loop autoplay poster="${url}.jpg" class="Content-iv" controls>
+      if (await imgur(url)) {
+        console.log(await imgur(url));
+        return `
+        <video loop autoplay poster="${url}.jpg" class="Content-iv" muted controls>
           <source src="${url}.webm" type="video/webm">
           <source src="${url}.mp4" type="video/mp4">
         </video>`;
-      break;
+        break;
+      }
     }
   }
 
   //send request to get oembed html
-  (async (url) => {
+  const embed = async (url) => {
+    let extracted = extract(url);
+    if (!extracted.oembed) return extracted.html;
     try {
+      let followEmbed = extracted.embed;
       //attempt to get user
-      let content = await extract(url);
-      let jresp = await content.json();
-      html = jresp.html;
+      let content = await followEmbed(url);
+      let resp = await content.json();
+      let jresp = JSON.parse(resp.embed);
+      return jresp.html;
     } catch (err) {
       console.log(err);
     }
-  })(url);
+  }
 
-  //we'll run embedded scripts inside iframe after load -- here we're just getting some html
-  return html;
+  return await embed(url);
 };
 
 export default oembed;

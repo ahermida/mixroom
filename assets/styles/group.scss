@@ -1,0 +1,65 @@
+iframe {
+  max-width: 100%;
+  display:block;
+}
+
+#Main-container {
+  background-color: #FBEFEF;
+}
+.space {
+  padding: 5px;
+}
+
+.List {
+  overflow-x: hidden;
+}
+.HeadPost {
+  width: 100%;
+  margin: 5px 0px;
+  background-color: #fff;
+}
+.Header, .Footer {
+  padding: 5px 10px;
+}
+.Head-Content {
+
+}
+.Head-author {
+  color: #3b5998;
+}
+
+.Head-group {
+  color: #6879FF;
+}
+
+.Head-rm {
+  color: #CCCCCA;
+  float: right;
+}
+.Content-frame, .Content-text {
+  text-indent: 10px;
+  margin: 5px 0px;
+      /* text-align: center; */
+  font-size: 18px;
+}
+.Content-iv {
+  width: 100%;
+}
+.Body {
+  margin: 10px;
+  width:100%;
+  max-height: 400px;
+}
+.Body-content {
+  min-height: 60px;
+}
+.Footer {
+
+}
+.Footer-left {
+  color: #CCCCCA;
+}
+.Footer-right {
+  float: right;
+  color: #3b5998;
+}

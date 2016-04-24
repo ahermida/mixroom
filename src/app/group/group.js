@@ -7,24 +7,24 @@ import appstore from '../core/store.js'
 import view from './groupv.js';
 
 //init for group controller (or whatever you'd like to call it)
-function start(group, page) {
+export default async function start(group, page) {
   let threads;
-  (async (group, page) => {
-    try {
-      let res = await getGroup(group, page);
-      let jres = await res.json();
-      //get array of threads
-      threads = jres.threads;
-    }
-  })(group, page)
+  try {
+    let res = await getGroup(group, page);
+    let jres = await res.json();
+    //get array of threads
+    threads = jres.threads;
+    console.log(threads);
+  } catch (e) {
+    console.log(e);
+  }
+
+  console.log(threads);
   //group administrator ? -> group settings link
   //pass threads, along with thread actions
   //thread actions: save thread, delete ?, nav to thread
-  const group = new view(threads, auth);
-  group.render();
-  group.bind();
-}
-
-function getHTML(group, page) {
-
+  const grp = new view(threads);
+  grp.render();
+  grp.bind();
+  return grp;
 }

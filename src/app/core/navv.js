@@ -221,7 +221,12 @@ export default class View {
       let $link = $id('TopNav-writer-link-box');
 
       //handle sending the form
-      const handleSend = () => handleSubmit($link.value, $body.value, $group.value, $identity.value);
+      const handleSend = () => {
+				//no posts smaller than 8, yay for arbitrary rules!
+				if ($body.value > 8) return;
+				handleSubmit($link.value, $body.value, $group.value, $identity.value);
+				this._removeWriter();
+			}
 			const handleHide = () => {
 				writerMount.className = "hide";
 				document.body.className = "";

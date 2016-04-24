@@ -100,7 +100,7 @@ export function createThread(grp, bdy, authr, cont, contType, anon) {
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
       group: grp,
-      body: body,
+      body: bdy,
       author: authr,
       content: cont,
       contentType: contType,
