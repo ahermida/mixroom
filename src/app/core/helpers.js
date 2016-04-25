@@ -43,7 +43,8 @@ export function getContext() {
       return '/random/';
     }
   });
-  if (loc[1]) {
+  //checks for /group/t/:here <---
+  if (loc[2]) {
     return 'this thread';
   } else if (loc[0]) {
     return `/${loc[0]}/`;

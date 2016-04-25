@@ -13,11 +13,12 @@ iframe {
 .List {
   overflow-x: hidden;
 }
-.HeadPost {
+.Post, .HeadPost {
   width: 100%;
   margin: 5px 0px;
   background-color: #fff;
 }
+
 .Header, .Footer {
   padding: 5px 10px;
 }
@@ -83,6 +84,7 @@ iframe {
   float: right;
   margin-right: 15px;
 }
+
 #prevpage {
   float: left;
   margin-left: 15px;

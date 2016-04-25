@@ -11,6 +11,7 @@
 
 import {getAuth} from '../ajax/groups.js';
 import grp from '../group/group.js';
+import thrd from '../thread/thread.js';
 //this is where views are set up
 export default function setup(router) {
 
@@ -47,9 +48,9 @@ export default function setup(router) {
     group = group ? group : '/';
     let res = await getAuth(`/${group}/`);
     let resp = await res.json();
-
-    if (!resp.allowed && group != "404") return router.navigate('/404');
-    //setup group once again
+    if (!resp.allowed && group != "/404/") return router.navigate('/404');
+    //setup thread view
+    thrd(thread);
   });
 
   //route for pagination on groups '/:group/:page'
@@ -57,7 +58,7 @@ export default function setup(router) {
     group = `/${group}/`;
     let res = await getAuth(group);
     let resp = await res.json();
-    if (!resp.allowed && group != "404") return router.navigate('/404');
+    if (!resp.allowed && group != "/404/") return router.navigate('/404');
     //setup group once again
     grp(group, ~~page, resp);
   });

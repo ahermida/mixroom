@@ -1,4 +1,4 @@
 export default {
-  api: 'localhost/api',
+  api: `${window.location.host}/api`,
   isNode: typeof window === 'undefined'
 }

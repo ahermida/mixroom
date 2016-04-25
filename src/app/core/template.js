@@ -3,7 +3,6 @@
  */
 
 import { threadLength } from '../ajax/threads.js';
-import store from './store.js';
 import oembed from './oembed.js';
 // type Post struct {
 // 	Id          bson.ObjectId   `bson:"_id,omitempty" json:"-"`
@@ -19,26 +18,29 @@ import oembed from './oembed.js';
 //   Body        string          `bson:"body" json:"body"`
 // }
 //creates a post's html
-export function generatePost(post) {
+export async function generatePost(group, post, user) {
+  const timestamp = post.created;
   const postID = post.id;
+  const owned = Object.keys(user.owned);
 
-  let headpost = `
-    <div id="${postID}" class="HeadPost">
+  let filledpost = `
+    <div id="${postID}" class="Post">
       <header class="Header">
-      ${generateHeader(thread.group, thread.author, timestamp, true)}
+      ${generatePostHeader(group, post.author, timestamp)}
       </header>
       <div class="Content">
-      ${generateContent(post.content, post.contentType)}
+      ${await generateContent(post.content, post.contentType)}
       </div>
       <div class="Body">
       ${generateBody(post.body)}
       </div>
       <footer class="Footer">
-      ${generatePostHeadFooter(threadID, store.user.anonymous)}
+      ${await generatePostFooter(post, owned)}
       </footer>
-    </div>`;
+    </div>
+  `;
 
-  return headpost;
+  return filledpost;
 }
 
 //creates a head post's html given we have the data
@@ -52,7 +54,7 @@ export async function generateHeadPost(thread, user) {
   let headpost = `
     <div id="${threadID}" class="HeadPost">
       <header class="Header">
-      ${generatePostHeadHeader(thread.group, post.author, timestamp, post, true)}
+      ${generatePostHeader(thread.group, post.author, timestamp)}
       </header>
       <div class="Content">
       ${await generateContent(post.content, post.contentType)}
@@ -90,7 +92,7 @@ function generateTimestamp(timestamp) {
 }
 
 //generate the header for a post --> don't show replies if head
-function generatePostHeadHeader(group, author, created, head) {
+function generatePostHeader(group, author, created) {
   //title for each of the posts, replies should be overflow-x
   return `
     <div class="Head-content">
@@ -103,25 +105,6 @@ function generatePostHeadHeader(group, author, created, head) {
       </span>
       <span class="Head-rm">
         <span class="icon-down-open-big"></span>
-      </span>
-    </div>
-  `;
-}
-
-//generate the header for a post --> don't show replies if head
-function generatePostHeader(group, author, created, post, head) {
-  //title for each of the posts, replies should be overflow-x
-  return `
-    <div class="Head-content">
-      <span class="Head-left">
-        <span class="Head-author">${author}</span>
-        -
-        <span class="Head-contentType">${post.contentType !== "" ? post.contentType : 'text'}</span>
-        -
-        <span class="Head-created">${generateTimestamp(created)}</span>
-      </span>
-      <span class="Head-rm">
-        <span data-open="true" class="icon-down-open-big"></span>
       </span>
     </div>
   `;
@@ -160,7 +143,7 @@ function generateBody(str) {
   }
 }
 
-function generateDelete(postId, owned, anonymous) {
+function generateDelete(postId, owned) {
   for (let i = 0; i < owned.length; i++) {
     if (postId === owned[i]) {
       return '<span class="Footer-right-delete space">delete</span>';
@@ -181,7 +164,7 @@ async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) 
     </span>
     <span class="Footer-right" data-post="${postid}" data-thread="${threadid}">
       ${anonymous ? '' : '<span class="Footer-right-save">save</span>'}
-      ${generateDelete(postid, owned, anonymous)}
+      ${generateDelete(postid, owned)}
       <span class="Footer-right-reply space">reply</span>
       <span class="Footer-open space">open</span>
     </span>
@@ -191,7 +174,10 @@ async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) 
 }
 
 //handle footer of thread post (head)
-function generatePostFooter(replies) {
+async function generatePostFooter(post, owned) {
+  let replies = post.replies.length;
+  let postid = post.id;
+
   //might make calls in here later -> that's why it's a function
   let footer = `
   <div class="Footer-content">
@@ -199,13 +185,9 @@ function generatePostFooter(replies) {
       <span class="icon-chat Footer-left-icon"></span>
       <span class="Footer-left-size">${replies} replies</span>
     </span>
-    <span class="Footer-right">
-      <span class="report">
-        report
-      </span>
-      <span class="Footer-right-reply">
-        reply
-      </span>
+    <span class="Footer-right" data-post="${postid}">
+      ${generateDelete(postid, owned)}
+      <span class="Footer-right-reply space">reply</span>
     </span>
   </div>
   `;

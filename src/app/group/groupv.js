@@ -30,10 +30,6 @@ export default class View {
     this.unsaveThread = options.unsaveThread;
     this.deleteThread = options.deleteThread;
 
-    //event.keyCode code for enter is 13
-    const ENTER_KEY = 13;
-
-
      //setup commands for view actions
  		this.viewCommands = {
       reply: (e) => this._reply(e),
@@ -44,7 +40,6 @@ export default class View {
       hidePost: (e) => this._hidePost(e),
       showPost: (e) => this._showPost(e),
       report: (e) => this._reportPost(e),
-      toggle: (e) => this._togglePost(e),
       toggleBody: (e) => this._toggleBody(e),
       nextPage: (e) => this._nextPage(e),
       prevPage: (e) => this._prevPage(e),

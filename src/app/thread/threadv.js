@@ -3,7 +3,7 @@
  */
 import { $id, $on } from '../core/helpers.js';
 import oembed from '../core/oembed.js';
-import { generateHeadPost } from '../core/template.js';
+import { generatePost } from '../core/template.js';
 import { nav } from '../core/core.js';
 import router from '../router/router.js';
 
@@ -11,38 +11,25 @@ import router from '../router/router.js';
 export default class View {
 
    //pass in top groups and user -- with username, id, notifications
- 	constructor(group, threads, auth, page) {
+ 	constructor(thread, user) {
 
+    console.log(thread);
     //set group
-    this.group = group;
-
-    //set threads
-    this.threads = threads;
+    this.thread = thread;
 
     //set auth
-    this.auth = auth;
-
-    //set page
-    this.page = page;
-
-    //event.keyCode code for enter is 13
-    const ENTER_KEY = 13;
-
+    this.user = user;
 
      //setup commands for view actions
  		this.viewCommands = {
       reply: (e) => this._reply(e),
-      open: (e) => this._open(e),
       group: (e) => this._goToGroup(e),
       user: (e) => this._goToUser(e),
-      savePost: (e) => this._savePost(e),
       hidePost: (e) => this._hidePost(e),
       showPost: (e) => this._showPost(e),
       report: (e) => this._reportPost(e),
-      toggle: (e) => this._togglePost(e),
       toggleBody: (e) => this._toggleBody(e),
-      nextPage: (e) => this._nextPage(e),
-      prevPage: (e) => this._prevPage(e)
+      peek: (e) => this._peek(e)
  		};
  	}
 
@@ -51,22 +38,16 @@ export default class View {
 
     //get references (as elements are dynamically rendered)
     let $listing = $id('List');
-    let $prev = $id('prevpage');
-    let $next = $id('nextpage');
 
     //clicks on listing section
     $on($listing, 'click', this._onPostClick.bind(this), false);
-
-    //set up handlers for pagination
-    if ($prev) $on($prev, 'click', this.viewCommands.prevPage.bind(this), false);
-    if ($next) $on($next, 'click', this.viewCommands.nextPage.bind(this), false);
   }
 
   _hidePost(e) {
     e.target.className = 'icon-up-open-big';
     let target = e.target.parentNode;
-    while(target.className != 'HeadPost') {
-      //get headpost & remove the children we want
+    while(target.className != 'Post') {
+      //get post & remove the children we want
       target = target.parentNode;
     }
     Array.prototype.forEach.call(target.childNodes, node => {
@@ -79,10 +60,10 @@ export default class View {
   _showPost(e) {
     e.target.className = 'icon-down-open-big';
     let target = e.target.parentNode;
-    while(target.className != 'HeadPost') {
+    while(target.className != 'Post') {
       target = target.parentNode;
     }
-    //get headpost & show the children we want
+    //get post & show the children we want
     Array.prototype.forEach.call(target.childNodes, node => {
       if (node.className === 'Body' || node.className === 'Content') {
         node.style.display = 'block';
@@ -172,9 +153,9 @@ export default class View {
   }
 
   //generate html
-  generateStaticView(threads, auth) {
+  generateStaticView(thread) {
     const getposts = async () => {
-      let promises = threads.map(thread => generateHeadPost(thread));
+      let promises = thread.posts.map(post => generatePost(thread.group, post, this.user));
       let results = await Promise.all(promises);
       return results.join('');
     };
@@ -196,8 +177,7 @@ export default class View {
       //pagination controls
       const footer = `
       <div class="Main-Footer">
-      ${this.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : ''}
-      ${this.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : ''}
+       <a class="Main-Footer-btn" id="prevpage" href="javascript:;">back</a>
       </div>
       `;
 
@@ -217,7 +197,7 @@ export default class View {
   //bake html into view
   render() {
     let that = this;
-    let tmp = this.generateStaticView(this.threads);
+    let tmp = this.generateStaticView(this.thread);
     tmp.then(tmp => {
       $id('main').innerHTML = tmp;
       that.bind();

@@ -92,7 +92,7 @@ export default function parse(body) {
   htmlbody = htmlbody.replace(italics, '<i class="Body-italics">$1</i>');
 
   //set underline text
-  htmlbody = htmlbody.replace(code, '<span class="Body-code">$1</span>');
+  htmlbody = htmlbody.replace(code, '<code class="Body-code">$1</code>');
 
   //set refs
   htmlbody = htmlbody.replace(ref, '<span class="Body-ref">$1</span>');

@@ -4808,7 +4808,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = {
-  api: 'localhost/api',
+  api: window.location.host + '/api',
   isNode: typeof window === 'undefined'
 };
 
@@ -5152,7 +5152,8 @@ function getContext() {
       return '/random/';
     }
   });
-  if (loc[1]) {
+  //checks for /group/t/:here <---
+  if (loc[2]) {
     return 'this thread';
   } else if (loc[0]) {
     return '/' + loc[0] + '/';
@@ -5664,7 +5665,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 */
 
 var isNode = _config2.default.isNode;
-var apihost = 'localhost';
+var apihost = isNode ? "localhost/" : window.location.host;
 var endpoint = '/embed';
 
 var validate = exports.validate = function validate(url) {
@@ -5926,7 +5927,7 @@ function parse(body) {
   htmlbody = htmlbody.replace(italics, '<i class="Body-italics">$1</i>');
 
   //set underline text
-  htmlbody = htmlbody.replace(code, '<span class="Body-code">$1</span>');
+  htmlbody = htmlbody.replace(code, '<code class="Body-code">$1</code>');
 
   //set refs
   htmlbody = htmlbody.replace(ref, '<span class="Body-ref">$1</span>');
@@ -6090,7 +6091,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.generateHeadPost = undefined;
+exports.generateHeadPost = exports.generatePost = undefined;
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -6103,156 +6104,6 @@ var _keys2 = _interopRequireDefault(_keys);
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-//creates a head post's html given we have the data
-
-var generateHeadPost = exports.generateHeadPost = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(thread, user) {
-    var post, threadID, timestamp, postID, ownedThreads, headpost;
-    return _regenerator2.default.wrap(function _callee$(_context) {
-      while (1) {
-        switch (_context.prev = _context.next) {
-          case 0:
-            post = thread.head;
-            threadID = thread.thread;
-            timestamp = thread.created;
-            postID = post.id;
-            ownedThreads = (0, _keys2.default)(user.owned);
-            _context.t0 = '\n    <div id="' + threadID + '" class="HeadPost">\n      <header class="Header">\n      ' + generatePostHeadHeader(thread.group, post.author, timestamp, post, true) + '\n      </header>\n      <div class="Content">\n      ';
-            _context.next = 8;
-            return generateContent(post.content, post.contentType);
-
-          case 8:
-            _context.t1 = _context.sent;
-            _context.t2 = _context.t0 + _context.t1;
-            _context.t3 = _context.t2 + '\n      </div>\n      <div class="Body">\n      ';
-            _context.t4 = generateBody(post.body);
-            _context.t5 = _context.t3 + _context.t4;
-            _context.t6 = _context.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
-            _context.next = 16;
-            return generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads);
-
-          case 16:
-            _context.t7 = _context.sent;
-            _context.t8 = _context.t6 + _context.t7;
-            headpost = _context.t8 + '\n      </footer>\n    </div>\n  ';
-            return _context.abrupt('return', headpost);
-
-          case 20:
-          case 'end':
-            return _context.stop();
-        }
-      }
-    }, _callee, this);
-  }));
-  return function generateHeadPost(_x, _x2) {
-    return ref.apply(this, arguments);
-  };
-}();
-
-//return html content section --> video or img
-
-var generateContent = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(content, contentType) {
-    var html;
-    return _regenerator2.default.wrap(function _callee2$(_context2) {
-      while (1) {
-        switch (_context2.prev = _context2.next) {
-          case 0:
-            if (!(!content || contentType == "")) {
-              _context2.next = 2;
-              break;
-            }
-
-            return _context2.abrupt('return', "");
-
-          case 2:
-            html = void 0;
-
-            if (!(contentType === 'link')) {
-              _context2.next = 11;
-              break;
-            }
-
-            _context2.next = 6;
-            return (0, _oembed2.default)(content);
-
-          case 6:
-            _context2.t0 = _context2.sent;
-            _context2.t1 = '<div class="Content-frame">' + _context2.t0;
-            html = _context2.t1 + '</div>';
-            _context2.next = 12;
-            break;
-
-          case 11:
-            //treat video and images differently
-            if (contentType.split('/')[0] === 'video') {
-              html = '\n      <video preload="auto" controls="controls" muted class="Content-iv">\n        <source src="' + content + '" type="' + contentType + '">\n      </video>';
-            } else if (contentType == "text") {
-              html = '<h4 class="Content-text">' + content + '</h4>';
-            } else {
-              html = '<img class="Content-img" src="' + content + '">';
-            }
-
-          case 12:
-            return _context2.abrupt('return', '<div class="Content-wrapper">' + html + '</div>');
-
-          case 13:
-          case 'end':
-            return _context2.stop();
-        }
-      }
-    }, _callee2, this);
-  }));
-  return function generateContent(_x3, _x4) {
-    return ref.apply(this, arguments);
-  };
-}();
-
-//handle body of post
-
-
-//handle footer of thread post (head)
-
-var generatePostHeadFooter = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(size, threadid, postid, anonymous, owned) {
-    var length, footer;
-    return _regenerator2.default.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            length = size;
-            footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + (length || 0) + ' ' + (length != 1 ? 'posts' : 'post') + '</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '" data-thread="' + threadid + '">\n      ' + (anonymous ? '' : '<span class="Footer-right-save">save</span>') + '\n      ' + generateDelete(postid, owned, anonymous) + '\n      <span class="Footer-right-reply space">reply</span>\n      <span class="Footer-open space">open</span>\n    </span>\n  </div>\n  ';
-            return _context3.abrupt('return', footer);
-
-          case 3:
-          case 'end':
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  }));
-  return function generatePostHeadFooter(_x5, _x6, _x7, _x8, _x9) {
-    return ref.apply(this, arguments);
-  };
-}();
-
-//handle footer of thread post (head)
-
-
-exports.generatePost = generatePost;
-
-var _threads = require('../ajax/threads.js');
-
-var _store = require('./store.js');
-
-var _store2 = _interopRequireDefault(_store);
-
-var _oembed = require('./oembed.js');
-
-var _oembed2 = _interopRequireDefault(_oembed);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // type Post struct {
 // 	Id          bson.ObjectId   `bson:"_id,omitempty" json:"-"`
@@ -6268,15 +6119,223 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //   Body        string          `bson:"body" json:"body"`
 // }
 //creates a post's html
-function generatePost(post) {
-  var postID = post.id;
+/**
+ * dom template helpers
+ */
 
-  var headpost = '\n    <div id="' + postID + '" class="HeadPost">\n      <header class="Header">\n      ' + generateHeader(thread.group, thread.author, timestamp, true) + '\n      </header>\n      <div class="Content">\n      ' + generateContent(post.content, post.contentType) + '\n      </div>\n      <div class="Body">\n      ' + generateBody(post.body) + '\n      </div>\n      <footer class="Footer">\n      ' + generatePostHeadFooter(threadID, _store2.default.user.anonymous) + '\n      </footer>\n    </div>';
+var generatePost = exports.generatePost = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(group, post, user) {
+    var timestamp, postID, owned, filledpost;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            timestamp = post.created;
+            postID = post.id;
+            owned = (0, _keys2.default)(user.owned);
+            _context.t0 = '\n    <div id="' + postID + '" class="Post">\n      <header class="Header">\n      ' + generatePostHeader(group, post.author, timestamp) + '\n      </header>\n      <div class="Content">\n      ';
+            _context.next = 6;
+            return generateContent(post.content, post.contentType);
 
-  return headpost;
-} /**
-   * dom template helpers
-   */
+          case 6:
+            _context.t1 = _context.sent;
+            _context.t2 = _context.t0 + _context.t1;
+            _context.t3 = _context.t2 + '\n      </div>\n      <div class="Body">\n      ';
+            _context.t4 = generateBody(post.body);
+            _context.t5 = _context.t3 + _context.t4;
+            _context.t6 = _context.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
+            _context.next = 14;
+            return generatePostFooter(post, owned);
+
+          case 14:
+            _context.t7 = _context.sent;
+            _context.t8 = _context.t6 + _context.t7;
+            filledpost = _context.t8 + '\n      </footer>\n    </div>\n  ';
+            return _context.abrupt('return', filledpost);
+
+          case 18:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, this);
+  }));
+  return function generatePost(_x, _x2, _x3) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//creates a head post's html given we have the data
+
+
+var generateHeadPost = exports.generateHeadPost = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(thread, user) {
+    var post, threadID, timestamp, postID, ownedThreads, headpost;
+    return _regenerator2.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            post = thread.head;
+            threadID = thread.thread;
+            timestamp = thread.created;
+            postID = post.id;
+            ownedThreads = (0, _keys2.default)(user.owned);
+            _context2.t0 = '\n    <div id="' + threadID + '" class="HeadPost">\n      <header class="Header">\n      ' + generatePostHeader(thread.group, post.author, timestamp) + '\n      </header>\n      <div class="Content">\n      ';
+            _context2.next = 8;
+            return generateContent(post.content, post.contentType);
+
+          case 8:
+            _context2.t1 = _context2.sent;
+            _context2.t2 = _context2.t0 + _context2.t1;
+            _context2.t3 = _context2.t2 + '\n      </div>\n      <div class="Body">\n      ';
+            _context2.t4 = generateBody(post.body);
+            _context2.t5 = _context2.t3 + _context2.t4;
+            _context2.t6 = _context2.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
+            _context2.next = 16;
+            return generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads);
+
+          case 16:
+            _context2.t7 = _context2.sent;
+            _context2.t8 = _context2.t6 + _context2.t7;
+            headpost = _context2.t8 + '\n      </footer>\n    </div>\n  ';
+            return _context2.abrupt('return', headpost);
+
+          case 20:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, this);
+  }));
+  return function generateHeadPost(_x4, _x5) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//return html content section --> video or img
+
+var generateContent = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(content, contentType) {
+    var html;
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            if (!(!content || contentType == "")) {
+              _context3.next = 2;
+              break;
+            }
+
+            return _context3.abrupt('return', "");
+
+          case 2:
+            html = void 0;
+
+            if (!(contentType === 'link')) {
+              _context3.next = 11;
+              break;
+            }
+
+            _context3.next = 6;
+            return (0, _oembed2.default)(content);
+
+          case 6:
+            _context3.t0 = _context3.sent;
+            _context3.t1 = '<div class="Content-frame">' + _context3.t0;
+            html = _context3.t1 + '</div>';
+            _context3.next = 12;
+            break;
+
+          case 11:
+            //treat video and images differently
+            if (contentType.split('/')[0] === 'video') {
+              html = '\n      <video preload="auto" controls="controls" muted class="Content-iv">\n        <source src="' + content + '" type="' + contentType + '">\n      </video>';
+            } else if (contentType == "text") {
+              html = '<h4 class="Content-text">' + content + '</h4>';
+            } else {
+              html = '<img class="Content-img" src="' + content + '">';
+            }
+
+          case 12:
+            return _context3.abrupt('return', '<div class="Content-wrapper">' + html + '</div>');
+
+          case 13:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return function generateContent(_x6, _x7) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//handle body of post
+
+
+//handle footer of thread post (head)
+
+var generatePostHeadFooter = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(size, threadid, postid, anonymous, owned) {
+    var length, footer;
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            length = size;
+            footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + (length || 0) + ' ' + (length != 1 ? 'posts' : 'post') + '</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '" data-thread="' + threadid + '">\n      ' + (anonymous ? '' : '<span class="Footer-right-save">save</span>') + '\n      ' + generateDelete(postid, owned) + '\n      <span class="Footer-right-reply space">reply</span>\n      <span class="Footer-open space">open</span>\n    </span>\n  </div>\n  ';
+            return _context4.abrupt('return', footer);
+
+          case 3:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this);
+  }));
+  return function generatePostHeadFooter(_x8, _x9, _x10, _x11, _x12) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//handle footer of thread post (head)
+
+
+var generatePostFooter = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(post, owned) {
+    var replies, postid, footer;
+    return _regenerator2.default.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
+            replies = post.replies.length;
+            postid = post.id;
+
+            //might make calls in here later -> that's why it's a function
+
+            footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + replies + ' replies</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '">\n      ' + generateDelete(postid, owned) + '\n      <span class="Footer-right-reply space">reply</span>\n    </span>\n  </div>\n  ';
+            return _context5.abrupt('return', footer);
+
+          case 4:
+          case 'end':
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this);
+  }));
+  return function generatePostFooter(_x13, _x14) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+var _threads = require('../ajax/threads.js');
+
+var _oembed = require('./oembed.js');
+
+var _oembed2 = _interopRequireDefault(_oembed);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function generateTimestamp(timestamp) {
   //create & format timestampstring
@@ -6299,15 +6358,9 @@ function generateTimestamp(timestamp) {
 }
 
 //generate the header for a post --> don't show replies if head
-function generatePostHeadHeader(group, author, created, head) {
+function generatePostHeader(group, author, created) {
   //title for each of the posts, replies should be overflow-x
   return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span class="Head-author">' + author + '</span>\n        -\n        <a class="Head-group">' + group + '</a>\n        -\n        <span class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span class="Head-rm">\n        <span class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
-}
-
-//generate the header for a post --> don't show replies if head
-function generatePostHeader(group, author, created, post, head) {
-  //title for each of the posts, replies should be overflow-x
-  return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span class="Head-author">' + author + '</span>\n        -\n        <span class="Head-contentType">' + (post.contentType !== "" ? post.contentType : 'text') + '</span>\n        -\n        <span class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span class="Head-rm">\n        <span data-open="true" class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
 }function generateBody(str) {
   if (str) {
     return parser(str);
@@ -6316,20 +6369,16 @@ function generatePostHeader(group, author, created, post, head) {
   }
 }
 
-function generateDelete(postId, owned, anonymous) {
+function generateDelete(postId, owned) {
   for (var i = 0; i < owned.length; i++) {
     if (postId === owned[i]) {
       return '<span class="Footer-right-delete space">delete</span>';
     }
   }
   return '<span class="report space">report</span>';
-}function generatePostFooter(replies) {
-  //might make calls in here later -> that's why it's a function
-  var footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + replies + ' replies</span>\n    </span>\n    <span class="Footer-right">\n      <span class="report">\n        report\n      </span>\n      <span class="Footer-right-reply">\n        reply\n      </span>\n    </span>\n  </div>\n  ';
-  return footer;
 }
 
-},{"../ajax/threads.js":107,"./oembed.js":113,"./store.js":115,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],117:[function(require,module,exports){
+},{"../ajax/threads.js":107,"./oembed.js":113,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6605,9 +6654,6 @@ var View = function () {
     this.unsaveThread = options.unsaveThread;
     this.deleteThread = options.deleteThread;
 
-    //event.keyCode code for enter is 13
-    var ENTER_KEY = 13;
-
     //setup commands for view actions
     this.viewCommands = {
       reply: function reply(e) {
@@ -6633,9 +6679,6 @@ var View = function () {
       },
       report: function report(e) {
         return _this._reportPost(e);
-      },
-      toggle: function toggle(e) {
-        return _this._togglePost(e);
       },
       toggleBody: function toggleBody(e) {
         return _this._toggleBody(e);
@@ -7232,20 +7275,13 @@ var _group = require('../group/group.js');
 
 var _group2 = _interopRequireDefault(_group);
 
+var _thread = require('../thread/thread.js');
+
+var _thread2 = _interopRequireDefault(_thread);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //this is where views are set up
-/**
-  Router init function (sets up routes)
-
-  layout:
-          / --> home (pg 0 for /random/)
-          /:group --> grp
-          /t/:thread --> front page threads
-          /:group/:page --> group view for page
-          /:group/t/:thread --> thread view for group
-*/
-
 function setup(router) {
   var _this = this;
 
@@ -7318,7 +7354,7 @@ function setup(router) {
             case 6:
               resp = _context2.sent;
 
-              if (!(!resp.allowed && group != "404")) {
+              if (!(!resp.allowed && group != "/404/")) {
                 _context2.next = 9;
                 break;
               }
@@ -7326,6 +7362,10 @@ function setup(router) {
               return _context2.abrupt('return', router.navigate('/404'));
 
             case 9:
+              //setup thread view
+              (0, _thread2.default)(thread);
+
+            case 10:
             case 'end':
               return _context2.stop();
           }
@@ -7338,8 +7378,6 @@ function setup(router) {
   }());
 
   //route for pagination on groups '/:group/:page'
-
-  //setup group once again
   router.add(/(.*)\/(.*)/, function () {
     var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(group, page) {
       var res, resp;
@@ -7359,7 +7397,7 @@ function setup(router) {
             case 6:
               resp = _context3.sent;
 
-              if (!(!resp.allowed && group != "404")) {
+              if (!(!resp.allowed && group != "/404/")) {
                 _context3.next = 9;
                 break;
               }
@@ -7424,6 +7462,439 @@ function setup(router) {
       return ref.apply(this, arguments);
     };
   }());
-}
+} /**
+    Router init function (sets up routes)
+  
+    layout:
+            / --> home (pg 0 for /random/)
+            /:group --> grp
+            /t/:thread --> front page threads
+            /:group/:page --> group view for page
+            /:group/t/:thread --> thread view for group
+  */
 
-},{"../ajax/groups.js":106,"../group/group.js":117,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}]},{},[119]);
+},{"../ajax/groups.js":106,"../group/group.js":117,"../thread/thread.js":122,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],122:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _threads = require('../ajax/threads.js');
+
+var _store = require('../core/store.js');
+
+var _store2 = _interopRequireDefault(_store);
+
+var _threadv = require('./threadv.js');
+
+var _threadv2 = _interopRequireDefault(_threadv);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//init for group controller (or whatever you'd like to call it)
+
+exports.default = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(threadid) {
+    var res, jres, thread, user, thrd;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            _context.prev = 0;
+            _context.next = 3;
+            return (0, _threads.getThread)(threadid);
+
+          case 3:
+            res = _context.sent;
+            _context.next = 6;
+            return res.json();
+
+          case 6:
+            jres = _context.sent;
+
+            //get array of threads
+            thread = jres;
+            user = {
+              owned: _store2.default.owned,
+              user: _store2.default.user
+            };
+
+            //in thread actions
+
+            thrd = new _threadv2.default(thread, user);
+
+            thrd.render();
+            return _context.abrupt('return', thrd);
+
+          case 14:
+            _context.prev = 14;
+            _context.t0 = _context['catch'](0);
+
+            console.log(_context.t0);
+
+          case 17:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, this, [[0, 14]]);
+  }));
+
+  function start(_x) {
+    return ref.apply(this, arguments);
+  }
+
+  return start;
+}(); /**
+      * group.js is a controller for group (kinda)
+      */
+
+},{"../ajax/threads.js":107,"../core/store.js":115,"./threadv.js":123,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _helpers = require('../core/helpers.js');
+
+var _oembed = require('../core/oembed.js');
+
+var _oembed2 = _interopRequireDefault(_oembed);
+
+var _template = require('../core/template.js');
+
+var _core = require('../core/core.js');
+
+var _router = require('../router/router.js');
+
+var _router2 = _interopRequireDefault(_router);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//view for posts & threads
+
+var View = function () {
+
+  //pass in top groups and user -- with username, id, notifications
+
+  function View(thread, user) {
+    var _this = this;
+
+    (0, _classCallCheck3.default)(this, View);
+
+
+    console.log(thread);
+    //set group
+    this.thread = thread;
+
+    //set auth
+    this.user = user;
+
+    //setup commands for view actions
+    this.viewCommands = {
+      reply: function reply(e) {
+        return _this._reply(e);
+      },
+      group: function group(e) {
+        return _this._goToGroup(e);
+      },
+      user: function user(e) {
+        return _this._goToUser(e);
+      },
+      hidePost: function hidePost(e) {
+        return _this._hidePost(e);
+      },
+      showPost: function showPost(e) {
+        return _this._showPost(e);
+      },
+      report: function report(e) {
+        return _this._reportPost(e);
+      },
+      toggleBody: function toggleBody(e) {
+        return _this._toggleBody(e);
+      },
+      peek: function peek(e) {
+        return _this._peek(e);
+      }
+    };
+  }
+
+  //binds events --> mostly delegated events up in here
+
+
+  (0, _createClass3.default)(View, [{
+    key: 'bind',
+    value: function bind() {
+
+      //get references (as elements are dynamically rendered)
+      var $listing = (0, _helpers.$id)('List');
+
+      //clicks on listing section
+      (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
+    }
+  }, {
+    key: '_hidePost',
+    value: function _hidePost(e) {
+      e.target.className = 'icon-up-open-big';
+      var target = e.target.parentNode;
+      while (target.className != 'Post') {
+        //get post & remove the children we want
+        target = target.parentNode;
+      }
+      Array.prototype.forEach.call(target.childNodes, function (node) {
+        if (node.className === 'Body' || node.className === 'Content') {
+          node.style.display = 'none';
+        }
+      });
+    }
+  }, {
+    key: '_showPost',
+    value: function _showPost(e) {
+      e.target.className = 'icon-down-open-big';
+      var target = e.target.parentNode;
+      while (target.className != 'Post') {
+        target = target.parentNode;
+      }
+      //get post & show the children we want
+      Array.prototype.forEach.call(target.childNodes, function (node) {
+        if (node.className === 'Body' || node.className === 'Content') {
+          node.style.display = 'block';
+        }
+      });
+    }
+  }, {
+    key: '_prevPage',
+    value: function _prevPage(e) {
+      if (page <= 1) _router2.default.navigate(this.group);
+      _router2.default.navigate('' + this.group + --page);
+    }
+  }, {
+    key: '_nextPage',
+    value: function _nextPage(e) {
+      _router2.default.navigate('' + this.group + ++page);
+    }
+
+    //handle post clicks
+
+  }, {
+    key: '_onPostClick',
+    value: function _onPostClick(e) {
+      var target = e.target;
+      switch (target.className) {
+        case 'Head-author':
+          if (target.textContent !== 'Anonymous') _router2.default.navigate('/user/${target.textContent}');
+          break;
+        case 'Head-group':
+          this.viewCommands.group(e);
+          break;
+        case 'icon-down-open-big':
+          //hacky solution to delegation tactics
+          this.viewCommands.hidePost(e);
+          break;
+        case 'icon-up-open-big':
+          //hacky solution to delegation tactics
+          this.viewCommands.showPost(e);
+          break;
+        case 'Body':
+          this.viewCommands.toggleBody(e);
+          break;
+        case 'report space':
+          this.viewCommands.report(e);
+          break;
+        case 'Footer-right-save space':
+          this.viewCommands.savePost(e);
+          break;
+        case 'Footer-right-reply space':
+          this.viewCommands.reply(e);
+          break;
+        case 'Footer-open space':
+          this.viewCommands.open(e);
+          break;
+
+      }
+    }
+
+    //reply to post
+
+  }, {
+    key: '_reply',
+    value: function _reply(e) {
+      _core.nav.openWriter(e.target.parentNode.dataset.thread);
+    }
+
+    //open thread
+
+  }, {
+    key: '_open',
+    value: function _open(e) {
+      _router2.default.navigate(this.group + 't/' + e.target.parentNode.dataset.thread);
+    }
+
+    //go to group
+
+  }, {
+    key: '_goToGroup',
+    value: function _goToGroup(e) {
+      _router2.default.navigate(e.target.textContent);
+    }
+
+    //go to user
+
+  }, {
+    key: '_goToUser',
+    value: function _goToUser(e) {
+      if (e.target.textContent !== 'Anonymous') _router2.default.navigate('/user/${e.target.textContent}');
+    }
+
+    //save post
+
+  }, {
+    key: '_savePost',
+    value: function _savePost(e) {
+      e.target.style.color = e.target.style.color === '#6879FF' ? '#6879FF' : '#3b5998';
+    }
+
+    //report post
+
+  }, {
+    key: '_reportPost',
+    value: function _reportPost(e) {
+      if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
+      e.target.innerHTML = 'report';
+    }
+  }, {
+    key: '_toggleBody',
+    value: function _toggleBody(e) {
+      e.target.maxHeight = e.target.maxHeight === '400px' ? '1000px' : '400px';
+    }
+
+    //generate html
+
+  }, {
+    key: 'generateStaticView',
+    value: function generateStaticView(thread) {
+      var _this2 = this;
+
+      var getposts = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+          var promises, results;
+          return _regenerator2.default.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  promises = thread.posts.map(function (post) {
+                    return (0, _template.generatePost)(thread.group, post, _this2.user);
+                  });
+                  _context.next = 3;
+                  return _promise2.default.all(promises);
+
+                case 3:
+                  results = _context.sent;
+                  return _context.abrupt('return', results.join(''));
+
+                case 5:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, _this2);
+        }));
+        return function getposts() {
+          return ref.apply(this, arguments);
+        };
+      }();
+
+      var buildView = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+          var header, list, footer;
+          return _regenerator2.default.wrap(function _callee2$(_context2) {
+            while (1) {
+              switch (_context2.prev = _context2.next) {
+                case 0:
+                  //main header
+                  header = '\n        <div id="Main-Header">\n\n        </div>\n      ';
+                  //wrapper for listing
+
+                  _context2.next = 3;
+                  return getposts();
+
+                case 3:
+                  _context2.t0 = _context2.sent;
+                  _context2.t1 = '\n      <div id="List" class="List">\n      ' + _context2.t0;
+                  list = _context2.t1 + '\n      </div>\n      ';
+
+
+                  //pagination controls
+                  footer = '\n      <div class="Main-Footer">\n       <a class="Main-Footer-btn" id="prevpage" href="javascript:;">back</a>\n      </div>\n      ';
+
+                  //final template for section
+
+                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+
+                case 8:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, _this2);
+        }));
+        return function buildView() {
+          return ref.apply(this, arguments);
+        };
+      }();
+
+      return buildView();
+    }
+
+    //bake html into view
+
+  }, {
+    key: 'render',
+    value: function render() {
+      var that = this;
+      var tmp = this.generateStaticView(this.thread);
+      tmp.then(function (tmp) {
+        (0, _helpers.$id)('main').innerHTML = tmp;
+        that.bind();
+      });
+    }
+  }]);
+  return View;
+}(); /**
+      * groupv.js is the view for the group
+      */
+
+
+exports.default = View;
+
+},{"../core/core.js":110,"../core/helpers.js":111,"../core/oembed.js":113,"../core/template.js":116,"../router/router.js":120,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}]},{},[119]);

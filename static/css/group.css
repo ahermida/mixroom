@@ -11,7 +11,7 @@ iframe {
 .List {
   overflow-x: hidden; }
 
-.HeadPost {
+.Post, .HeadPost {
   width: 100%;
   margin: 5px 0px;
   background-color: #fff; }

@@ -8,7 +8,7 @@ import fetch from 'isomorphic-fetch';
 import config from '../config.js';
 
 const isNode = config.isNode;
-const apihost = `localhost`;
+const apihost = isNode ? "localhost/": window.location.host;
 const endpoint = '/embed';
 
 export const validate = (url) => {
