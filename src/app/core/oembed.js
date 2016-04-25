@@ -116,73 +116,10 @@ const providers = {
     ]
 };
 
-//non-oembed links
-const special = {
-  "imgur":[
-      "^http(?:s)?://(?:www\\.)?imgur\\.com/gallery/([^#?/]+)(?:.+)?$"
-  ]
-};
-
-//throws if page gets 404 -- checks if it's a single img vs album
-const imgur = async (url) => {
-  try {
-    let ur = /\/gallery\//i;
-    let url = url.replace(ur, '/');
-    //translated to a GET Server Side --> only do this for whitelist
-    let im = await fetch(`http://${apihost}${endpoint}`, {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json'
-      }),
-      body: JSON.stringify({ url: `${url}.jpg` })
-    });
-    let imj = await im.json();
-    if (imj.success != 200) {
-      return false;
-    }
-    return true;
-  } catch (e) {
-    return false;
-  }
-  return valid;
-}
-
 //get html
 const oembed = async (url) => {
   let html;
   let match;
-  let specials = Object.keys(special);
-
-  //get match
-  for (let i = 0; i < specials.length; i++) {
-    let spec = specials[i];
-    let ref = special[spec];
-    for (let j = 0; j < ref.length; j++) {
-      let re = new RegExp(ref[j]);
-      if (re.test(url)) {
-        match = specials[i];
-        break;
-      }
-    }
-    if (match) break;
-  }
-
-  //if it's a special case, treat it as such -- imgur is a total hack
-  if (match) {
-    switch (match) {
-      //if it's a single image or vid, return this, otherwise oembed the player (kinda ugly)
-      case 'imgur':
-      if (await imgur(url)) {
-        console.log(await imgur(url));
-        return `
-        <video loop autoplay poster="${url}.jpg" class="Content-iv" muted controls>
-          <source src="${url}.webm" type="video/webm">
-          <source src="${url}.mp4" type="video/mp4">
-        </video>`;
-        break;
-      }
-    }
-  }
 
   //send request to get oembed html
   const embed = async (url) => {

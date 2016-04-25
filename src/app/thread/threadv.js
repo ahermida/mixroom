@@ -11,7 +11,7 @@ import router from '../router/router.js';
 export default class View {
 
    //pass in top groups and user -- with username, id, notifications
- 	constructor(group, threads, user, page, options) {
+ 	constructor(group, threads, auth, page) {
 
     //set group
     this.group = group;
@@ -19,16 +19,11 @@ export default class View {
     //set threads
     this.threads = threads;
 
-    //set user data
-    this.user = user;
+    //set auth
+    this.auth = auth;
 
     //set page
     this.page = page;
-
-    //utility functions for thread operations
-    this.saveThread = options.saveThread;
-    this.unsaveThread = options.unsaveThread;
-    this.deleteThread = options.deleteThread;
 
     //event.keyCode code for enter is 13
     const ENTER_KEY = 13;
@@ -47,8 +42,7 @@ export default class View {
       toggle: (e) => this._togglePost(e),
       toggleBody: (e) => this._toggleBody(e),
       nextPage: (e) => this._nextPage(e),
-      prevPage: (e) => this._prevPage(e),
-      delete: (e) => this._deletePost(e)
+      prevPage: (e) => this._prevPage(e)
  		};
  	}
 
@@ -66,14 +60,6 @@ export default class View {
     //set up handlers for pagination
     if ($prev) $on($prev, 'click', this.viewCommands.prevPage.bind(this), false);
     if ($next) $on($next, 'click', this.viewCommands.nextPage.bind(this), false);
-  }
-
-  _postOwned(id) {
-    //checks if we own post (so we can add delete when we render)
-    if (this.user.auth.mod) return true;
-    this.user.owned.forEach((currId) => {
-      if (currId === id) return
-    });
   }
 
   _hidePost(e) {
@@ -105,12 +91,12 @@ export default class View {
   }
 
   _prevPage(e) {
-    if (this.page <= 1) return router.navigate(this.group);
-    router.navigate(`${this.group}${--this.page}`);
+    if (page <= 1) router.navigate(this.group);
+    router.navigate(`${this.group}${--page}`);
   }
 
   _nextPage(e) {
-    router.navigate(`${this.group}${++this.page}`);
+    router.navigate(`${this.group}${++page}`);
   }
 
   //handle post clicks
@@ -135,27 +121,18 @@ export default class View {
       this.viewCommands.toggleBody(e);
       break;
       case 'report space':
-      //sends request off to dev server
       this.viewCommands.report(e);
       break;
       case 'Footer-right-save space':
-      //saves and unsaves posts
       this.viewCommands.savePost(e);
       break;
       case 'Footer-right-reply space':
-      //opens writer with thread as target
       this.viewCommands.reply(e);
       break;
       case 'Footer-open space':
-      //opens thread
       this.viewCommands.open(e);
       break;
-      case 'Footer-right-delete space':
-      //deletes thread
-      this.viewCommands.delete(e);
-      break;
-      default:
-      this._cancelDelete(e);
+
     }
   }
 
@@ -181,61 +158,13 @@ export default class View {
 
   //save post
   _savePost(e) {
-    if (e.target.style.color === '#6879FF') {
-      //unlike
-      e.target.style.color = '#3b5998';
-      let thread = e.target.parentNode.dataset.thread;
-      unsavePost(thread);
-    } else {
-      //like
-      e.target.style.color = '#6879FF';
-      let thread = e.target.parentNode.dataset.thread;
-      savePost(thread);
-    }
+    e.target.style.color = e.target.style.color === '#6879FF' ? '#6879FF' : '#3b5998';
   }
 
   //report post
   _reportPost(e) {
-
-    //TODO: set up dev server and shoot off requests here
     if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
     e.target.innerHTML = 'report';
-  }
-
-  //cancel delete
-  _cancelDelete() {
-    //only one deleteable at a time
-    let pending = $id('delete-pending');
-    if (pending) {
-      pending.innerHTML = 'delete';
-      pending.id = '';
-    }
-  }
-
-  //delete post
-  _deletePost(e) {
-    let content = e.target.innerHTML;
-    if (content === 'delete') {
-      this._cancelDelete();
-      e.target.innerHTML = "sure?"
-      e.target.id = 'delete-pending';
-      return;
-    }
-    let thread = e.target.parentNode.dataset.thread;
-    let post = e.target.parentNode.dataset.post;
-    console.log(thread);
-    let match;
-    let owned = Object.keys(this.user.owned);
-    for (let i = 0; i < owned.length; i++) {
-      if (post === owned[i]) {
-        match = owned[i];
-      }
-    }
-    console.log(match);
-    if (match) this.deleteThread(thread, this.user.owned[match]);
-
-    //reload this page (but not refresh)
-    router.check();
   }
 
   _toggleBody(e) {
@@ -243,9 +172,9 @@ export default class View {
   }
 
   //generate html
-  generateStaticView(threads, user) {
+  generateStaticView(threads, auth) {
     const getposts = async () => {
-      let promises = threads.map(thread => generateHeadPost(thread, user));
+      let promises = threads.map(thread => generateHeadPost(thread));
       let results = await Promise.all(promises);
       return results.join('');
     };
@@ -288,7 +217,7 @@ export default class View {
   //bake html into view
   render() {
     let that = this;
-    let tmp = this.generateStaticView(this.threads, this.user);
+    let tmp = this.generateStaticView(this.threads);
     tmp.then(tmp => {
       $id('main').innerHTML = tmp;
       that.bind();

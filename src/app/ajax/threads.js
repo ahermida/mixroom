@@ -120,19 +120,32 @@ export function createThread(grp, bdy, authr, cont, contType, anon) {
  *   }
  * }
  */
-export function rmThread(thrd) {
+export function rmThread(thrd, id) {
   let endpoint = "/thread/modify";
-
-  //Send Request
-  return fetch(`http://${apihost}${endpoint}`, {
-    method: 'DELETE',
-    mode: 'no-cors',
-    redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
-    body: JSON.stringify({
-      thread: thrd
-    })
-  });
+  if (!id) {
+    //Send Request
+    return fetch(`http://${apihost}${endpoint}`, {
+      method: 'DELETE',
+      mode: 'cors',
+      redirect: 'error',
+      headers: new Headers(makeHeaders(token, true)),
+      body: JSON.stringify({
+        thread: thrd
+      })
+    });
+  } else {
+    //Send Request
+    return fetch(`http://${apihost}${endpoint}`, {
+      method: 'DELETE',
+      mode: 'cors',
+      redirect: 'error',
+      headers: new Headers(makeHeaders(token, true)),
+      body: JSON.stringify({
+        thread: thrd,
+        id: id
+      })
+    });
+  }
 }
 
 /**

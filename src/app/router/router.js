@@ -79,6 +79,7 @@ const router = {
     this.check();
     const check = () => this.check();
     document.addEventListener("route", check);
+    window.addEventListener("popstate", check)
     return this;
   },
 

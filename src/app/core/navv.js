@@ -3,7 +3,7 @@
  */
 
 import {$id, $on, getContext} from './helpers.js';
-//import router from 'router.js';
+import router from '../router/router.js';
 
 export default class View {
 
@@ -13,6 +13,10 @@ export default class View {
     //get functions from options
     this.handleUpload = options.handleUpload;
     this.handleSubmit = options.handleSubmit;
+
+		//set data
+		this.groups = groups;
+		this.user = user;
 
     //event.keyCode code for enter is 13
     const ENTER_KEY = 13;
@@ -39,8 +43,11 @@ export default class View {
 
     //setup commands for view actions
 		this.viewCommands = {
+			openWriter: (to) => {
+				this._showWriter(groups, user, this.handleUpload, this.handleSubmit, to);
+			},
       showWriter: (e) => {
-        e.preventDefault();
+       	e.preventDefault();
         this._showWriter(groups, user, this.handleUpload, this.handleSubmit);
       },
       removeWriter: (e) => {
@@ -104,6 +111,10 @@ export default class View {
     $on(this.$menu, 'click', this.viewCommands.showMenu, false);
   }
 
+	openWriter(to) {
+    this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
+	}
+
 	_showSearch() {
     //remove menu
     this._removeMenu();
@@ -153,10 +164,10 @@ export default class View {
     this.$searchboxBg.className = "hide"
   }
 
-  _showWriter(groups, user, handleUpload, handleSubmit) {
+  _showWriter(groups, user, handleUpload, handleSubmit, to = '') {
     //remove menu
     this._removeMenu();
-		const wm = $id("TopNav-writer-mount")
+		const wm = $id("TopNav-writer-mount");
     if (!wm) {
 			//stop scroll on body
 			document.body.className = 'menu-active';
@@ -172,6 +183,12 @@ export default class View {
       const getUsernames = (usernames) => {
         return usernames.map((username) => `<option>${username}</option>`).join(" ");
       };
+
+			const cutoff = (sendTo) => {
+				if (sendTo.length > 10) {
+					return `${sendTo.substring(0, 12)}...`;
+				}
+			};
 
       //show post submission form
       const writer = `
@@ -198,7 +215,10 @@ export default class View {
         </div>
         <div id="TopNav-writer-foot">
           <span id="TopNav-writer-group">Posting to:
-            <select id="TopNav-writer-select"><option>${getContext()}</option>${getTopOptions(groups)}</select></span>
+            <select id="TopNav-writer-select">
+						<option>${to != '' ? cutoff(to) : getContext()}
+						</option>${getTopOptions(groups)}
+						</select></span>
           <span id="TopNav-writer-send">send</span>
         </div>
       `;
@@ -223,14 +243,18 @@ export default class View {
       //handle sending the form
       const handleSend = () => {
 				//no posts smaller than 8, yay for arbitrary rules!
-				if ($body.value > 8) return;
-				handleSubmit($link.value, $body.value, $group.value, $identity.value);
+				if ($body.value.length < 8 && $link.value != '') return;
+				//set the targeted group to the full 'to' value, as opposed to the cutoff version
+				const grp = $group.value === cutoff(to) ? to : $group.value;
+				handleSubmit($link.value, $body.value, grp, $identity.value);
 				this._removeWriter();
-			}
+				router.check();
+			};
+
 			const handleHide = () => {
 				writerMount.className = "hide";
 				document.body.className = "";
-			}
+			};
 
 			function handleContent(e) {
 				this.handleUpload($fileSubmit.files[0]);
@@ -298,7 +322,7 @@ export default class View {
 					<span id="TopNav-dropdown-logout">logout</span>
 					`;
         }
-    }
+    };
 
     //show menu -- submenu simply has class hide
     const menu = `

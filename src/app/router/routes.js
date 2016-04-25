@@ -22,9 +22,10 @@ export default function setup(router) {
   });
 
   //set up root handler '/'
-  router.onRoot(() => {
-    grp('/random/', 0);
-    console.log('get fp ---> /random/');
+  router.onRoot(async () => {
+    let res = await getAuth('/random/');
+    let resp = await res.json();
+    grp('/random/', 0, resp);
   });
 
   //route for user view and settings '/user/:username'
@@ -43,10 +44,10 @@ export default function setup(router) {
 
   //route for pagination on groups '/:group/:page'
   router.add(/(.*)\/t\/(.*)/, async (group, thread) => {
-    console.log('thread');
     group = group ? group : '/';
-    let res = await getAuth(group);
+    let res = await getAuth(`/${group}/`);
     let resp = await res.json();
+
     if (!resp.allowed && group != "404") return router.navigate('/404');
     //setup group once again
   });
@@ -58,17 +59,16 @@ export default function setup(router) {
     let resp = await res.json();
     if (!resp.allowed && group != "404") return router.navigate('/404');
     //setup group once again
+    grp(group, ~~page, resp);
   });
 
   //route for group (page:0) '/:group' || if integer --> pagination for FP
   router.add(/(.*)/, async (group) => {
     group = `/${group}/`;
-    console.log('group');
     let res = await getAuth(group);
     let resp = await res.json();
-    if (!resp.allowed && group != "404") return router.navigate('/404');
+    if (!resp.allowed && group != "/404/") return router.navigate('/404');
     //setup group
-    grp(group, 0);
-    console.log('get fp ---> /random/');
+    grp(group, 0, resp);
   });
 }

@@ -46,15 +46,18 @@ iframe {
   width: 100%;
 }
 .Body {
-  margin: 10px;
   width:100%;
   max-height: 400px;
 }
 .Body-content {
+  margin: 10px;
   min-height: 60px;
 }
 .Footer {
 
+}
+.Footer-content {
+  padding-bottom: 5px;
 }
 .Footer-left {
   color: #CCCCCA;
@@ -62,4 +65,25 @@ iframe {
 .Footer-right {
   float: right;
   color: #3b5998;
+}
+.Main-Footer {
+  background-color: #FCFCFB;
+}
+.Main-Footer-btn {
+  font-size: 16px;
+  padding: 5px 10px;
+  margin: 5px;
+  width: 75px;
+  text-align: center;
+  background-color: #5FB5FF;
+  color: white !important;
+}
+
+#nextpage {
+  float: right;
+  margin-right: 15px;
+}
+#prevpage {
+  float: left;
+  margin-left: 15px;
 }

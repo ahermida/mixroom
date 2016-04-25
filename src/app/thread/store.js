@@ -1,5 +1,5 @@
 /**
- * Store for core actions (particularly those caused by nav)
+ * Store for thread -- helps to model posts
  */
 
 import config from '../config.js';
@@ -9,26 +9,10 @@ const isNode = config.isNode;
 //export appStore, handles general user data
 export default {
   //initialize user as anon
-  _user: {anonymous: true, username:'', usernames: []},
-
-  //initialize groups
-  _groups: ['/cs/','/music/','/vid/','/bored/', '/random/'],
-
-  //initialized owned data -- by id -- ONLY HEAD POSTS & POSTS
-  _owned: (() => {
-   let owned = window.localStorage.getItem('_owned');
-   if (owned) return JSON.parse(owned);
-   return {};
-  })(),
-
-  //initialize upload data
-  _uploadData: {
-    contentType: "",
-    content: ''
-  },
+  _posts: []
 
   //set user data
-  set user (user) {
+  set threads (thrds) {
     if (user.anonymous) {
       this._user = {
         anonymous: true,
@@ -41,8 +25,7 @@ export default {
         username: user.username,
         anonymous: user.anonymous,
         usernames: user.usernames,
-        notifications: user.notifications,
-        saved: user.saved
+        notifications: user.notifications
       };
     }
   },
@@ -67,12 +50,12 @@ export default {
   },
 
   //push data to owned ids
-  set owned(opts) {
-    this._owned[opts.postId] = opts.id;
+  set owned(id) {
+    this._owned.push(id);
+    if (!this.isNode) {
 
-    if (!isNode) {
       //set owned in localStorage (the cheap way)
-      window.localStorage._owned = JSON.stringify(this._owned);
+      localStorage._owned = this._owned;
     }
   },
 

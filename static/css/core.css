@@ -16,6 +16,7 @@ label > * {
   pointer-events: none; }
 
 select {
+  outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   text-indent: 1px;

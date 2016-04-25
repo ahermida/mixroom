@@ -30,7 +30,6 @@ async function handleUpload(file) {
       content: resp.url,
       contentType: file.type
     };
-    console.log(file.type);
   } catch (e) {
     console.log(e);
   }
@@ -87,7 +86,10 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
       let resp = await res.json();
 
       //send this on delete or edit if we do so
-      store.owned = resp.id;
+      store.owned = {
+        postId: resp.postId,
+        id: resp.id
+      }
 
       //clear upload in store
       store.upload = false;
@@ -105,7 +107,7 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
     //get path (thread id)
     let getPath = () => location.pathname.split('/');
     let path = getPath();
-    let thread = path[path.length - 1];
+    let thread = to === 'this thread' ? path[path.length - 1] : to;
 
     //get references in body
     const responseTo = getReferences(body);
@@ -117,10 +119,13 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
       const res = await post(thread, identity, body, cont, responseTo, anon, contentType);
 
       //res isn't in json format
-      resp = await res.json();
+      let resp = await res.json();
 
       //send this on delete or edit if we do so
-      store.owned = resp.id;
+      store.owned = {
+        postId: resp.postId,
+        id: resp.id
+      }
 
       //clear upload in store
       store.upload = false;
@@ -133,18 +138,20 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
   }
 }
 
+//options are functions passed into view handlers
+const options = {
+  'handleUpload': handleUpload,
+  'handleSubmit': handleSubmit
+};
+
+//create view obj
+export const nav = new view(store.groups, store.user, options);;
+
+//initialize the core app
 export default function start() {
+
   //adjust click events for mobile
   fastclick(document.body);
-
-  //options are functions passed into view handlers
-  const options = {
-    'handleUpload': handleUpload,
-    'handleSubmit': handleSubmit
-  };
-
-  //create view
-  const nav = new view(store.groups, store.user, options);
 
   //bind handlers
   nav.bind();

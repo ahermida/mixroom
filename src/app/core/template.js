@@ -42,11 +42,12 @@ export function generatePost(post) {
 }
 
 //creates a head post's html given we have the data
-export async function generateHeadPost(thread) {
+export async function generateHeadPost(thread, user) {
   const post = thread.head;
   const threadID = thread.thread;
   const timestamp = thread.created;
   const postID = post.id;
+  const ownedThreads = Object.keys(user.owned);
 
   let headpost = `
     <div id="${threadID}" class="HeadPost">
@@ -60,7 +61,7 @@ export async function generateHeadPost(thread) {
       ${generateBody(post.body)}
       </div>
       <footer class="Footer">
-      ${await generatePostHeadFooter(threadID, store.user.anonymous)}
+      ${await generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads)}
       </footer>
     </div>
   `;
@@ -76,13 +77,16 @@ function generateTimestamp(timestamp) {
   let minutes = time.getMinutes();
   let minutesString = (minutes < 10) ? `0${minutes}` : `${minutes}`
   let hour = ((hours % 12) == 0) ? 12 : hours % 12;
-  hours <= 12 ? ampm = 'AM' : ampm = 'PM';
+  hours <= 12 ? ampm = 'am' : ampm = 'pm';
   let now = new Date();
-  let date = [time.getMonth() + 1, time.getDate()].join('/');
+  let date = '';
+  if (time.getDate() != now.getDate()) {
+    date = [time.getMonth() + 1, time.getDate()].join('/');
+  }
   let yr = time.getFullYear();
-  let fullyr = now.getFullYear() === `${yr}` ? "" : `${yr}`.slice(2,4);
+  let fullyr = now.getFullYear() === yr ?  "" : `${yr}`.slice(2,4);
   //formatted timestamp
-  return `${hour}:${minutesString}${ampm} ${fullyr}`;
+  return `${hour}:${minutesString}${ampm} ${date} ${fullyr}`;
 }
 
 //generate the header for a post --> don't show replies if head
@@ -117,7 +121,7 @@ function generatePostHeader(group, author, created, post, head) {
         <span class="Head-created">${generateTimestamp(created)}</span>
       </span>
       <span class="Head-rm">
-        <span class="icon-down-open-big"></span>
+        <span data-open="true" class="icon-down-open-big"></span>
       </span>
     </div>
   `;
@@ -150,25 +154,34 @@ async function generateContent(content, contentType) {
 //handle body of post
 function generateBody(str) {
   if (str) {
-    return `<div class="Body-content">${parser(str)}</div>`
+    return parser(str);
   } else {
     return '';
   }
 }
 
+function generateDelete(postId, owned, anonymous) {
+  for (let i = 0; i < owned.length; i++) {
+    if (postId === owned[i]) {
+      return '<span class="Footer-right-delete space">delete</span>';
+    }
+  }
+  return '<span class="report space">report</span>';
+}
+
 
 //handle footer of thread post (head)
-async function generatePostHeadFooter(thread, anonymous) {
-  let length = thread.size - 1;
+async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) {
+  let length = size;
   let footer = `
   <div class="Footer-content">
     <span class="Footer-left">
       <span class="icon-chat Footer-left-icon"></span>
       <span class="Footer-left-size">${length || 0} ${length != 1 ? 'posts' : 'post'}</span>
     </span>
-    <span class="Footer-right">
+    <span class="Footer-right" data-post="${postid}" data-thread="${threadid}">
       ${anonymous ? '' : '<span class="Footer-right-save">save</span>'}
-      <span class="report space">report</span>
+      ${generateDelete(postid, owned, anonymous)}
       <span class="Footer-right-reply space">reply</span>
       <span class="Footer-open space">open</span>
     </span>
