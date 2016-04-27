@@ -120,7 +120,7 @@ async function generateContent(content, contentType) {
     //treat video and images differently
     if (contentType.split('/')[0] === 'video') {
       html = `
-      <video preload="auto" controls="controls" muted class="Content-iv">
+      <video controls="controls" muted class="Content-iv">
         <source src="${content}" type="${contentType}">
       </video>`;
     } else if (contentType == "text") {

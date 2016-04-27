@@ -6249,7 +6249,7 @@ var generateContent = function () {
           case 11:
             //treat video and images differently
             if (contentType.split('/')[0] === 'video') {
-              html = '\n      <video preload="auto" controls="controls" muted class="Content-iv">\n        <source src="' + content + '" type="' + contentType + '">\n      </video>';
+              html = '\n      <video controls="controls" muted class="Content-iv">\n        <source src="' + content + '" type="' + contentType + '">\n      </video>';
             } else if (contentType == "text") {
               html = '<h4 class="Content-text">' + content + '</h4>';
             } else {
@@ -6960,7 +6960,7 @@ var View = function () {
 
       var buildView = function () {
         var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-          var header, list, footer;
+          var header, list, footer, desktop;
           return _regenerator2.default.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
@@ -6981,11 +6981,14 @@ var View = function () {
                   //pagination controls
                   footer = '\n      <div class="Main-Footer">\n      ' + (_this2.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : '') + '\n      ' + (_this2.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : '') + '\n      </div>\n      ';
 
+                  //desktop view information
+
+                  desktop = '\n      <div id="Main-desktop" class="desktop">\n        <div id="Main-desktop-group">\n          <span>Popular Posts</span>\n        </div>\n      </div>\n\n      ';
                   //final template for section
 
-                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + desktop + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
 
-                case 8:
+                case 9:
                 case 'end':
                   return _context2.stop();
               }
@@ -7214,6 +7217,9 @@ var router = {
       }
     }
     return this;
+  },
+  back: function back() {
+    window.history.back();
   },
 
   start: function start() {
@@ -7658,9 +7664,16 @@ var View = function () {
 
       //get references (as elements are dynamically rendered)
       var $listing = (0, _helpers.$id)('List');
+      var $prev = (0, _helpers.$id)('prevpage');
 
       //clicks on listing section
       (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
+      (0, _helpers.$on)($prev, 'click', this._back.bind(this), false);
+    }
+  }, {
+    key: '_back',
+    value: function _back() {
+      _router2.default.back();
     }
   }, {
     key: '_hidePost',
@@ -7850,7 +7863,7 @@ var View = function () {
 
                 case 3:
                   _context2.t0 = _context2.sent;
-                  _context2.t1 = '\n      <div id="List" class="List">\n      ' + _context2.t0;
+                  _context2.t1 = '\n      <div id="List" class="List Thread">\n      ' + _context2.t0;
                   list = _context2.t1 + '\n      </div>\n      ';
 
 

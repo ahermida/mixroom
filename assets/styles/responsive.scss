@@ -1,0 +1,178 @@
+//content that will be dependent on screen size
+.desktop {
+  display: none;
+}
+
+.bigger {
+  display: none;
+}
+
+@media only screen and (min-width : 470px) and (max-width : 768px) {
+  /* Styles */
+  iframe {
+    width: calc(75vh * 1.77) !important;
+    height: 75vh !important;
+  }
+  .Content-frame {
+    text-align: center;
+  }
+  .List {
+    min-height: calc(100vh - 90px);
+    margin: auto;
+    width: 98%;
+  }
+}
+
+//desktop views
+@media only screen and (min-width : 769px) {
+
+  .desktop {
+    display: block;
+  }
+  /* Styles */
+  iframe {
+    width: calc(75vh * 1.77) !important;
+    height: 75vh !important;
+  }
+
+  #Main-desktop-group {
+    top: 48px;
+    width: 300px;
+    height: 600px;
+    background-color: #FFFFFF;
+    position: absolute;
+    right: 20px;
+  }
+
+  #Main-container {
+    background-color: #FFF5F5;
+  }
+
+  .TopNav {
+    height: 42px;
+  }
+
+  .HeadPost, .Post, #Main-desktop-group {
+    border: 1px solid #F9EBEB;
+  }
+
+
+  .Thread {
+    margin: auto !important;
+    min-width: 800px !important;
+  }
+
+  .List {
+    min-height: calc(100vh - 90px);
+    max-width: 500px;
+    margin-left: 20%;
+  }
+
+  #TopNav-icon {
+    left: 30px;
+    top: 5px;
+  }
+
+  #TopNav-title-text {
+    top: 7px;
+    left: 68px;
+  }
+
+  #nav-placeholder {
+    padding-top: 42px;
+  }
+
+  .icon {
+    font-size: 24px;
+    color: #CCCCCA;
+    padding: 0px;
+  }
+  .TopNav-right {
+    top: -3px;
+    margin-right: 100px;
+    display: inline-block;
+  }
+  #TopNav-post {
+      top: -14px;
+      right: auto;
+      position: relative;
+      display: inline-block;
+      width: 70px;
+  }
+  #TopNav-post-text {
+    top: -3px;
+    right: 5px;
+    font-size: 18px;
+    position: absolute;
+    font-weight: bold;
+    color: #CCCCCA;
+  }
+  #TopNav-search {
+    top: -15px;
+    right: auto;
+    width: 92px;
+    position: relative;
+    display: inline-block;
+  }
+  #TopNav-search .icon {
+    font-size: 22px;
+  }
+  #TopNav-search-text {
+    top: -3px;
+    right: 5px;
+    font-size: 18px;
+    position: absolute;
+    font-weight: bold;
+    color: #CCCCCA;
+  }
+  #TopNav-menu {
+    margin-left: 14px !important;
+    height: 48px;
+    right: auto;
+    width: 71px;
+    display: inline-block;
+    position: relative;
+  }
+  #TopNav-menu .icon {
+    top: 0px;
+    width: auto;
+    left: 0px;
+    position: absolute;
+  }
+  #TopNav-menu-text {
+    padding-left: 5px;
+    top: -3px;
+    right: 0px;
+    font-size: 18px;
+    position: absolute;
+    font-weight: bold;
+    color: #CCCCCA;
+  }
+  #TopNav-post, #TopNav-search, #TopNav-menu {
+    margin: 0px 8px;
+  }
+  #prevpage {
+    margin-left: 10%;
+  }
+  #nextpage {
+    margin-right: 10%;
+  }
+}
+
+@media only screen and (min-width : 700px) and (max-width : 1223px) {}
+
+//make media visible for large screens
+@media only screen  and (min-width : 1224px) {
+  .desktop {
+    display:block;
+  }
+  #TopNav-post {
+
+  }
+  #TopNav-search {
+
+  }
+  #TopNav-menu {
+
+  }
+}

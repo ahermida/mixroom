@@ -1,4 +1,5 @@
 html {
+    height: 100%;
     font-size: 10px;
     -webkit-tap-highlight-color: transparent;
     font-family: sans-serif;
@@ -98,7 +99,6 @@ body, figure {
 }
 
 .TopNav-left {
-    max-width: calc(100% - 48px);
     overflow: hidden;
     white-space: nowrap;
 }

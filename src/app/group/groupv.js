@@ -267,10 +267,20 @@ export default class View {
       </div>
       `;
 
+      //desktop view information
+      const desktop = `
+      <div id="Main-desktop" class="desktop">
+        <div id="Main-desktop-group">
+          <span>Popular Posts</span>
+        </div>
+      </div>
+
+      `
       //final template for section
       return `
         <div id="Main-container">
           ${header}
+          ${desktop}
           ${list}
           ${footer}
         </div>

@@ -11,6 +11,8 @@ iframe {
 }
 
 .List {
+  //make sure that list takes up full screen, accounting for navbar & footer buttons
+  min-height: calc(100vh - 90px);
   overflow-x: hidden;
 }
 .Post, .HeadPost {

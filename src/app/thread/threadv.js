@@ -38,9 +38,15 @@ export default class View {
 
     //get references (as elements are dynamically rendered)
     let $listing = $id('List');
+    let $prev = $id('prevpage');
 
     //clicks on listing section
     $on($listing, 'click', this._onPostClick.bind(this), false);
+    $on($prev, 'click', this._back.bind(this), false);
+  }
+
+  _back() {
+    router.back();
   }
 
   _hidePost(e) {
@@ -169,7 +175,7 @@ export default class View {
       `;
       //wrapper for listing
       const list = `
-      <div id="List" class="List">
+      <div id="List" class="List Thread">
       ${await getposts()}
       </div>
       `;

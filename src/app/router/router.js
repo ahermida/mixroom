@@ -72,6 +72,9 @@ const router = {
     }
     return this;
   },
+  back: function() {
+    window.history.back();
+  },
 
   start: function() {
     if (isNode) return;
