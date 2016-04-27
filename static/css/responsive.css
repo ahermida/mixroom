@@ -16,24 +16,82 @@
     margin: auto;
     width: 98%; } }
 
-@media only screen and (min-width: 769px) {
-  .desktop {
-    display: block; }
+@media only screen and (min-width: 768px) and (max-width: 900px) {
   /* Styles */
   iframe {
     width: calc(75vh * 1.77) !important;
     height: 75vh !important; }
-  #Main-desktop-group {
-    top: 48px;
-    width: 300px;
-    height: 600px;
-    background-color: #FFFFFF;
+  .Content-frame {
+    text-align: center; }
+  .List {
+    min-height: calc(100vh - 90px);
+    margin: auto;
+    width: 90%; } }
+
+@media only screen and (min-width: 900px) {
+  #Main-desktop-info {
+    top: 47px;
+    width: 17.5%;
     position: absolute;
-    right: 20px; }
+    left: 10px; }
+  #Main-desktop-title-text {
+    color: #3b5998; }
+  .GroupName {
+    padding: 5px;
+    font-size: 22px;
+    display: flex;
+    justify-content: center;
+    border-bottom: solid 3px #FFF5F5; }
+  .GroupAuthor {
+    font-size: 18px; }
+  /*
+  <div id="Main-desktop-info" class="desktop">
+    <div class="GroupName">${info.name}</div>
+    <div class="GroupAuthor">
+      <p>Author</p>
+      <p>${info.author}</p>
+    </div>
+    <div class="Created">
+      <p>Created</p>
+      <p>${generateTimestamp(info.created)}</p>
+    </div>
+  </div>
+  */
+  .desktop {
+    display: block; }
+  .PopularList, #Main-desktop-group {
+    overflow: hidden;
+    background-color: #F8F8F8; }
+  .Thread img {
+    width: calc(75vh * 1.77);
+    max-height: 75vh; }
+  /* show normal view in stream */
+  iframe {
+    width: calc(75vh * 1.77); }
+  .Footer-right {
+    font-size: 14px; }
+  .Thread iframe {
+    width: calc(75vh * 1.77);
+    height: 75vh; }
+  .PopularPost iframe {
+    width: 100%;
+    min-height: 200px;
+    height: auto !important; }
+  .PopularPost, #Main-desktop-title {
+    background-color: #FFFFFF; }
+  #Main-desktop-title {
+    font-size: 20px;
+    padding: 5px;
+    justify-content: center;
+    display: flex; }
   #Main-container {
     background-color: #FFF5F5; }
   .TopNav {
     height: 42px; }
+  .PopularPost {
+    margin: 2.5px 0px; }
+  .PopularPost .Head-right {
+    float: right; }
   .HeadPost, .Post, #Main-desktop-group {
     border: 1px solid #F9EBEB; }
   .Thread {
@@ -114,6 +172,20 @@
   #nextpage {
     margin-right: 10%; } }
 
+@media only screen and (min-width: 900px) and (max-width: 1223px) {
+  #Main-desktop-group {
+    top: 47px;
+    width: calc(27% * 1.75 - 210px);
+    overflow-y: scroll;
+    background-color: #FFFFFF;
+    position: absolute;
+    left: calc(340px + 38%); } }
+
 @media only screen and (min-width: 1224px) {
-  .desktop {
-    display: block; } }
+  #Main-desktop-group {
+    top: 47px;
+    width: 350px;
+    overflow-y: scroll;
+    background-color: #FFFFFF;
+    position: absolute;
+    left: calc(325px + 35%); } }

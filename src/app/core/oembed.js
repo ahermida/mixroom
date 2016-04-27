@@ -104,9 +104,6 @@ const providers = {
     "https://soundcloud.com/oembed": [
         "^https://soundcloud\\.com/[^#?/]+/.+$"
     ],
-    "https://github.com/api/oembed": [
-        "^http(?:s)?://gist\\.github\\.com/.+$"
-    ],
     "https://embed.spotify.com/oembed/": [
         "^http(?:s)?://open\\.spotify\\.com/.+$",
         "^http(?:s)?://spoti\\.fi/.+$"
@@ -131,7 +128,10 @@ const oembed = async (url) => {
       let content = await followEmbed(url);
       let resp = await content.json();
       let jresp = JSON.parse(resp.embed);
-      return jresp.html;
+      return jresp.html || `<a href="${url}">
+                              <iframe style="background-image: url(${jresp.url}); min-height: 400px; min-width: 100%; background-size: contain; background-size: cover;">
+                              </iframe>
+                            </a>`;
     } catch (err) {
       console.log(err);
     }

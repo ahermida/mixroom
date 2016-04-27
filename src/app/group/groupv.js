@@ -3,7 +3,7 @@
  */
 import { $id, $on } from '../core/helpers.js';
 import oembed from '../core/oembed.js';
-import { generateHeadPost } from '../core/template.js';
+import { generateHeadPost, generatePopularPost, generateTimestamp } from '../core/template.js';
 import { nav } from '../core/core.js';
 import router from '../router/router.js';
 
@@ -11,13 +11,19 @@ import router from '../router/router.js';
 export default class View {
 
    //pass in top groups and user -- with username, id, notifications
- 	constructor(group, threads, user, page, options) {
+ 	constructor(group, data, user, page, options) {
 
     //set group
     this.group = group;
 
     //set threads
-    this.threads = threads;
+    this.threads = data.threads;
+
+    //set group info
+    this.info = data.info;
+
+    //set threads
+    this.popular = data.popular;
 
     //set user data
     this.user = user;
@@ -238,9 +244,15 @@ export default class View {
   }
 
   //generate html
-  generateStaticView(threads, user) {
+  generateStaticView(threads, info, popular, user) {
     const getposts = async () => {
       let promises = threads.map(thread => generateHeadPost(thread, user));
+      let results = await Promise.all(promises);
+      return results.join('');
+    };
+
+    const getpopularposts = async () => {
+      let promises = popular.map(post => generatePopularPost(post, user));
       let results = await Promise.all(promises);
       return results.join('');
     };
@@ -268,19 +280,37 @@ export default class View {
       `;
 
       //desktop view information
-      const desktop = `
-      <div id="Main-desktop" class="desktop">
-        <div id="Main-desktop-group">
-          <span>Popular Posts</span>
+      const desktopright = `
+        <div id="Main-desktop-group" class="desktop">
+          <div class="PopularList">
+            <span id="Main-desktop-title">
+              <span id="Main-desktop-title-text">Popular</span>
+            </span>
+            ${await getpopularposts()}
+          </div>
         </div>
-      </div>
+      `;
 
-      `
+      const desktopleft = `
+        <div id="Main-desktop-info" class="desktop">
+          <div class="GroupName">${info.name}</div>
+          <div class="GroupAuthor">
+            <p>Author</p>
+            <p>${info.author}</p>
+          </div>
+          <div class="Created">
+            <p>Created</p>
+            <p>${generateTimestamp(info.created)}</p>
+          </div>
+        </div>
+      `;
+
       //final template for section
       return `
         <div id="Main-container">
           ${header}
-          ${desktop}
+          ${desktopleft}
+          ${desktopright}
           ${list}
           ${footer}
         </div>
@@ -293,7 +323,7 @@ export default class View {
   //bake html into view
   render() {
     let that = this;
-    let tmp = this.generateStaticView(this.threads, this.user);
+    let tmp = this.generateStaticView(this.threads, this.info,this.popular, this.user);
     tmp.then(tmp => {
       $id('main').innerHTML = tmp;
       that.bind();

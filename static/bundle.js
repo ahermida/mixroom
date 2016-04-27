@@ -3792,6 +3792,8 @@ var _stringify = require('babel-runtime/core-js/json/stringify');
 var _stringify2 = _interopRequireDefault(_stringify);
 
 exports.getGroup = getGroup;
+exports.getGroupInfo = getGroupInfo;
+exports.getPopular = getPopular;
 exports.createGroup = createGroup;
 exports.deleteGroup = deleteGroup;
 exports.getAuth = getAuth;
@@ -3886,6 +3888,56 @@ function getGroup(grp, pg) {
     body: (0, _stringify2.default)({
       group: grp,
       page: pg
+    })
+  });
+}
+
+/**
+ * [Async] -- Get Group Info
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await getGroup('group', 0);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+function getGroupInfo(grp) {
+  var endpoint = "/group/info";
+  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+    method: 'POST',
+    mode: 'no-cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
+    body: (0, _stringify2.default)({
+      group: grp
+    })
+  });
+}
+
+/**
+ * [Async] -- Get Popular Threads
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await getGroup('group', 0);
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+function getPopular(pg) {
+  var endpoint = "/group/popular";
+  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+    method: 'POST',
+    mode: 'no-cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
+    body: (0, _stringify2.default)({
+      skip: pg
     })
   });
 }
@@ -5480,7 +5532,7 @@ var View = function () {
           //handle sending the form
           var handleSend = function handleSend() {
             //no posts smaller than 8, yay for arbitrary rules!
-            if ($body.value.length < 8 && $link.value != '') return;
+            if ($body.value.length < 8 && $link.value === '') return;
             //set the targeted group to the full 'to' value, as opposed to the cutoff version
             var grp = $group.value === cutoff(to) ? to : $group.value;
             handleSubmit($link.value, $body.value, grp, $identity.value);
@@ -5628,7 +5680,7 @@ exports.default = View;
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
 exports.validate = undefined;
 
@@ -5669,154 +5721,153 @@ var apihost = isNode ? "localhost/" : window.location.host;
 var endpoint = '/embed';
 
 var validate = exports.validate = function validate(url) {
-    var pattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
-    return pattern.test(url);
+  var pattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+  return pattern.test(url);
 };
 
 var extract = function extract(str) {
-    var oembedUrl = void 0,
-        patternMatch = void 0;
+  var oembedUrl = void 0,
+      patternMatch = void 0;
 
-    //tried not to touch this block
-    var urls = (0, _keys2.default)(providers);
-    for (var i = 0; i < urls.length; i++) {
-        var url = urls[i];
-        patternMatch = false;
-        var ref = providers[url];
-        for (var j = 0; j < ref.length; j++) {
-            var re = new RegExp(ref[j]);
-            if (re.test(str)) {
-                patternMatch = true;
-                break;
-            }
-        }
-        if (patternMatch) {
-            var estr = encodeURI(str);
-            oembedUrl = url + '?url=' + estr + '&format=json';
-            break;
-        }
+  //tried not to touch this block
+  var urls = (0, _keys2.default)(providers);
+  for (var i = 0; i < urls.length; i++) {
+    var url = urls[i];
+    patternMatch = false;
+    var ref = providers[url];
+    for (var j = 0; j < ref.length; j++) {
+      var re = new RegExp(ref[j]);
+      if (re.test(str)) {
+        patternMatch = true;
+        break;
+      }
     }
-
-    if (!oembedUrl) {
-        //still a legitimate url, so let's fetch the title
-        return {
-            oembed: false,
-            html: '<a href="' + str + '">' + str + '</a>'
-        };
-    } else {
-
-        return {
-            oembed: true,
-            embed: function embed() {
-                return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
-                    method: 'POST',
-                    headers: new Headers({
-                        'Content-Type': 'application/json'
-                    }),
-                    body: (0, _stringify2.default)({ url: oembedUrl })
-                });
-            }
-        };
+    if (patternMatch) {
+      var estr = encodeURI(str);
+      oembedUrl = url + '?url=' + estr + '&format=json';
+      break;
     }
+  }
+
+  if (!oembedUrl) {
+    //still a legitimate url, so let's fetch the title
+    return {
+      oembed: false,
+      html: '<a href="' + str + '">' + str + '</a>'
+    };
+  } else {
+
+    return {
+      oembed: true,
+      embed: function embed() {
+        return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+          method: 'POST',
+          headers: new Headers({
+            'Content-Type': 'application/json'
+          }),
+          body: (0, _stringify2.default)({ url: oembedUrl })
+        });
+      }
+    };
+  }
 };
 
 //whietlisted oembed providers
 var providers = {
-    "https://www.youtube.com/oembed": ["^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/watch.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/v/.+$", "^http(?:s)?://youtu\\.be/.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/user/.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/[^#?/]+#[^#?/]+/.+$", "^http(?:s)?://m\\.youtube\\.com/index.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/profile.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/view_play_list.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/playlist.+$"],
-    "http://backend.deviantart.com/oembed": ["^http://(?:[-\\w]+\\.)?deviantart\\.com/art/.+$", "^http://fav\\.me/.+$", "^http://sta\\.sh/.+$", "^http://(?:[-\\w]+\\.)?deviantart\\.com/[^#?/]+#/d.+$"],
-    "http://www.dailymotion.com/api/oembed/": ["^http://[-\\w]+\\.dailymotion\\.com/.+$"],
-    "http://www.flickr.com/services/oembed/": ["^http://[-\\w]+\\.flickr\\.com/photos/.+$", "^http://flic\\.kr\\.com/.+$"],
-    "http://www.vimeo.com/api/oembed.json": ["^http(?:s)?://(?:www\\.)?vimeo\\.com/.+$", "^http(?:s)?://player\\.vimeo\\.com/.+$"],
-    "https://photobucket.com/oembed": ["^http://(?:[-\\w]+\\.)?photobucket\\.com/albums/.+$", "^http://(?:[-\\w]+\\.)?photobucket\\.com/groups/.+$"],
-    "https://www.slideshare.net/api/oembed/2": ["^http://www\\.slideshare\\.net/.+$"],
-    "https://api.twitter.com/1/statuses/oembed.json": ["^http(?:s)?://twitter\\.com/(?:#!)?[^#?/]+/status/.+$"],
-    "https://soundcloud.com/oembed": ["^https://soundcloud\\.com/[^#?/]+/.+$"],
-    "https://github.com/api/oembed": ["^http(?:s)?://gist\\.github\\.com/.+$"],
-    "https://embed.spotify.com/oembed/": ["^http(?:s)?://open\\.spotify\\.com/.+$", "^http(?:s)?://spoti\\.fi/.+$"],
-    "http://api.imgur.com/oembed": ["^http(?:s)?://(?:i\\.)?imgur\\.com/gallery/([^#?/]+)(?:.+)?$"]
+  "https://www.youtube.com/oembed": ["^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/watch.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/v/.+$", "^http(?:s)?://youtu\\.be/.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/user/.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/[^#?/]+#[^#?/]+/.+$", "^http(?:s)?://m\\.youtube\\.com/index.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/profile.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/view_play_list.+$", "^http(?:s)?://(?:[-\\w]+\\.)?youtube\\.com/playlist.+$"],
+  "http://backend.deviantart.com/oembed": ["^http://(?:[-\\w]+\\.)?deviantart\\.com/art/.+$", "^http://fav\\.me/.+$", "^http://sta\\.sh/.+$", "^http://(?:[-\\w]+\\.)?deviantart\\.com/[^#?/]+#/d.+$"],
+  "http://www.dailymotion.com/api/oembed/": ["^http://[-\\w]+\\.dailymotion\\.com/.+$"],
+  "http://www.flickr.com/services/oembed/": ["^http://[-\\w]+\\.flickr\\.com/photos/.+$", "^http://flic\\.kr\\.com/.+$"],
+  "http://www.vimeo.com/api/oembed.json": ["^http(?:s)?://(?:www\\.)?vimeo\\.com/.+$", "^http(?:s)?://player\\.vimeo\\.com/.+$"],
+  "https://photobucket.com/oembed": ["^http://(?:[-\\w]+\\.)?photobucket\\.com/albums/.+$", "^http://(?:[-\\w]+\\.)?photobucket\\.com/groups/.+$"],
+  "https://www.slideshare.net/api/oembed/2": ["^http://www\\.slideshare\\.net/.+$"],
+  "https://api.twitter.com/1/statuses/oembed.json": ["^http(?:s)?://twitter\\.com/(?:#!)?[^#?/]+/status/.+$"],
+  "https://soundcloud.com/oembed": ["^https://soundcloud\\.com/[^#?/]+/.+$"],
+  "https://embed.spotify.com/oembed/": ["^http(?:s)?://open\\.spotify\\.com/.+$", "^http(?:s)?://spoti\\.fi/.+$"],
+  "http://api.imgur.com/oembed": ["^http(?:s)?://(?:i\\.)?imgur\\.com/gallery/([^#?/]+)(?:.+)?$"]
 };
 
 //get html
 var oembed = function () {
-    var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(url) {
-        var html, match, embed;
-        return _regenerator2.default.wrap(function _callee2$(_context2) {
-            while (1) {
-                switch (_context2.prev = _context2.next) {
-                    case 0:
-                        html = void 0;
-                        match = void 0;
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(url) {
+    var html, match, embed;
+    return _regenerator2.default.wrap(function _callee2$(_context2) {
+      while (1) {
+        switch (_context2.prev = _context2.next) {
+          case 0:
+            html = void 0;
+            match = void 0;
 
-                        //send request to get oembed html
+            //send request to get oembed html
 
-                        embed = function () {
-                            var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(url) {
-                                var extracted, followEmbed, content, resp, jresp;
-                                return _regenerator2.default.wrap(function _callee$(_context) {
-                                    while (1) {
-                                        switch (_context.prev = _context.next) {
-                                            case 0:
-                                                extracted = extract(url);
+            embed = function () {
+              var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(url) {
+                var extracted, followEmbed, content, resp, jresp;
+                return _regenerator2.default.wrap(function _callee$(_context) {
+                  while (1) {
+                    switch (_context.prev = _context.next) {
+                      case 0:
+                        extracted = extract(url);
 
-                                                if (extracted.oembed) {
-                                                    _context.next = 3;
-                                                    break;
-                                                }
+                        if (extracted.oembed) {
+                          _context.next = 3;
+                          break;
+                        }
 
-                                                return _context.abrupt('return', extracted.html);
+                        return _context.abrupt('return', extracted.html);
 
-                                            case 3:
-                                                _context.prev = 3;
-                                                followEmbed = extracted.embed;
-                                                //attempt to get user
+                      case 3:
+                        _context.prev = 3;
+                        followEmbed = extracted.embed;
+                        //attempt to get user
 
-                                                _context.next = 7;
-                                                return followEmbed(url);
+                        _context.next = 7;
+                        return followEmbed(url);
 
-                                            case 7:
-                                                content = _context.sent;
-                                                _context.next = 10;
-                                                return content.json();
+                      case 7:
+                        content = _context.sent;
+                        _context.next = 10;
+                        return content.json();
 
-                                            case 10:
-                                                resp = _context.sent;
-                                                jresp = JSON.parse(resp.embed);
-                                                return _context.abrupt('return', jresp.html);
+                      case 10:
+                        resp = _context.sent;
+                        jresp = JSON.parse(resp.embed);
+                        return _context.abrupt('return', jresp.html || '<a href="' + url + '">\n                              <iframe style="background-image: url(' + jresp.url + '); min-height: 400px; min-width: 100%; background-size: contain; background-size: cover;">\n                              </iframe>\n                            </a>');
 
-                                            case 15:
-                                                _context.prev = 15;
-                                                _context.t0 = _context['catch'](3);
+                      case 15:
+                        _context.prev = 15;
+                        _context.t0 = _context['catch'](3);
 
-                                                console.log(_context.t0);
+                        console.log(_context.t0);
 
-                                            case 18:
-                                            case 'end':
-                                                return _context.stop();
-                                        }
-                                    }
-                                }, _callee, undefined, [[3, 15]]);
-                            }));
-                            return function embed(_x2) {
-                                return ref.apply(this, arguments);
-                            };
-                        }();
+                      case 18:
+                      case 'end':
+                        return _context.stop();
+                    }
+                  }
+                }, _callee, undefined, [[3, 15]]);
+              }));
+              return function embed(_x2) {
+                return ref.apply(this, arguments);
+              };
+            }();
 
-                        _context2.next = 5;
-                        return embed(url);
+            _context2.next = 5;
+            return embed(url);
 
-                    case 5:
-                        return _context2.abrupt('return', _context2.sent);
+          case 5:
+            return _context2.abrupt('return', _context2.sent);
 
-                    case 6:
-                    case 'end':
-                        return _context2.stop();
-                }
-            }
-        }, _callee2, undefined);
-    }));
-    return function oembed(_x) {
-        return ref.apply(this, arguments);
-    };
+          case 6:
+          case 'end':
+            return _context2.stop();
+        }
+      }
+    }, _callee2, undefined);
+  }));
+  return function oembed(_x) {
+    return ref.apply(this, arguments);
+  };
 }();
 
 exports.default = oembed;
@@ -6091,7 +6142,7 @@ exports.default = {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.generateHeadPost = exports.generatePost = undefined;
+exports.generateHeadPost = exports.generatePopularPost = exports.generatePost = undefined;
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -6105,19 +6156,6 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-// type Post struct {
-// 	Id          bson.ObjectId   `bson:"_id,omitempty" json:"-"`
-//   SId         string          `bson:"id,omitempty" json:"id"`
-//   Thread      bson.ObjectId   `bson:"thread,omitempty" json:"-"`
-//   Created     time.Time       `bson:"created" json:"created"`
-// 	Author      string          `bson:"author" json:"author"`
-//   AuthorId    bson.ObjectId   `bson:"authorId,omitempty" json:"-"`
-//   Replies     []bson.ObjectId `bson:"replies" json:"replies"`
-//   ResponseTo  []bson.ObjectId `bson:"responseTo" json:"responseTo"`
-//   Content     string          `bson:"content,omitempty" json:"content"`
-//   ContentType string          `bson:"contentType,omitempty" json:"contentType"`
-//   Body        string          `bson:"body" json:"body"`
-// }
 //creates a post's html
 /**
  * dom template helpers
@@ -6165,49 +6203,94 @@ var generatePost = exports.generatePost = function () {
   };
 }();
 
-//creates a head post's html given we have the data
+//generate a *popular* section post
 
 
-var generateHeadPost = exports.generateHeadPost = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(thread, user) {
-    var post, threadID, timestamp, postID, ownedThreads, headpost;
+var generatePopularPost = exports.generatePopularPost = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(post, user) {
+    var timestamp, postID, owned, poppost;
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            post = thread.head;
-            threadID = thread.thread;
-            timestamp = thread.created;
+            timestamp = post.created;
             postID = post.id;
-            ownedThreads = (0, _keys2.default)(user.owned);
-            _context2.t0 = '\n    <div id="' + threadID + '" class="HeadPost">\n      <header class="Header">\n      ' + generatePostHeader(thread.group, post.author, timestamp) + '\n      </header>\n      <div class="Content">\n      ';
-            _context2.next = 8;
+            owned = (0, _keys2.default)(user.owned);
+            _context2.t0 = '\n    <div id="' + postID + '" class="PopularPost">\n      <header class="Header">\n      ' + generatePopularPostHeader(post.group, post.author, timestamp) + '\n      </header>\n      <div class="Content">\n      ';
+            _context2.next = 6;
             return generateContent(post.content, post.contentType);
 
-          case 8:
+          case 6:
             _context2.t1 = _context2.sent;
             _context2.t2 = _context2.t0 + _context2.t1;
             _context2.t3 = _context2.t2 + '\n      </div>\n      <div class="Body">\n      ';
             _context2.t4 = generateBody(post.body);
             _context2.t5 = _context2.t3 + _context2.t4;
             _context2.t6 = _context2.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
-            _context2.next = 16;
-            return generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads);
+            _context2.next = 14;
+            return generatePostHeadFooter(post.size, post.thread, postID, user.user.anonymous, owned);
 
-          case 16:
+          case 14:
             _context2.t7 = _context2.sent;
             _context2.t8 = _context2.t6 + _context2.t7;
-            headpost = _context2.t8 + '\n      </footer>\n    </div>\n  ';
-            return _context2.abrupt('return', headpost);
+            poppost = _context2.t8 + '\n      </footer>\n    </div>\n  ';
+            return _context2.abrupt('return', poppost);
 
-          case 20:
+          case 18:
           case 'end':
             return _context2.stop();
         }
       }
     }, _callee2, this);
   }));
-  return function generateHeadPost(_x4, _x5) {
+  return function generatePopularPost(_x4, _x5) {
+    return ref.apply(this, arguments);
+  };
+}();
+
+//creates a head post's html given we have the data
+
+
+var generateHeadPost = exports.generateHeadPost = function () {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(thread, user) {
+    var post, threadID, timestamp, postID, ownedThreads, headpost;
+    return _regenerator2.default.wrap(function _callee3$(_context3) {
+      while (1) {
+        switch (_context3.prev = _context3.next) {
+          case 0:
+            post = thread.head;
+            threadID = thread.thread;
+            timestamp = thread.created;
+            postID = post.id;
+            ownedThreads = (0, _keys2.default)(user.owned);
+            _context3.t0 = '\n    <div id="' + threadID + '" class="HeadPost">\n      <header class="Header">\n      ' + generatePostHeader(thread.group, post.author, timestamp) + '\n      </header>\n      <div class="Content">\n      ';
+            _context3.next = 8;
+            return generateContent(post.content, post.contentType);
+
+          case 8:
+            _context3.t1 = _context3.sent;
+            _context3.t2 = _context3.t0 + _context3.t1;
+            _context3.t3 = _context3.t2 + '\n      </div>\n      <div class="Body">\n      ';
+            _context3.t4 = generateBody(post.body);
+            _context3.t5 = _context3.t3 + _context3.t4;
+            _context3.t6 = _context3.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
+            _context3.next = 16;
+            return generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads);
+
+          case 16:
+            _context3.t7 = _context3.sent;
+            _context3.t8 = _context3.t6 + _context3.t7;
+            headpost = _context3.t8 + '\n      </footer>\n    </div>\n  ';
+            return _context3.abrupt('return', headpost);
+
+          case 20:
+          case 'end':
+            return _context3.stop();
+        }
+      }
+    }, _callee3, this);
+  }));
+  return function generateHeadPost(_x6, _x7) {
     return ref.apply(this, arguments);
   };
 }();
@@ -6215,35 +6298,35 @@ var generateHeadPost = exports.generateHeadPost = function () {
 //return html content section --> video or img
 
 var generateContent = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3(content, contentType) {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(content, contentType) {
     var html;
-    return _regenerator2.default.wrap(function _callee3$(_context3) {
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context3.prev = _context3.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             if (!(!content || contentType == "")) {
-              _context3.next = 2;
+              _context4.next = 2;
               break;
             }
 
-            return _context3.abrupt('return', "");
+            return _context4.abrupt('return', "");
 
           case 2:
             html = void 0;
 
             if (!(contentType === 'link')) {
-              _context3.next = 11;
+              _context4.next = 11;
               break;
             }
 
-            _context3.next = 6;
+            _context4.next = 6;
             return (0, _oembed2.default)(content);
 
           case 6:
-            _context3.t0 = _context3.sent;
-            _context3.t1 = '<div class="Content-frame">' + _context3.t0;
-            html = _context3.t1 + '</div>';
-            _context3.next = 12;
+            _context4.t0 = _context4.sent;
+            _context4.t1 = '<div class="Content-frame">' + _context4.t0;
+            html = _context4.t1 + '</div>';
+            _context4.next = 12;
             break;
 
           case 11:
@@ -6257,16 +6340,16 @@ var generateContent = function () {
             }
 
           case 12:
-            return _context3.abrupt('return', '<div class="Content-wrapper">' + html + '</div>');
+            return _context4.abrupt('return', '<div class="Content-wrapper">' + html + '</div>');
 
           case 13:
           case 'end':
-            return _context3.stop();
+            return _context4.stop();
         }
       }
-    }, _callee3, this);
+    }, _callee4, this);
   }));
-  return function generateContent(_x6, _x7) {
+  return function generateContent(_x8, _x9) {
     return ref.apply(this, arguments);
   };
 }();
@@ -6277,24 +6360,24 @@ var generateContent = function () {
 //handle footer of thread post (head)
 
 var generatePostHeadFooter = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(size, threadid, postid, anonymous, owned) {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(size, threadid, postid, anonymous, owned) {
     var length, footer;
-    return _regenerator2.default.wrap(function _callee4$(_context4) {
+    return _regenerator2.default.wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context4.prev = _context4.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
             length = size;
             footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + (length || 0) + ' ' + (length != 1 ? 'posts' : 'post') + '</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '" data-thread="' + threadid + '">\n      ' + (anonymous ? '' : '<span class="Footer-right-save">save</span>') + '\n      ' + generateDelete(postid, owned) + '\n      <span class="Footer-right-reply space">reply</span>\n      <span class="Footer-open space">open</span>\n    </span>\n  </div>\n  ';
-            return _context4.abrupt('return', footer);
+            return _context5.abrupt('return', footer);
 
           case 3:
           case 'end':
-            return _context4.stop();
+            return _context5.stop();
         }
       }
-    }, _callee4, this);
+    }, _callee5, this);
   }));
-  return function generatePostHeadFooter(_x8, _x9, _x10, _x11, _x12) {
+  return function generatePostHeadFooter(_x10, _x11, _x12, _x13, _x14) {
     return ref.apply(this, arguments);
   };
 }();
@@ -6303,11 +6386,11 @@ var generatePostHeadFooter = function () {
 
 
 var generatePostFooter = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5(post, owned) {
+  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(post, owned) {
     var replies, postid, footer;
-    return _regenerator2.default.wrap(function _callee5$(_context5) {
+    return _regenerator2.default.wrap(function _callee6$(_context6) {
       while (1) {
-        switch (_context5.prev = _context5.next) {
+        switch (_context6.prev = _context6.next) {
           case 0:
             replies = post.replies.length;
             postid = post.id;
@@ -6315,19 +6398,21 @@ var generatePostFooter = function () {
             //might make calls in here later -> that's why it's a function
 
             footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + replies + ' replies</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '">\n      ' + generateDelete(postid, owned) + '\n      <span class="Footer-right-reply space">reply</span>\n    </span>\n  </div>\n  ';
-            return _context5.abrupt('return', footer);
+            return _context6.abrupt('return', footer);
 
           case 4:
           case 'end':
-            return _context5.stop();
+            return _context6.stop();
         }
       }
-    }, _callee5, this);
+    }, _callee6, this);
   }));
-  return function generatePostFooter(_x13, _x14) {
+  return function generatePostFooter(_x15, _x16) {
     return ref.apply(this, arguments);
   };
 }();
+
+exports.generateTimestamp = generateTimestamp;
 
 var _threads = require('../ajax/threads.js');
 
@@ -6361,6 +6446,12 @@ function generateTimestamp(timestamp) {
 function generatePostHeader(group, author, created) {
   //title for each of the posts, replies should be overflow-x
   return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span class="Head-author">' + author + '</span>\n        -\n        <a class="Head-group">' + group + '</a>\n        -\n        <span class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span class="Head-rm">\n        <span class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
+}
+
+//generate the header for a post --> don't show replies if head
+function generatePopularPostHeader(group, author) {
+  //title for each of the posts, replies should be overflow-x
+  return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <a class="Head-group">' + group + '</a>\n      </span>\n      <span class="Head-right">\n        <span class="Head-author">' + author + '</span>\n      </span>\n    </div>\n  ';
 }function generateBody(str) {
   if (str) {
     return parser(str);
@@ -6512,7 +6603,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4(group, page, auth) {
-    var threads, res, jres, user, options, grp;
+    var threads, res, jres, popular, _res, _jres, info, _res2, _jres2, user, utils, data, grp;
+
     return _regenerator2.default.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
@@ -6542,6 +6634,55 @@ exports.default = function () {
             console.log(_context4.t0);
 
           case 14:
+            popular = void 0;
+            _context4.prev = 15;
+            _context4.next = 18;
+            return (0, _groups.getPopular)(0);
+
+          case 18:
+            _res = _context4.sent;
+            _context4.next = 21;
+            return _res.json();
+
+          case 21:
+            _jres = _context4.sent;
+
+            //get array of threads
+            popular = _jres.posts;
+            _context4.next = 28;
+            break;
+
+          case 25:
+            _context4.prev = 25;
+            _context4.t1 = _context4['catch'](15);
+
+            console.log(_context4.t1);
+
+          case 28:
+            info = void 0;
+            _context4.prev = 29;
+            _context4.next = 32;
+            return (0, _groups.getGroupInfo)(group);
+
+          case 32:
+            _res2 = _context4.sent;
+            _context4.next = 35;
+            return _res2.json();
+
+          case 35:
+            _jres2 = _context4.sent;
+
+            info = _jres2;
+            _context4.next = 42;
+            break;
+
+          case 39:
+            _context4.prev = 39;
+            _context4.t2 = _context4['catch'](29);
+
+            console.log(_context4.t2);
+
+          case 42:
 
             //setup user so we can determine which buttons to render on each post
             user = {
@@ -6549,26 +6690,32 @@ exports.default = function () {
               user: _store2.default.user,
               auth: auth
             };
-            options = {
+            utils = {
               deleteThread: deleteThread,
               saveThread: save,
               unsaveThread: unsave
             };
+            data = {
+              info: info,
+              popular: popular,
+              threads: threads
+            };
+
             //group administrator ? -> group settings link
             //pass threads, along with thread actions
             //thread actions: save thread, delete ?, nav to thread
 
-            grp = new _groupv2.default(group, threads, user, page, options);
+            grp = new _groupv2.default(group, data, user, page, utils);
 
             grp.render();
             return _context4.abrupt('return', grp);
 
-          case 19:
+          case 48:
           case 'end':
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[1, 11]]);
+    }, _callee4, this, [[1, 11], [15, 25], [29, 39]]);
   }));
 
   function start(_x5, _x6, _x7) {
@@ -6631,7 +6778,7 @@ var View = function () {
 
   //pass in top groups and user -- with username, id, notifications
 
-  function View(group, threads, user, page, options) {
+  function View(group, data, user, page, options) {
     var _this = this;
 
     (0, _classCallCheck3.default)(this, View);
@@ -6641,7 +6788,13 @@ var View = function () {
     this.group = group;
 
     //set threads
-    this.threads = threads;
+    this.threads = data.threads;
+
+    //set group info
+    this.info = data.info;
+
+    //set threads
+    this.popular = data.popular;
 
     //set user data
     this.user = user;
@@ -6926,7 +7079,7 @@ var View = function () {
 
   }, {
     key: 'generateStaticView',
-    value: function generateStaticView(threads, user) {
+    value: function generateStaticView(threads, info, popular, user) {
       var _this2 = this;
 
       var getposts = function () {
@@ -6958,24 +7111,53 @@ var View = function () {
         };
       }();
 
-      var buildView = function () {
+      var getpopularposts = function () {
         var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-          var header, list, footer, desktop;
+          var promises, results;
           return _regenerator2.default.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
+                case 0:
+                  promises = popular.map(function (post) {
+                    return (0, _template.generatePopularPost)(post, user);
+                  });
+                  _context2.next = 3;
+                  return _promise2.default.all(promises);
+
+                case 3:
+                  results = _context2.sent;
+                  return _context2.abrupt('return', results.join(''));
+
+                case 5:
+                case 'end':
+                  return _context2.stop();
+              }
+            }
+          }, _callee2, _this2);
+        }));
+        return function getpopularposts() {
+          return ref.apply(this, arguments);
+        };
+      }();
+
+      var buildView = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+          var header, list, footer, desktopright, desktopleft;
+          return _regenerator2.default.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
                 case 0:
                   //main header
                   header = '\n        <div id="Main-Header">\n\n        </div>\n      ';
                   //wrapper for listing
 
-                  _context2.next = 3;
+                  _context3.next = 3;
                   return getposts();
 
                 case 3:
-                  _context2.t0 = _context2.sent;
-                  _context2.t1 = '\n      <div id="List" class="List">\n      ' + _context2.t0;
-                  list = _context2.t1 + '\n      </div>\n      ';
+                  _context3.t0 = _context3.sent;
+                  _context3.t1 = '\n      <div id="List" class="List">\n      ' + _context3.t0;
+                  list = _context3.t1 + '\n      </div>\n      ';
 
 
                   //pagination controls
@@ -6983,17 +7165,25 @@ var View = function () {
 
                   //desktop view information
 
-                  desktop = '\n      <div id="Main-desktop" class="desktop">\n        <div id="Main-desktop-group">\n          <span>Popular Posts</span>\n        </div>\n      </div>\n\n      ';
-                  //final template for section
-
-                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + desktop + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+                  _context3.next = 9;
+                  return getpopularposts();
 
                 case 9:
+                  _context3.t2 = _context3.sent;
+                  _context3.t3 = '\n        <div id="Main-desktop-group" class="desktop">\n          <div class="PopularList">\n            <span id="Main-desktop-title">\n              <span id="Main-desktop-title-text">Popular</span>\n            </span>\n            ' + _context3.t2;
+                  desktopright = _context3.t3 + '\n          </div>\n        </div>\n      ';
+                  desktopleft = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p>Author</p>\n            <p>' + info.author + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n        </div>\n      ';
+
+                  //final template for section
+
+                  return _context3.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + desktopleft + '\n          ' + desktopright + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+
+                case 14:
                 case 'end':
-                  return _context2.stop();
+                  return _context3.stop();
               }
             }
-          }, _callee2, _this2);
+          }, _callee3, _this2);
         }));
         return function buildView() {
           return ref.apply(this, arguments);
@@ -7009,7 +7199,7 @@ var View = function () {
     key: 'render',
     value: function render() {
       var that = this;
-      var tmp = this.generateStaticView(this.threads, this.user);
+      var tmp = this.generateStaticView(this.threads, this.info, this.popular, this.user);
       tmp.then(function (tmp) {
         (0, _helpers.$id)('main').innerHTML = tmp;
         that.bind();

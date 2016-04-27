@@ -4,19 +4,7 @@
 
 import { threadLength } from '../ajax/threads.js';
 import oembed from './oembed.js';
-// type Post struct {
-// 	Id          bson.ObjectId   `bson:"_id,omitempty" json:"-"`
-//   SId         string          `bson:"id,omitempty" json:"id"`
-//   Thread      bson.ObjectId   `bson:"thread,omitempty" json:"-"`
-//   Created     time.Time       `bson:"created" json:"created"`
-// 	Author      string          `bson:"author" json:"author"`
-//   AuthorId    bson.ObjectId   `bson:"authorId,omitempty" json:"-"`
-//   Replies     []bson.ObjectId `bson:"replies" json:"replies"`
-//   ResponseTo  []bson.ObjectId `bson:"responseTo" json:"responseTo"`
-//   Content     string          `bson:"content,omitempty" json:"content"`
-//   ContentType string          `bson:"contentType,omitempty" json:"contentType"`
-//   Body        string          `bson:"body" json:"body"`
-// }
+
 //creates a post's html
 export async function generatePost(group, post, user) {
   const timestamp = post.created;
@@ -39,8 +27,33 @@ export async function generatePost(group, post, user) {
       </footer>
     </div>
   `;
-
   return filledpost;
+}
+
+//generate a *popular* section post
+export async function generatePopularPost(post, user) {
+  const timestamp = post.created;
+  const postID = post.id;
+  const owned = Object.keys(user.owned);
+
+  let poppost = `
+    <div id="${postID}" class="PopularPost">
+      <header class="Header">
+      ${generatePopularPostHeader(post.group, post.author, timestamp)}
+      </header>
+      <div class="Content">
+      ${await generateContent(post.content, post.contentType)}
+      </div>
+      <div class="Body">
+      ${generateBody(post.body)}
+      </div>
+      <footer class="Footer">
+      ${await generatePostHeadFooter(post.size, post.thread, postID, user.user.anonymous, owned)}
+      </footer>
+    </div>
+  `;
+
+  return poppost;
 }
 
 //creates a head post's html given we have the data
@@ -71,7 +84,7 @@ export async function generateHeadPost(thread, user) {
   return headpost;
 }
 
-function generateTimestamp(timestamp) {
+export function generateTimestamp(timestamp) {
   //create & format timestampstring
   let ampm = '';
   let time = new Date(timestamp); // timestamp in minutes
@@ -105,6 +118,21 @@ function generatePostHeader(group, author, created) {
       </span>
       <span class="Head-rm">
         <span class="icon-down-open-big"></span>
+      </span>
+    </div>
+  `;
+}
+
+//generate the header for a post --> don't show replies if head
+function generatePopularPostHeader(group, author) {
+  //title for each of the posts, replies should be overflow-x
+  return `
+    <div class="Head-content">
+      <span class="Head-left">
+        <a class="Head-group">${group}</a>
+      </span>
+      <span class="Head-right">
+        <span class="Head-author">${author}</span>
       </span>
     </div>
   `;

@@ -151,7 +151,7 @@ routes.handleUpload = function*() {
   let part
   while (part = yield parts) {
     var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`);
-    url = `http://localhost:8080/static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`;
+    url = `/static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`;
     part.pipe(stream);
   }
 
@@ -178,7 +178,7 @@ routes.handleEmbed = function*() {
     embed: response.body,
     success: response.statusCode
   };
-  
+
   this.body = JSON.stringify(resp);
 };
 

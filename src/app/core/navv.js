@@ -243,7 +243,7 @@ export default class View {
       //handle sending the form
       const handleSend = () => {
 				//no posts smaller than 8, yay for arbitrary rules!
-				if ($body.value.length < 8 && $link.value != '') return;
+				if ($body.value.length < 8 && $link.value === '') return;
 				//set the targeted group to the full 'to' value, as opposed to the cutoff version
 				const grp = $group.value === cutoff(to) ? to : $group.value;
 				handleSubmit($link.value, $body.value, grp, $identity.value);

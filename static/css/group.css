@@ -1,6 +1,14 @@
 iframe {
   max-width: 100%;
-  display: block; }
+  display: block;
+  border: none;
+  -webkit-overflow-scrolling: touch; }
+
+img {
+  width: 100% !important;
+  height: 100%;
+  border: none;
+  width: 400px; }
 
 #Main-container {
   background-color: #FBEFEF; }
@@ -54,6 +62,7 @@ iframe {
   color: #CCCCCA; }
 
 .Footer-right {
+  font-size: 16px;
   float: right;
   color: #3b5998; }
 

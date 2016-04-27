@@ -368,7 +368,7 @@ routes.handleUpload = _regenerator2.default.mark(function _callee9() {
 
           stream = _fs2.default.createWriteStream(__dirname + '/../../static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase());
 
-          url = 'http://localhost:8080/static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase();
+          url = '/static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase();
           part.pipe(stream);
           _context9.next = 4;
           break;

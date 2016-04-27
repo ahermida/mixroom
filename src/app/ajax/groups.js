@@ -81,6 +81,56 @@ function makeHeaders(token, json) {
    });
  }
 
+ /**
+  * [Async] -- Get Group Info
+  * @example
+  * async function doStuffWithThisFunc() {
+  *   try {
+  *     let data = await getGroup('group', 0);
+  *     console.log(data)
+  *   } catch(error) {
+  *     console.log(error);
+  *   }
+  * }
+  */
+  export function getGroupInfo(grp) {
+    let endpoint = "/group/info";
+    return fetch(`http://${apihost}${endpoint}`, {
+      method: 'POST',
+      mode: 'no-cors',
+      redirect: 'error',
+      headers: new Headers(makeHeaders(token, true)),
+      body: JSON.stringify({
+        group: grp
+      })
+    });
+  }
+
+ /**
+  * [Async] -- Get Popular Threads
+  * @example
+  * async function doStuffWithThisFunc() {
+  *   try {
+  *     let data = await getGroup('group', 0);
+  *     console.log(data)
+  *   } catch(error) {
+  *     console.log(error);
+  *   }
+  * }
+  */
+  export function getPopular(pg) {
+    let endpoint = "/group/popular";
+    return fetch(`http://${apihost}${endpoint}`, {
+      method: 'POST',
+      mode: 'no-cors',
+      redirect: 'error',
+      headers: new Headers(makeHeaders(token, true)),
+      body: JSON.stringify({
+        skip: pg
+      })
+    });
+  }
+
 /**
  * [Async] -- Make Group
  * @example

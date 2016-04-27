@@ -2,7 +2,7 @@
  * group.js is a controller for group (kinda)
  */
 
-import {getGroup} from '../ajax/groups.js';
+import {getGroup, getGroupInfo, getPopular} from '../ajax/groups.js';
 import {saveThread, unsaveThread} from '../ajax/user.js';
 import {rmThread} from '../ajax/threads.js';
 import appstore from '../core/store.js'
@@ -45,22 +45,48 @@ export default async function start(group, page, auth) {
     console.log(e);
   }
 
+  let popular;
+  try {
+    let res = await getPopular(0);
+    let jres = await res.json();
+    //get array of threads
+    popular = jres.posts;
+  } catch (e) {
+    console.log(e);
+  }
+
+  let info;
+  try {
+    let res = await getGroupInfo(group);
+    let jres = await res.json();
+    info = jres;
+  } catch(e) {
+    console.log(e);
+  }
+
   //setup user so we can determine which buttons to render on each post
   let user = {
     owned: appstore.owned,
     user: appstore.user,
     auth: auth
-  }
+  };
 
-  let options = {
+  let utils = {
     deleteThread: deleteThread,
     saveThread: save,
     unsaveThread: unsave
-  }
+  };
+
+  let data = {
+    info: info,
+    popular: popular,
+    threads: threads
+  };
+
   //group administrator ? -> group settings link
   //pass threads, along with thread actions
   //thread actions: save thread, delete ?, nav to thread
-  const grp = new view(group, threads, user, page, options);
+  const grp = new view(group, data, user, page, utils);
   grp.render();
   return grp;
 }
