@@ -32,6 +32,8 @@ export function $on(target, type, callback, useCapture) {
 
 //get context in writer
 export function getContext() {
+
+  //if the route equals search, user, or '' --> set writer target to /random/
   const defaultRandom = [
     'search',
     'user',
@@ -43,11 +45,14 @@ export function getContext() {
       return '/random/';
     }
   });
-  //checks for /group/t/:here <---
+
+  //checks for /group/t/:here <=
   if (loc[2]) {
     return 'this thread';
   } else if (loc[0]) {
     return `/${loc[0]}/`;
   }
+
+  //if none of the above, default to /random/
   return '/random/';
 }

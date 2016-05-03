@@ -3781,40 +3781,19 @@ process.umask = function() { return 0; };
 })(typeof self !== 'undefined' ? self : this);
 
 },{}],106:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _stringify = require('babel-runtime/core-js/json/stringify');
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-exports.getGroup = getGroup;
-exports.getGroupInfo = getGroupInfo;
-exports.getPopular = getPopular;
-exports.createGroup = createGroup;
-exports.deleteGroup = deleteGroup;
-exports.getAuth = getAuth;
-exports.addAdmin = addAdmin;
-exports.rmAdmin = rmAdmin;
-
-var _isomorphicFetch = require('isomorphic-fetch');
-
-var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
-
-var _config = require('../config.js');
+var _config = require("../config.js");
 
 var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
-  groups ajax utility functions #touchtips -- all are async functions
-*/
-
-
+//just in case our context is unavailable
 var that = that || {};
 
 //check if we're in a browser or not
@@ -3844,11 +3823,53 @@ function getCookie(cname) {
   return cookie;
 }
 
-//default expects api to be running on localhost:8000
-var apihost = _config2.default.api;
-
 //get access_token from cookie
 var token = getCookie('access_token');
+
+exports.default = token;
+
+},{"../config.js":110}],107:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+exports.getGroup = getGroup;
+exports.getGroupInfo = getGroupInfo;
+exports.getPopular = getPopular;
+exports.createGroup = createGroup;
+exports.deleteGroup = deleteGroup;
+exports.getAuth = getAuth;
+exports.addAdmin = addAdmin;
+exports.rmAdmin = rmAdmin;
+
+var _isomorphicFetch = require('isomorphic-fetch');
+
+var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
+
+var _config = require('../config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
+var _cookie = require('./cookie.js');
+
+var _cookie2 = _interopRequireDefault(_cookie);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//check if we're in a browser or not
+var isNode = _config2.default.isNode;
+
+//default expects api to be running on localhost:8000
+/*
+  groups ajax utility functions #touchtips -- all are async functions
+*/
+var apihost = _config2.default.api;
 
 //=============================================================================
 //                              /group/ Routes
@@ -3884,7 +3905,7 @@ function getGroup(grp, pg) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       group: grp,
       page: pg
@@ -3910,7 +3931,7 @@ function getGroupInfo(grp) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       group: grp
     })
@@ -3935,7 +3956,7 @@ function getPopular(pg) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       skip: pg
     })
@@ -3960,7 +3981,7 @@ function createGroup(grp, anon) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       group: grp,
       anonymous: anon
@@ -3987,7 +4008,7 @@ function deleteGroup(grp) {
     method: 'DELETE',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ group: grp })
   });
 }
@@ -4010,7 +4031,7 @@ function getAuth(grp) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ 'group': grp })
   });
 }
@@ -4034,7 +4055,7 @@ function addAdmin(grp, usr) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ group: grp, user: usr })
   });
 }
@@ -4057,12 +4078,12 @@ function rmAdmin(grp, usr) {
     method: 'PUT',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ group: grp, user: usr })
   });
 }
 
-},{"../config.js":109,"babel-runtime/core-js/json/stringify":1,"isomorphic-fetch":103}],107:[function(require,module,exports){
+},{"../config.js":110,"./cookie.js":106,"babel-runtime/core-js/json/stringify":1,"isomorphic-fetch":103}],108:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4089,45 +4110,24 @@ var _config = require('../config.js');
 
 var _config2 = _interopRequireDefault(_config);
 
+var _cookie = require('./cookie.js');
+
+var _cookie2 = _interopRequireDefault(_cookie);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //check if we're in a browser or not
+var isNode = _config2.default.isNode;
+
+//default expects api to be running on localhost:8000
 /*
   thread and post functions -- ajax utility functions #touchtips -- all are async functions
 */
-var isNode = _config2.default.isNode;
-
-var that = that || {};
-
-//get cookie passed in by config
-function getCookie(cname) {
-
-  //cookie string from source
-  var cookie = "";
-  if (isNode) {
-    if (that && that.headers && that.headers.cookie) {
-      cookie = that.headers.cookie;
-    }
-  } else {
-    cookie = document.cookie;
-  }
-
-  var name = cname + "=";
-  var ca = cookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-  }
-  return cookie;
-}
-
-//default expects api to be running on localhost:8000
 var apihost = _config2.default.api;
 
-//get access_token from cookie
-var token = getCookie('access_token');
+//=============================================================================
+//                              /thread/ Routes
+//=============================================================================
 
 //make header for request
 function makeHeaders(token, json) {
@@ -4140,10 +4140,6 @@ function makeHeaders(token, json) {
   }
   return headers;
 }
-
-//=============================================================================
-//                              /thread/ Routes
-//=============================================================================
 
 /**
  * [Async] -- Get Thread
@@ -4163,7 +4159,7 @@ function getThread(thrd) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       thread: thrd
     })
@@ -4188,7 +4184,7 @@ function createThread(grp, bdy, authr, cont, contType, anon) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       group: grp,
       body: bdy,
@@ -4219,7 +4215,7 @@ function rmThread(thrd, id) {
       method: 'DELETE',
       mode: 'cors',
       redirect: 'error',
-      headers: new Headers(makeHeaders(token, true)),
+      headers: new Headers(makeHeaders(_cookie2.default, true)),
       body: (0, _stringify2.default)({
         thread: thrd
       })
@@ -4230,7 +4226,7 @@ function rmThread(thrd, id) {
       method: 'DELETE',
       mode: 'cors',
       redirect: 'error',
-      headers: new Headers(makeHeaders(token, true)),
+      headers: new Headers(makeHeaders(_cookie2.default, true)),
       body: (0, _stringify2.default)({
         thread: thrd,
         id: id
@@ -4257,7 +4253,7 @@ function threadLength(thrd) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       thread: thrd
     })
@@ -4282,7 +4278,7 @@ function post(thrd, identity, bdy, cont, respTo, anon, contType) {
     method: 'POST',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       thread: thrd,
       body: bdy,
@@ -4313,7 +4309,7 @@ function editPost(pst, bdy) {
     method: 'PUT',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       post: pst,
       body: bdy
@@ -4338,14 +4334,14 @@ function rmPost(pst) {
     method: 'DELETE',
     mode: 'no-cors',
     redirect: 'error',
-    headers: new Headers(makeHeaders(token, true)),
+    headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
       post: pst
     })
   });
 }
 
-},{"../config.js":109,"babel-runtime/core-js/json/stringify":1,"isomorphic-fetch":103}],108:[function(require,module,exports){
+},{"../config.js":110,"./cookie.js":106,"babel-runtime/core-js/json/stringify":1,"isomorphic-fetch":103}],109:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4379,47 +4375,20 @@ var _config = require('../config.js');
 
 var _config2 = _interopRequireDefault(_config);
 
+var _cookie = require('./cookie.js');
+
+var _cookie2 = _interopRequireDefault(_cookie);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/*
-  user functions -- ajax utility functions #touchtips -- all are async functions
-*/
-
-
-var that = that || {};
 
 //check if we're in a browser or not
 var isNode = _config2.default.isNode;
 
-//get cookie passed in by config
-function getCookie(cname) {
-
-  //cookie string from source
-  var cookie = "";
-  if (isNode) {
-    if (that && that.headers && that.headers.cookie) {
-      cookie = that.headers.cookie;
-    }
-  } else {
-    cookie = document.cookie;
-  }
-
-  var name = cname + "=";
-  var ca = cookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }if (c.indexOf(name) == 0) return c.substring(name.length, c.length);
-  }
-  return cookie;
-}
-
 //default expects api to be running on localhost:8000
+/*
+  user functions -- ajax utility functions #touchtips -- all are async functions
+*/
 var apihost = _config2.default.api;
-
-//get access_token from cookie
-var token = getCookie('access_token');
 
 //=============================================================================
 //                              /user/ Routes
@@ -4439,7 +4408,7 @@ var token = getCookie('access_token');
  */
 function getUser() {
   var endpoint = "/user/";
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   } else {
     return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
@@ -4447,7 +4416,7 @@ function getUser() {
       mode: 'no-cors',
       redirect: 'error',
       headers: new Headers({
-        'access_token': token
+        'access_token': _cookie2.default
       })
     });
   }
@@ -4467,7 +4436,7 @@ function getUser() {
  */
 function getSaved() {
   var endpoint = "/user/saved";
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   } else {
     return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
@@ -4475,7 +4444,7 @@ function getSaved() {
       mode: 'no-cors',
       redirect: 'error',
       headers: new Headers({
-        'access_token': token
+        'access_token': _cookie2.default
       })
     });
   }
@@ -4494,7 +4463,7 @@ function getSaved() {
  * }
  */
 function addName(nm) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/name";
@@ -4504,7 +4473,7 @@ function addName(nm) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       name: nm
@@ -4525,7 +4494,7 @@ function addName(nm) {
  * }
  */
 function saveThread(mthread) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/saved";
@@ -4536,7 +4505,7 @@ function saveThread(mthread) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       thread: mthread
@@ -4557,7 +4526,7 @@ function saveThread(mthread) {
  * }
  */
 function unsaveThread(mthread) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/saved";
@@ -4568,7 +4537,7 @@ function unsaveThread(mthread) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       thread: mthread
@@ -4589,7 +4558,7 @@ function unsaveThread(mthread) {
  * }
  */
 function getUserThreads(page) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/saved";
@@ -4599,7 +4568,7 @@ function getUserThreads(page) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       page: page
@@ -4620,7 +4589,7 @@ function getUserThreads(page) {
  * }
  */
 function addUsername(usrname) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/username";
@@ -4630,7 +4599,7 @@ function addUsername(usrname) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       username: usrname
@@ -4651,7 +4620,7 @@ function addUsername(usrname) {
  * }
  */
 function changeUsername(usrname) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/username";
@@ -4661,7 +4630,7 @@ function changeUsername(usrname) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       username: usrname
@@ -4682,7 +4651,7 @@ function changeUsername(usrname) {
  * }
  */
 function rmUsername(usrname) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/username";
@@ -4693,7 +4662,7 @@ function rmUsername(usrname) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       username: usrname
@@ -4714,7 +4683,7 @@ function rmUsername(usrname) {
  * }
  */
 function getNotifications() {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/notifications";
@@ -4723,7 +4692,7 @@ function getNotifications() {
     mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
-      'access_token': token
+      'access_token': _cookie2.default
     })
   });
 }
@@ -4741,7 +4710,7 @@ function getNotifications() {
  * }
  */
 function getFriends() {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/friends";
@@ -4750,7 +4719,7 @@ function getFriends() {
     mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
-      'access_token': token
+      'access_token': _cookie2.default
     })
   });
 }
@@ -4768,7 +4737,7 @@ function getFriends() {
   * }
   */
 function addFriend(username, frnd) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/username";
@@ -4779,7 +4748,7 @@ function addFriend(username, frnd) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       username: usrname,
@@ -4801,7 +4770,7 @@ function addFriend(username, frnd) {
  * }
  */
 function acceptFriend(username, frnd) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/username";
@@ -4811,7 +4780,7 @@ function acceptFriend(username, frnd) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       username: usrname,
@@ -4833,7 +4802,7 @@ function acceptFriend(username, frnd) {
  * }
  */
 function unfriend(username, frnd) {
-  if (!token) {
+  if (!_cookie2.default) {
     return;
   }
   var endpoint = "/user/username";
@@ -4844,7 +4813,7 @@ function unfriend(username, frnd) {
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
-      'access_token': token
+      'access_token': _cookie2.default
     }),
     body: (0, _stringify2.default)({
       username: usrname,
@@ -4853,7 +4822,7 @@ function unfriend(username, frnd) {
   });
 }
 
-},{"../config.js":109,"babel-runtime/core-js/json/stringify":1,"isomorphic-fetch":103}],109:[function(require,module,exports){
+},{"../config.js":110,"./cookie.js":106,"babel-runtime/core-js/json/stringify":1,"isomorphic-fetch":103}],110:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4864,7 +4833,7 @@ exports.default = {
   isNode: typeof window === 'undefined'
 };
 
-},{}],110:[function(require,module,exports){
+},{}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4880,7 +4849,11 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-//handle doing upload via ajax -- should build this one ourselves
+/**
+  AJAX Handlers passed in as view actions
+ */
+
+/*  Handle File Upload   */
 /**
  * core.js is pretty much the controller for the nav & basic app functionality
  */
@@ -4902,6 +4875,9 @@ var handleUpload = function () {
               });
             };
 
+            //send request
+
+
             _context.prev = 1;
             _context.next = 4;
             return uploadFile(file);
@@ -4913,6 +4889,7 @@ var handleUpload = function () {
 
           case 7:
             resp = _context.sent;
+
 
             //grab response & set it in store
             _store2.default.upload = {
@@ -4926,6 +4903,8 @@ var handleUpload = function () {
             _context.prev = 11;
             _context.t0 = _context['catch'](1);
 
+
+            //log error, should only happen if invalid upload - type or large file
             console.log(_context.t0);
 
           case 14:
@@ -4940,7 +4919,7 @@ var handleUpload = function () {
   };
 }();
 
-//handle form submission
+/*  Handle Form Submission  */
 
 
 var handleSubmit = function () {
@@ -5140,14 +5119,14 @@ var nav = exports.nav = new _navv2.default(_store2.default.groups, _store2.defau
 //initialize the core app
 function start() {
 
-  //adjust click events for mobile
+  //adjust click events for mobile taps
   (0, _fastclick2.default)(document.body);
 
-  //bind handlers
+  //bind handlers for base app
   nav.bind();
 }
 
-},{"../ajax/threads.js":107,"./navv.js":112,"./oembed.js":113,"./store.js":115,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],111:[function(require,module,exports){
+},{"../ajax/threads.js":108,"./navv.js":113,"./oembed.js":114,"./store.js":116,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5197,6 +5176,8 @@ function $on(target, type, callback, useCapture) {
 
 //get context in writer
 function getContext() {
+
+  //if the route equals search, user, or '' --> set writer target to /random/
   var defaultRandom = ['search', 'user', ''];
   var loc = location.pathname.substring(1).split('/');
   defaultRandom.forEach(function (item) {
@@ -5204,16 +5185,19 @@ function getContext() {
       return '/random/';
     }
   });
-  //checks for /group/t/:here <---
+
+  //checks for /group/t/:here <=
   if (loc[2]) {
     return 'this thread';
   } else if (loc[0]) {
     return '/' + loc[0] + '/';
   }
+
+  //if none of the above, default to /random/
   return '/random/';
 }
 
-},{"../config.js":109}],112:[function(require,module,exports){
+},{"../config.js":110}],113:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5246,11 +5230,9 @@ var _router = require('../router/router.js');
 
 var _router2 = _interopRequireDefault(_router);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _template = require('./template.js');
 
-/**
- * navv.js is the view for the navbar and app-container
- */
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var View = function () {
 
@@ -5270,6 +5252,12 @@ var View = function () {
     this.groups = groups;
     this.user = user;
 
+    //set base view data -- core to component
+    this._openMenu = false;
+    this._openWriter = false;
+    this._hiddenWriter = false;
+    this._openSearch = false;
+
     //event.keyCode code for enter is 13
     var ENTER_KEY = 13;
 
@@ -5284,14 +5272,18 @@ var View = function () {
     this.$searchboxExit = (0, _helpers.$id)('TopNav-searchbox-exit');
     this.$searchboxClear = (0, _helpers.$id)('TopNav-searchbox-clear');
 
-    //body handlers
-    var setActiveBody = function setActiveBody() {
-      document.body.className = 'menu-active';
-    };
-
-    var unsetActiveBody = function unsetActiveBody() {
-      document.body.className = '';
-    };
+    //account for references to later objects
+    this.$writermount = null;
+    this.$savebutton = null;
+    this.$cancelbutton = null;
+    this.$fileSubmit = null;
+    this.$submitIcon = null;
+    this.$submit = null;
+    this.$group = null;
+    this.$identity = null;
+    this.$body = null;
+    this.$link = null;
+    this.$writerhead = null;
 
     //setup commands for view actions
     this.viewCommands = {
@@ -5303,13 +5295,12 @@ var View = function () {
         _this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit);
       },
       removeWriter: function removeWriter(e) {
-        unsetActiveBody();
+        _this._unsetActiveBody();
         e.preventDefault();
         _this._removeWriter();
-        document.body.className = '';
       },
       showSearch: function showSearch(e) {
-        setActiveBody();
+        _this._setActiveBody();
         e.preventDefault();
         _this._showSearch();
       },
@@ -5318,71 +5309,103 @@ var View = function () {
         _this._clearSearch();
       },
       hideSearch: function hideSearch(e) {
-        unsetActiveBody();
+        _this._unsetActiveBody();
         _this._hideSearch(e);
       },
       submitSearch: function submitSearch(e) {
         return _this._submitSearch(e);
       },
       showMenu: function showMenu(e) {
-        setActiveBody();
+        //use this so we can see when the writer is open as opposed to menu (desktop view stuff)
+        _this._setActiveBody();
         _this._showMenu(user);
       },
       removeMenu: function removeMenu(e) {
-        unsetActiveBody();
+        _this._unsetActiveBody();
         _this._removeMenu();
       }
     };
   }
 
+  //body handlers --> this is so Mobile isn't allowed to scroll while Menu items are active
+
+
   (0, _createClass3.default)(View, [{
+    key: '_setActiveBody',
+    value: function _setActiveBody(type) {
+      document.body.className = 'menu-active ' + (type ? type : '');
+    }
+
+    //unset body class which prevents scroll (only on mobile)
+
+  }, {
+    key: '_unsetActiveBody',
+    value: function _unsetActiveBody() {
+      document.body.className = '';
+    }
+
+    //bind all handlers --> we bind them to the 'this' context because that references the class
+
+  }, {
     key: 'bind',
     value: function bind() {
 
       //search
-      (0, _helpers.$on)(this.$search, 'click', this.viewCommands.showSearch, false);
+      (0, _helpers.$on)(this.$search, 'click', this.viewCommands.showSearch.bind(this), false);
 
       //hide search on outside click
-      (0, _helpers.$on)(this.$searchboxBg, 'click', this.viewCommands.hideSearch, false);
+      (0, _helpers.$on)(this.$searchboxBg, 'click', this.viewCommands.hideSearch.bind(this), false);
 
       //do nothing on touchmove
       (0, _helpers.$on)(this.$searchboxBg, 'touchmove', function (e) {
         return e.preventDefault();
       }, false);
 
-      //hide search on outside click
+      //do nothing on searchbox click
       (0, _helpers.$on)(this.$searchbox, 'click', function (e) {
         return e.stopPropagation();
       }, false);
 
       //hide search from button
-      (0, _helpers.$on)(this.$searchboxExit, 'click', this.viewCommands.hideSearch, false);
+      (0, _helpers.$on)(this.$searchboxExit, 'click', this.viewCommands.hideSearch.bind(this), false);
 
       //clear search
-      (0, _helpers.$on)(this.$searchboxClear, 'click', this.viewCommands.clearSearch, false);
+      (0, _helpers.$on)(this.$searchboxClear, 'click', this.viewCommands.clearSearch.bind(this), false);
 
       //keyup for search (send on enter)
-      (0, _helpers.$on)(this.$searchbox, 'keyup', this._handleSearch, false);
+      (0, _helpers.$on)(this.$searchbox, 'keyup', this._handleSearch.bind(this), false);
 
       //show writer
-      (0, _helpers.$on)(this.$pencil, 'click', this.viewCommands.showWriter, false);
+      (0, _helpers.$on)(this.$pencil, 'click', this.viewCommands.showWriter.bind(this), false);
 
       //show menu
-      (0, _helpers.$on)(this.$menu, 'click', this.viewCommands.showMenu, false);
+      (0, _helpers.$on)(this.$menu, 'click', this.viewCommands.showMenu.bind(this), false);
     }
+
+    //Exposes the writer-opening action -- allowing target to be dynamically set
+
   }, {
     key: 'openWriter',
     value: function openWriter(to) {
+
+      //set target to 'to'
       this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
     }
+
+    //show the searchbox
+
   }, {
     key: '_showSearch',
     value: function _showSearch() {
       var _this2 = this;
 
-      //remove menu
-      this._removeMenu();
+      //set search to open
+      this._openSearch = true;
 
+      //remove menu
+      if (this._openMenu) this._removeMenu();
+
+      //allows smooth scrolling to top
       var sleep = function sleep() {
         var ms = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
 
@@ -5391,82 +5414,94 @@ var View = function () {
         });
       };
 
-      var scrollTop = function () {
-        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-          var Break;
-          return _regenerator2.default.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  if (!(window.scrollY <= 5)) {
-                    _context.next = 2;
-                    break;
-                  }
-
-                  return _context.abrupt('return');
-
-                case 2:
-                  if (!(window.scrollY > 6)) {
-                    _context.next = 9;
-                    break;
-                  }
-
-                  Break = -20 - window.scrollY / 5;
-
-                  window.scrollBy(0, Break);
-                  _context.next = 7;
-                  return sleep();
-
-                case 7:
+      //calls the scroll-to-top action
+      (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+        var Break;
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!(window.scrollY <= 5)) {
                   _context.next = 2;
                   break;
+                }
 
-                case 9:
-                  return _context.abrupt('return', true);
+                return _context.abrupt('return');
 
-                case 10:
-                case 'end':
-                  return _context.stop();
-              }
+              case 2:
+                if (!(window.scrollY > 6)) {
+                  _context.next = 9;
+                  break;
+                }
+
+                Break = -20 - window.scrollY / 5;
+
+                window.scrollBy(0, Break);
+                _context.next = 7;
+                return sleep();
+
+              case 7:
+                _context.next = 2;
+                break;
+
+              case 9:
+              case 'end':
+                return _context.stop();
             }
-          }, _callee, _this2);
-        }));
-        return function scrollTop() {
-          return ref.apply(this, arguments);
-        };
-      }();
+          }
+        }, _callee, _this2);
+      }))();
 
-      scrollTop();
-      //remove hide from element's classname
+      //remove hide from element's classname --> show searchbox
       this.$searchboxBg.className = '';
-      this.$searchbox.className = 'stay';
+
+      //focus searchbox after opening it
       this.$searchbox.focus();
     }
+
+    //submit search on enter key hit
+
   }, {
-    key: '_submitSearch',
-    value: function _submitSearch(e) {
-      if (e.keyCode === ENTER_KEY) {
+    key: '_handleSearch',
+    value: function _handleSearch(e) {
+      if (e.keyCode === this.ENTER_KEY) {
         //transition to search view
         //router.doSearch(e.target.value)
+
       }
     }
+
+    //clears searchbox on click
+
   }, {
     key: '_clearSearch',
     value: function _clearSearch() {
+
       //clears the searchbox
       this.$searchbox.value = '';
     }
+
+    //hide the searchbox once more
+
   }, {
     key: '_hideSearch',
     value: function _hideSearch(e) {
+
+      //set unset openSearch
+      this._openSearch = false;
+
       /*
        since we don't have an event that we can stop from propating to close form,
        we'll just cut it if the id of the click event target is the box
       */
-      if (e.target.id === 'TopNav-searchbox-box') return;
-      //add hide to element's classiuhiuasd
+      //if (e.target.id === 'TopNav-searchbox-box') return;
+
+      //add hide to element's class (back to normal)
       this.$searchboxBg.className = "hide";
     }
+
+    //show the writer box, created dynamically
+
   }, {
     key: '_showWriter',
     value: function _showWriter(groups, user, handleUpload, handleSubmit) {
@@ -5474,43 +5509,72 @@ var View = function () {
 
       var to = arguments.length <= 4 || arguments[4] === undefined ? '' : arguments[4];
 
-      //remove menu
-      this._removeMenu();
-      var wm = (0, _helpers.$id)("TopNav-writer-mount");
-      if (!wm) {
+
+      //remove menu if it's open
+      if (this._openMenu) this._removeMenu();
+
+      //if writer isn't in the DOM
+      if (!this._openWriter && !this._hiddenWriter) {
         (function () {
+
+          //handle sending the form -- slightly wrapped AJAX version
+
+          var handleSend = function handleSend() {
+
+            //no empty posts
+            if (!this.$body.value.length && !this.$link.value) return;
+
+            //set the targeted group to the full 'to' value, as opposed to the cutoff version
+            var grp = this.$group.value === (0, _template.cutoff)(to) ? to : this.$group.value;
+
+            //send request
+            handleSubmit(this.$link.value, this.$body.value, grp, this.$identity.value);
+
+            //remove writer from view entirely
+            this._removeWriter();
+
+            //reload the location --> feels more like it's doing something IMO
+            _router2.default.check();
+          };
+
+          //handle hiding the writer
+
+
+          var handleHide = function handleHide() {
+            this._hiddenWriter = true;
+            writerMount.className = 'hide';
+            this._unsetActiveBody();
+          };
+
+          //let ourselves know that we uploaded a file successfully
+
+
           var handleContent = function handleContent(e) {
-            this.handleUpload($fileSubmit.files[0]);
+            handleUpload($fileSubmit.files[0]);
             $submitIcon.className = 'icon icon-check';
           };
 
+          //handle hover event for fullscreen writer
+
+
+          var onTitleClick = function onTitleClick(e) {
+            this.$writermount.classList.contains('originalWriter') ? this.$writermount.classList.remove('originalWriter') : this.$writermount.classList.add('originalWriter');
+          };
+
+          //set writer to open
+          _this3._openWriter = true;
+
           //stop scroll on body
-          document.body.className = 'menu-active';
+          _this3._setActiveBody('writemode');
 
           //element that we'll use to get the writer
           var writerMount = document.createElement('div');
+
+          //set new element's id
           writerMount.id = "TopNav-writer-mount";
 
-          var getTopOptions = function getTopOptions(groups) {
-            return groups.map(function (grp) {
-              return '<option>' + grp + '</option>';
-            }).join(" ");
-          };
-
-          var getUsernames = function getUsernames(usernames) {
-            return usernames.map(function (username) {
-              return '<option>' + username + '</option>';
-            }).join(" ");
-          };
-
-          var cutoff = function cutoff(sendTo) {
-            if (sendTo.length > 10) {
-              return sendTo.substring(0, 12) + '...';
-            }
-          };
-
-          //show post submission form
-          var writer = '\n        <div id="TopNav-writer-top">\n          <span id="TopNav-writer-save" class="icon icon-left-open-big"></span>\n          <span id="TopNav-writer-head">new post</span>\n          <span id="TopNav-writer-cancel" class="icon icon-cancel"></span>\n        </div>\n        <div id="TopNav-writer-link">\n          <input placeholder="submit a link (or don\'t)" id="TopNav-writer-link-box"/>\n          <span id="TopNav-writer-content">\n            <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">\n              <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>\n\t\t\t\t\t\t\t<input id="TopNav-writer-content-submit" type="file"/>\n            </label>\n          </span>\n        </div>\n        <div id="TopNav-writer-main">\n          <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>\n        </div>\n        <div id="TopNav-writer-identity">\n          <span>posting as</span>\n          <select id="TopNav-writer-identity-select"><option>Anonymous</option>' + getUsernames(user.usernames) + '</select></span>\n        </div>\n        <div id="TopNav-writer-foot">\n          <span id="TopNav-writer-group">Posting to:\n            <select id="TopNav-writer-select">\n\t\t\t\t\t\t<option>' + (to != '' ? cutoff(to) : (0, _helpers.getContext)()) + '\n\t\t\t\t\t\t</option>' + getTopOptions(groups) + '\n\t\t\t\t\t\t</select></span>\n          <span id="TopNav-writer-send">send</span>\n        </div>\n      ';
+          //generate writer from the template
+          var writer = (0, _template.generateWriter)(groups, user.usernames, to);
 
           //set div's contents to the above
           writerMount.innerHTML = writer;
@@ -5518,62 +5582,62 @@ var View = function () {
           //append writer
           _this3.$nav.appendChild(writerMount);
 
-          //gonna want to add events to it as well here
-          var $savebutton = (0, _helpers.$id)('TopNav-writer-save');
-          var $cancelbutton = (0, _helpers.$id)('TopNav-writer-cancel');
-          var $fileSubmit = (0, _helpers.$id)('TopNav-writer-content-submit');
-          var $submitIcon = (0, _helpers.$id)('TopNav-writer-submit-icon');
-          var $submit = (0, _helpers.$id)('TopNav-writer-send');
-          var $group = (0, _helpers.$id)('TopNav-writer-select');
-          var $identity = (0, _helpers.$id)('TopNav-writer-identity-select');
-          var $body = (0, _helpers.$id)('TopNav-writer-input');
-          var $link = (0, _helpers.$id)('TopNav-writer-link-box');
+          //set reference
+          _this3.$writermount = writerMount;
 
-          //handle sending the form
-          var handleSend = function handleSend() {
-            //no posts smaller than 8, yay for arbitrary rules!
-            if ($body.value.length < 8 && $link.value === '') return;
-            //set the targeted group to the full 'to' value, as opposed to the cutoff version
-            var grp = $group.value === cutoff(to) ? to : $group.value;
-            handleSubmit($link.value, $body.value, grp, $identity.value);
-            _this3._removeWriter();
-            _router2.default.check();
-          };
+          //set references to DOM elements generated by writer
+          _this3.$savebutton = (0, _helpers.$id)('TopNav-writer-save');
+          _this3.$cancelbutton = (0, _helpers.$id)('TopNav-writer-cancel');
+          _this3.$fileSubmit = (0, _helpers.$id)('TopNav-writer-content-submit');
+          _this3.$submitIcon = (0, _helpers.$id)('TopNav-writer-submit-icon');
+          _this3.$submit = (0, _helpers.$id)('TopNav-writer-send');
+          _this3.$group = (0, _helpers.$id)('TopNav-writer-select');
+          _this3.$identity = (0, _helpers.$id)('TopNav-writer-identity-select');
+          _this3.$body = (0, _helpers.$id)('TopNav-writer-input');
+          _this3.$link = (0, _helpers.$id)('TopNav-writer-link-box');
+          _this3.$writerhead = (0, _helpers.$id)('TopNav-writer-head');
 
-          var handleHide = function handleHide() {
-            writerMount.className = "hide";
-            document.body.className = "";
-          };
-
-          _this3.handleUpload = handleUpload;
-
-          handleContent = handleContent.bind(_this3);
-
-          (0, _helpers.$on)($cancelbutton, 'click', _this3._removeWriter, false);
-          (0, _helpers.$on)($savebutton, 'click', handleHide, false);
-          (0, _helpers.$on)($fileSubmit, 'change', handleContent, false);
-          (0, _helpers.$on)($submit, 'click', handleSend, false);
-          (0, _helpers.$on)(writerMount, 'touchmove', function (e) {
+          (0, _helpers.$on)(_this3.$cancelbutton, 'click', _this3._removeWriter.bind(_this3), false);
+          (0, _helpers.$on)(_this3.$savebutton, 'click', handleHide.bind(_this3), false);
+          (0, _helpers.$on)(_this3.$fileSubmit, 'change', handleContent.bind(_this3), false);
+          (0, _helpers.$on)(_this3.$submit, 'click', handleSend.bind(_this3), false);
+          (0, _helpers.$on)(_this3.$writermount, 'touchmove', function (e) {
             return e.preventDefault();
           }, false);
+          (0, _helpers.$on)(_this3.$writerhead, 'click', onTitleClick.bind(_this3), false);
         })();
       } else {
-        wm.className = "";
+        if (this._hiddenWriter) {
+          this._hiddenWriter = false;
+          this._openWriter = true;
+          this._setActiveBody('writemode');
+          this.$writermount.className = '';
+        } else {
+          this._hiddenWriter = true;
+          this.$writermount.className = 'hide';
+          this._unsetActiveBody();
+        }
       }
     }
   }, {
     key: '_removeWriter',
     value: function _removeWriter() {
-      document.body.className = '';
+      this._openWriter = false;
+      this._unsetActiveBody();
+
       //remove writer from view
-      var writer = (0, _helpers.$id)('TopNav-writer-mount');
-      writer.parentNode.removeChild(writer);
+      var writer = this.$writermount;
+      if (writer) writer.parentNode.removeChild(writer);
     }
+
+    //this opens & closes menu!
+
   }, {
     key: '_showMenu',
     value: function _showMenu(user) {
+
       //check if menu exists
-      if ((0, _helpers.$id)("TopNav-menu-bg")) {
+      if ((0, _helpers.$id)('TopNav-menu-bg')) {
         this.$menuicon.className = "icon icon-menu";
         this._removeMenu();
         return;
@@ -5672,11 +5736,13 @@ var View = function () {
     }
   }]);
   return View;
-}();
+}(); /**
+      * navv.js is the view for the navbar and app-container
+      */
 
 exports.default = View;
 
-},{"../router/router.js":120,"./helpers.js":111,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}],113:[function(require,module,exports){
+},{"../router/router.js":121,"./helpers.js":112,"./template.js":117,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}],114:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5872,7 +5938,7 @@ var oembed = function () {
 
 exports.default = oembed;
 
-},{"../config.js":109,"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"isomorphic-fetch":103}],114:[function(require,module,exports){
+},{"../config.js":110,"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"isomorphic-fetch":103}],115:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6018,7 +6084,7 @@ function escapeHTML(html) {
   }
 }
 
-},{"../config.js":109}],115:[function(require,module,exports){
+},{"../config.js":110}],116:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6136,7 +6202,7 @@ exports.default = {
   }
 };
 
-},{"../config.js":109,"babel-runtime/core-js/json/stringify":1}],116:[function(require,module,exports){
+},{"../config.js":110,"babel-runtime/core-js/json/stringify":1}],117:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6156,10 +6222,11 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-//creates a post's html
 /**
- * dom template helpers
+ *  Group View Templates
  */
+
+//creates a post's html
 
 var generatePost = exports.generatePost = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(group, post, user) {
@@ -6182,16 +6249,12 @@ var generatePost = exports.generatePost = function () {
             _context.t4 = generateBody(post.body);
             _context.t5 = _context.t3 + _context.t4;
             _context.t6 = _context.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
-            _context.next = 14;
-            return generatePostFooter(post, owned);
-
-          case 14:
-            _context.t7 = _context.sent;
+            _context.t7 = generatePostFooter(post, owned);
             _context.t8 = _context.t6 + _context.t7;
             filledpost = _context.t8 + '\n      </footer>\n    </div>\n  ';
             return _context.abrupt('return', filledpost);
 
-          case 18:
+          case 16:
           case 'end':
             return _context.stop();
         }
@@ -6227,16 +6290,12 @@ var generatePopularPost = exports.generatePopularPost = function () {
             _context2.t4 = generateBody(post.body);
             _context2.t5 = _context2.t3 + _context2.t4;
             _context2.t6 = _context2.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
-            _context2.next = 14;
-            return generatePostHeadFooter(post.size, post.thread, postID, user.user.anonymous, owned);
-
-          case 14:
-            _context2.t7 = _context2.sent;
+            _context2.t7 = generatePopFooter(post.size, post.thread, postID, user.user.anonymous, owned);
             _context2.t8 = _context2.t6 + _context2.t7;
             poppost = _context2.t8 + '\n      </footer>\n    </div>\n  ';
             return _context2.abrupt('return', poppost);
 
-          case 18:
+          case 16:
           case 'end':
             return _context2.stop();
         }
@@ -6385,33 +6444,8 @@ var generatePostHeadFooter = function () {
 //handle footer of thread post (head)
 
 
-var generatePostFooter = function () {
-  var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6(post, owned) {
-    var replies, postid, footer;
-    return _regenerator2.default.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            replies = post.replies.length;
-            postid = post.id;
-
-            //might make calls in here later -> that's why it's a function
-
-            footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + replies + ' replies</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '">\n      ' + generateDelete(postid, owned) + '\n      <span class="Footer-right-reply space">reply</span>\n    </span>\n  </div>\n  ';
-            return _context6.abrupt('return', footer);
-
-          case 4:
-          case 'end':
-            return _context6.stop();
-        }
-      }
-    }, _callee6, this);
-  }));
-  return function generatePostFooter(_x15, _x16) {
-    return ref.apply(this, arguments);
-  };
-}();
-
+exports.cutoff = cutoff;
+exports.generateWriter = generateWriter;
 exports.generateTimestamp = generateTimestamp;
 
 var _threads = require('../ajax/threads.js');
@@ -6420,9 +6454,43 @@ var _oembed = require('./oembed.js');
 
 var _oembed2 = _interopRequireDefault(_oembed);
 
+var _helpers = require('./helpers.js');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function generateTimestamp(timestamp) {
+/**
+ * Nav View Templates
+ */
+
+//cut off the lenght of thread id so it doesn't cover the whole screen
+function cutoff(sendTo) {
+  if (sendTo.length > 10) {
+    return sendTo.substring(0, 12) + '...';
+  }
+} /**
+   * dom template helpers
+   */
+
+function generateWriter(groups, usernames, to) {
+  //set all of the groups as options
+  var getTopOptions = function getTopOptions(groups) {
+    return groups.map(function (grp) {
+      return '<option>' + grp + '</option>';
+    }).join(" ");
+  };
+
+  //set usernames as options
+  var getUsernames = function getUsernames(usernames) {
+    return usernames.map(function (username) {
+      return '<option>' + username + '</option>';
+    }).join(" ");
+  };
+
+  //show post submission form
+  var writer = '\n    <div id="TopNav-writer-top">\n      <span id="TopNav-writer-save" class="icon icon-left-open-big DTReaction"></span>\n      <span id="TopNav-writer-head">new post</span>\n      <span id="TopNav-writer-cancel" class="icon icon-cancel DTReaction"></span>\n    </div>\n    <div id="TopNav-writer-link">\n      <input placeholder="submit a link (or don\'t)" id="TopNav-writer-link-box"/>\n      <span id="TopNav-writer-content">\n        <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">\n          <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>\n          <input id="TopNav-writer-content-submit" type="file"/>\n        </label>\n      </span>\n    </div>\n    <div id="TopNav-writer-main">\n      <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>\n    </div>\n    <div id="TopNav-writer-identity">\n      <span>posting as</span>\n      <select id="TopNav-writer-identity-select"><option>Anonymous</option>' + getUsernames(usernames) + '</select></span>\n    </div>\n    <div id="TopNav-writer-foot">\n      <span id="TopNav-writer-group">Posting to:\n        <select id="TopNav-writer-select">\n        <option>' + (to != '' ? cutoff(to) : (0, _helpers.getContext)()) + '\n        </option>' + getTopOptions(groups) + '\n        </select></span>\n      <span id="TopNav-writer-send">send</span>\n    </div>\n  ';
+
+  return writer;
+}function generateTimestamp(timestamp) {
   //create & format timestampstring
   var ampm = '';
   var time = new Date(timestamp); // timestamp in minutes
@@ -6467,9 +6535,23 @@ function generateDelete(postId, owned) {
     }
   }
   return '<span class="report space">report</span>';
+}function generatePopFooter(size, threadid, postid, anonymous, owned) {
+  var length = size;
+  var footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + (length || 0) + ' ' + (length != 1 ? 'posts' : 'post') + '</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '" data-thread="' + threadid + '">\n      <span class="Footer-right-reply space">reply</span>\n      <span class="Footer-open space">open</span>\n    </span>\n  </div>\n  ';
+  return footer;
 }
 
-},{"../ajax/threads.js":107,"./oembed.js":113,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],117:[function(require,module,exports){
+//handle footer of thread post (head)
+function generatePostFooter(post, owned) {
+  var replies = post.replies.length;
+  var postid = post.id;
+
+  //might make calls in here later -> that's why it's a function
+  var footer = '\n  <div class="Footer-content">\n    <span class="Footer-left">\n      <span class="icon-chat Footer-left-icon"></span>\n      <span class="Footer-left-size">' + replies + ' replies</span>\n    </span>\n    <span class="Footer-right" data-post="' + postid + '">\n      ' + generateDelete(postid, owned) + '\n      <span class="Footer-right-reply space">reply</span>\n    </span>\n  </div>\n  ';
+  return footer;
+}
+
+},{"../ajax/threads.js":108,"./helpers.js":112,"./oembed.js":114,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6725,7 +6807,7 @@ exports.default = function () {
   return start;
 }();
 
-},{"../ajax/groups.js":106,"../ajax/threads.js":107,"../ajax/user.js":108,"../core/store.js":115,"./groupv.js":118,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],118:[function(require,module,exports){
+},{"../ajax/groups.js":107,"../ajax/threads.js":108,"../ajax/user.js":109,"../core/store.js":116,"./groupv.js":119,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],119:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -6787,14 +6869,14 @@ var View = function () {
     //set group
     this.group = group;
 
-    //set threads
-    this.threads = data.threads;
+    //set threads --> catch null threads (like when the page is empty)
+    this.threads = data.threads || [];
 
     //set group info
     this.info = data.info;
 
     //set threads
-    this.popular = data.popular;
+    this.popular = data.popular || [];
 
     //set user data
     this.user = user;
@@ -7172,7 +7254,7 @@ var View = function () {
                   _context3.t2 = _context3.sent;
                   _context3.t3 = '\n        <div id="Main-desktop-group" class="desktop">\n          <div class="PopularList">\n            <span id="Main-desktop-title">\n              <span id="Main-desktop-title-text">Popular</span>\n            </span>\n            ' + _context3.t2;
                   desktopright = _context3.t3 + '\n          </div>\n        </div>\n      ';
-                  desktopleft = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p>Author</p>\n            <p>' + info.author + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n        </div>\n      ';
+                  desktopleft = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p class="GroupAuthor-name">' + info.author + '</p>\n          </div>\n          <div class="GroupPage">\n            <p class="GroupPage-page">Page:</p>\n            <p class="GroupPage-num">' + _this2.page + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n        </div>\n      ';
 
                   //final template for section
 
@@ -7214,7 +7296,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"../core/core.js":110,"../core/helpers.js":111,"../core/oembed.js":113,"../core/template.js":116,"../router/router.js":120,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}],119:[function(require,module,exports){
+},{"../core/core.js":111,"../core/helpers.js":112,"../core/oembed.js":114,"../core/template.js":117,"../router/router.js":121,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}],120:[function(require,module,exports){
 'use strict';
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -7318,7 +7400,7 @@ window.parser = _parser2.default;
   _router2.default.start();
 }
 
-},{"./ajax/user.js":108,"./core/core.js":110,"./core/oembed.js":113,"./core/parser.js":114,"./core/store.js":115,"./router/router.js":120,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],120:[function(require,module,exports){
+},{"./ajax/user.js":109,"./core/core.js":111,"./core/oembed.js":114,"./core/parser.js":115,"./core/store.js":116,"./router/router.js":121,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],121:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7448,7 +7530,7 @@ exports.default = router;
 
 window.router = router;
 
-},{"../config.js":109,"./routes.js":121}],121:[function(require,module,exports){
+},{"../config.js":110,"./routes.js":122}],122:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7669,7 +7751,7 @@ function setup(router) {
             /:group/t/:thread --> thread view for group
   */
 
-},{"../ajax/groups.js":106,"../group/group.js":117,"../thread/thread.js":122,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],122:[function(require,module,exports){
+},{"../ajax/groups.js":107,"../group/group.js":118,"../thread/thread.js":123,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7754,7 +7836,7 @@ exports.default = function () {
       * group.js is a controller for group (kinda)
       */
 
-},{"../ajax/threads.js":107,"../core/store.js":115,"./threadv.js":123,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
+},{"../ajax/threads.js":108,"../core/store.js":116,"./threadv.js":124,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8100,4 +8182,4 @@ var View = function () {
 
 exports.default = View;
 
-},{"../core/core.js":110,"../core/helpers.js":111,"../core/oembed.js":113,"../core/template.js":116,"../router/router.js":120,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}]},{},[119]);
+},{"../core/core.js":111,"../core/helpers.js":112,"../core/oembed.js":114,"../core/template.js":117,"../router/router.js":121,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}]},{},[120]);

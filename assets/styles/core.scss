@@ -125,7 +125,7 @@ body, figure {
 }
 
 .active {
-  color: #5FB5FF;
+  color: #5FB5FF !important;
 }
 
 #TopNav-icon {
@@ -253,10 +253,11 @@ body, figure {
 }
 
 #TopNav-writer-submit-label {
-  position:absolute;
-  right: 20px;
-  width: 20px;
-  height: 20px;
+  position: absolute;
+  right: 0px;
+  top: 1px;
+  width: 40px;
+  height: 40px;
   z-index: 15;
 }
 

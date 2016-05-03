@@ -9,9 +9,13 @@ import fastclick from 'fastclick';
 import fetch from 'isomorphic-fetch';
 import {validate} from './oembed.js';
 
-//handle doing upload via ajax -- should build this one ourselves
+/**
+  AJAX Handlers passed in as view actions
+ */
+
+/*  Handle File Upload   */
 async function handleUpload(file) {
-  function uploadFile (file) {
+  const uploadFile = file => {
     let data = new FormData();
     data.append('file', file);
 
@@ -25,17 +29,20 @@ async function handleUpload(file) {
   try {
     let res = await uploadFile(file);
     let resp = await res.json();
+
     //grab response & set it in store
     store.upload = {
       content: resp.url,
       contentType: file.type
     };
   } catch (e) {
+
+    //log error, should only happen if invalid upload - type or large file
     console.log(e);
   }
 }
 
-//handle form submission
+/*  Handle Form Submission  */
 async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
 
   const anon = identity === 'Anonymous' ? true : false;
@@ -150,9 +157,9 @@ export const nav = new view(store.groups, store.user, options);;
 //initialize the core app
 export default function start() {
 
-  //adjust click events for mobile
+  //adjust click events for mobile taps
   fastclick(document.body);
 
-  //bind handlers
+  //bind handlers for base app
   nav.bind();
 }

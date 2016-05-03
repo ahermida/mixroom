@@ -4,6 +4,70 @@
 
 import { threadLength } from '../ajax/threads.js';
 import oembed from './oembed.js';
+import { getContext } from './helpers.js';
+
+/**
+ * Nav View Templates
+ */
+
+//cut off the lenght of thread id so it doesn't cover the whole screen
+export function cutoff(sendTo) {
+  if (sendTo.length > 10) {
+    return `${sendTo.substring(0, 12)}...`;
+  }
+}
+
+export function generateWriter(groups, usernames, to) {
+  //set all of the groups as options
+  const getTopOptions = (groups) => {
+    return groups.map((grp) => `<option>${grp}</option>`).join(" ");
+  };
+
+  //set usernames as options
+  const getUsernames = (usernames) => {
+    return usernames.map((username) => `<option>${username}</option>`).join(" ");
+  };
+
+  //show post submission form
+  const writer = `
+    <div id="TopNav-writer-top">
+      <span id="TopNav-writer-save" class="icon icon-left-open-big DTReaction"></span>
+      <span id="TopNav-writer-head">new post</span>
+      <span id="TopNav-writer-cancel" class="icon icon-cancel DTReaction"></span>
+    </div>
+    <div id="TopNav-writer-link">
+      <input placeholder="submit a link (or don't)" id="TopNav-writer-link-box"/>
+      <span id="TopNav-writer-content">
+        <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">
+          <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>
+          <input id="TopNav-writer-content-submit" type="file"/>
+        </label>
+      </span>
+    </div>
+    <div id="TopNav-writer-main">
+      <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>
+    </div>
+    <div id="TopNav-writer-identity">
+      <span>posting as</span>
+      <select id="TopNav-writer-identity-select"><option>Anonymous</option>${getUsernames(usernames)}</select></span>
+    </div>
+    <div id="TopNav-writer-foot">
+      <span id="TopNav-writer-group">Posting to:
+        <select id="TopNav-writer-select">
+        <option>${to != '' ? cutoff(to) : getContext()}
+        </option>${getTopOptions(groups)}
+        </select></span>
+      <span id="TopNav-writer-send">send</span>
+    </div>
+  `;
+
+  return writer;
+}
+
+
+/**
+ *  Group View Templates
+ */
 
 //creates a post's html
 export async function generatePost(group, post, user) {
@@ -23,7 +87,7 @@ export async function generatePost(group, post, user) {
       ${generateBody(post.body)}
       </div>
       <footer class="Footer">
-      ${await generatePostFooter(post, owned)}
+      ${generatePostFooter(post, owned)}
       </footer>
     </div>
   `;
@@ -48,7 +112,7 @@ export async function generatePopularPost(post, user) {
       ${generateBody(post.body)}
       </div>
       <footer class="Footer">
-      ${await generatePostHeadFooter(post.size, post.thread, postID, user.user.anonymous, owned)}
+      ${generatePopFooter(post.size, post.thread, postID, user.user.anonymous, owned)}
       </footer>
     </div>
   `;
@@ -202,7 +266,25 @@ async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) 
 }
 
 //handle footer of thread post (head)
-async function generatePostFooter(post, owned) {
+function generatePopFooter(size, threadid, postid, anonymous, owned) {
+  let length = size;
+  let footer = `
+  <div class="Footer-content">
+    <span class="Footer-left">
+      <span class="icon-chat Footer-left-icon"></span>
+      <span class="Footer-left-size">${length || 0} ${length != 1 ? 'posts' : 'post'}</span>
+    </span>
+    <span class="Footer-right" data-post="${postid}" data-thread="${threadid}">
+      <span class="Footer-right-reply space">reply</span>
+      <span class="Footer-open space">open</span>
+    </span>
+  </div>
+  `;
+  return footer;
+}
+
+//handle footer of thread post (head)
+function generatePostFooter(post, owned) {
   let replies = post.replies.length;
   let postid = post.id;
 

@@ -16,14 +16,14 @@ export default class View {
     //set group
     this.group = group;
 
-    //set threads
-    this.threads = data.threads;
+    //set threads --> catch null threads (like when the page is empty)
+    this.threads = data.threads || [];
 
     //set group info
     this.info = data.info;
 
     //set threads
-    this.popular = data.popular;
+    this.popular = data.popular || [];
 
     //set user data
     this.user = user;
@@ -295,8 +295,12 @@ export default class View {
         <div id="Main-desktop-info" class="desktop">
           <div class="GroupName">${info.name}</div>
           <div class="GroupAuthor">
-            <p>Author</p>
-            <p>${info.author}</p>
+            <p class="GroupAuthor-title">Made by:</p>
+            <p class="GroupAuthor-name">${info.author}</p>
+          </div>
+          <div class="GroupPage">
+            <p class="GroupPage-page">Page:</p>
+            <p class="GroupPage-num">${this.page}</p>
           </div>
           <div class="Created">
             <p>Created</p>

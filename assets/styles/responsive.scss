@@ -41,9 +41,176 @@
 
 //desktop views
 @media only screen and (min-width : 900px) {
+  .TopNav-menu-dropdown-row, .Head-author, .GroupAuthor-name {
+    cursor: pointer;
+  }
+  .TopNav-menu-dropdown-row:hover {
+    background-color: #F5F5F3;
+  }
+
+  .GroupAuthor-name:hover, .Head-author:hover {
+    color: #A3D4FF;
+  }
+
+  .icon, label, .Head-rm {
+    cursor: pointer !important;
+  }
+
+  .icon:hover, label:hover,.Head-rm {
+    color: #A3D4FF;
+  }
+
+  .menu-active {
+    overflow-y: scroll !important;
+  }
+
+  //desktop hover
+  .DTReaction:hover {
+    color: #A3D4FF;
+  }
+
+  a:hover :not(#TopNav-title-text){
+    color: #A3D4FF;
+    cursor: pointer;
+  }
+  a{
+    cursor: pointer;
+  }
+  .Head-group:hover {
+    color: #A3D4FF;
+  }
+
+  .space:hover {
+    color: #A3D4FF;
+  }
+  .space:hover {
+    cursor: pointer;
+  }
+
+  //writer
+  #TopNav-writer-mount {
+    top: auto;
+    left: auto;
+    position: fixed;
+    height: 60vh;
+    width: 300px;
+    z-index: 14;
+    background-color: #FCFCFB;
+    bottom: 0px;
+    right: 20vw;
+    border-top: solid 1px #F9EBEB;
+    border-right: solid 1px #F9EBEB;
+    border-left: solid 1px #F9EBEB;
+  }
+  .originalWriter {
+    top: 0 !important;
+    left: 0 !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+  .originalWriter #TopNav-writer-head:hover:after{
+    content:' minimize';
+  }
+  #TopNav-writer-head {
+    cursor: pointer;
+  }
+
+  #TopNav-writer-head:hover:after{
+    color: #CCCCCA;
+    content:' fullscreen';
+  }
+
+  #TopNav-writer-link-box {
+    border-bottom: none;
+  }
+  #TopNav-writer-mount textarea {
+    border-top: solid 1px #ccc;
+    border-right: solid 1px #F9EBEB;
+    resize: horizontal;
+  }
+
+  //search
+  #TopNav-searchbox-clear, #TopNav-searchbox-exit {
+    top: 5px;
+  }
+
+  #TopNav-searchbox {
+      height: 42px;
+  }
+
+  #TopNav-searchbox-box {
+    height: 42px;
+  }
+
+  //menu
+  #TopNav-menu-bg {
+    background: transparent;
+    position: absolute;
+    width: 100%;
+    z-index: 11;
+    padding-bottom: calc(100% + 50px);
+    top: 42px;
+    left: 0;
+    font-size: 15px;
+    overflow-y: hidden;
+  }
+
+  #TopNav-menu-list {
+    border: 1px solid #CCC;
+    position: absolute;
+    width: 240px;
+    z-index: 11;
+    left: auto;
+    top: 0px;
+    right: 100px;
+    font-size: 15px;
+    overflow-y: hidden;
+    font-size: 14px;
+    background: transparent !important;
+    padding-bottom: 0px !important;
+  }
+
+  #dropdown-caret {
+    display: none;
+  }
+
+  .writemode .icon-pencil {
+    color: #5FB5FF !important;
+  }
+
+  .writemode #TopNav-post-text {
+    color: #5FB5FF !important;
+  }
+
+  .active + #TopNav-menu-text {
+    color: #5FB5FF;
+  }
+
+
+  .active ~ #dropdown-caret {
+    position: absolute;
+    display: block;
+    color: #FCFCFB;
+    text-shadow: 1px 0 0 #CCC, 0 -1px 0 #CCC, 0 1px 0 #FCFCFB, -1px 0 0 #CCC;
+    z-index: 13;
+    top: 17px;
+  }
+  .ddtop {
+    box-shadow: none;
+  }
+
+  .Created {
+    font-size: 16px;
+    padding-left: 5px;
+  }
+
+  #TopNav-writer-submit-label {
+    top: 6.5px;
+  }
+
   #Main-desktop-info {
     top: 47px;
-    width: 17.5%;
+    width: 18%;
     position: absolute;
     left: 10px;
   }
@@ -52,29 +219,31 @@
     color: #3b5998;
   }
 
+  .GroupPage {
+    padding-left: 5px;
+    font-size: 16px;
+    border-bottom: solid 1px #ccc;
+  }
+
   .GroupName {
     padding: 5px;
     font-size: 22px;
     display: flex;
     justify-content: center;
-    border-bottom: solid 3px #FFF5F5;
+    border-bottom: solid 1px #ccc;
   }
   .GroupAuthor {
-    font-size: 18px;
+    font-size: 16px;
+    padding-left: 5px;
+    border-bottom: solid 1px #ccc;
+    min-height: 40px;
   }
-  /*
-  <div id="Main-desktop-info" class="desktop">
-    <div class="GroupName">${info.name}</div>
-    <div class="GroupAuthor">
-      <p>Author</p>
-      <p>${info.author}</p>
-    </div>
-    <div class="Created">
-      <p>Created</p>
-      <p>${generateTimestamp(info.created)}</p>
-    </div>
-  </div>
-  */
+  .GroupAuthor-text {
+
+  }
+  .GroupAuthor-name{
+    color: #3b5998;
+  }
 
   .desktop {
     display: block;
@@ -88,7 +257,6 @@
   //set look of image to not 100% automatically
   .Thread img {
     width: calc(75vh * 1.77);
-    max-height: 75vh;
   }
 
   /* show normal view in stream */
@@ -152,13 +320,18 @@
   }
 
   #TopNav-icon {
-    left: 30px;
-    top: 5px;
+    left: 35px;
+    top: 8px;
+    font-size: 16px !important;
   }
 
   #TopNav-title-text {
     top: 7px;
     left: 68px;
+  }
+  //manage comment icon's margin
+  .icon-comment:before {
+    margin: 5px;
   }
 
   #nav-placeholder {
@@ -175,15 +348,22 @@
     margin-right: 100px;
     display: inline-block;
   }
+
   #TopNav-post {
-      top: -14px;
+      top: -13px;
       right: auto;
       position: relative;
       display: inline-block;
       width: 70px;
   }
+
+  #TopNav-post .icon {
+      position: relative;
+      top: -3px;
+  }
+
   #TopNav-post-text {
-    top: -3px;
+    top: -5px;
     right: 5px;
     font-size: 18px;
     position: absolute;
@@ -199,6 +379,8 @@
   }
   #TopNav-search .icon {
     font-size: 22px;
+    position: relative;
+    top: -2px;
   }
   #TopNav-search-text {
     top: -3px;
@@ -215,7 +397,13 @@
     width: 71px;
     display: inline-block;
     position: relative;
+    color: #CCCCCA;
   }
+
+  #TopNav-menu:hover {
+    color: #A3D4FF;
+  }
+
   #TopNav-menu .icon {
     top: 0px;
     width: auto;
@@ -229,8 +417,14 @@
     font-size: 18px;
     position: absolute;
     font-weight: bold;
-    color: #CCCCCA;
+    color: inherit;
   }
+
+  #TopNav-menu-icon {
+    color: inherit;
+  }
+
+
   #TopNav-post, #TopNav-search, #TopNav-menu {
     margin: 0px 8px;
   }
