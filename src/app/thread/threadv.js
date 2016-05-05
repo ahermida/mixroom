@@ -125,7 +125,7 @@ export default class View {
 
   //reply to post
   _reply(e) {
-    nav.openWriter(e.target.parentNode.dataset.thread);
+    nav.openWriterRef(e.target.parentNode.dataset.post);
   }
 
   //open thread

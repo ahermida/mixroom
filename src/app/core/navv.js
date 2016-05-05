@@ -4,7 +4,7 @@
 
 import {$id, $on} from './helpers.js';
 import router from '../router/router.js';
-import {generateWriter, cutoff} from './template.js';
+import {generateWriter, cutoff, generateMenu} from './template.js';
 
 export default class View {
 
@@ -51,6 +51,7 @@ export default class View {
 		this.$body = null;
 		this.$link = null;
 		this.$writerhead = null;
+		this.$menubg = null;
 
     //setup commands for view actions
 		this.viewCommands = {
@@ -138,6 +139,15 @@ export default class View {
 
 		//set target to 'to'
     this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
+	}
+
+	//Exposes the writer and adds target post
+	openWriterRef(id) {
+		//make sure writer is open
+		if (!this._openWriter) this.openWriter();
+
+		//now since it's open, we append the content (presumably an id)
+		this.$body.value += this.$body.value ? `\n>(post: ${id})\n` : `>(post: ${id})\n`;
 	}
 
 	//show the searchbox
@@ -272,14 +282,26 @@ export default class View {
 			//handle hiding the writer
 			function handleHide() {
 				this._hiddenWriter = true;
+				this._openWriter = false;
 				writerMount.className = 'hide';
 				this._unsetActiveBody();
 			}
 
 			//let ourselves know that we uploaded a file successfully
 			function handleContent(e) {
-				handleUpload($fileSubmit.files[0]);
-				$submitIcon.className = 'icon icon-check';
+				let res = handleUpload(this.$fileSubmit.files[0]);
+				res.then(success => {
+					if (success) return this.$submitIcon.className = 'icon icon-check';
+
+					//else set icon to icon x -- set
+					this.$submitIcon.className = 'icon icon-cancel';
+					this.$submitIcon.style.color = 'red';
+
+					window.setTimeout(() => {
+						this.$submitIcon.className = 'icon icon-camera';
+						this.$submitIcon.style.color = '';
+					}, 3000);
+				});
 			}
 
 			//handle hover event for fullscreen writer
@@ -316,86 +338,38 @@ export default class View {
     //remove writer from view
     let writer = this.$writermount;
 		if (writer) writer.parentNode.removeChild(writer);
+
+		//reset references to writer components
+		this.$writermount = null;
+		this.$savebutton = null;
+		this.$cancelbutton = null;
+		this.$fileSubmit = null;
+		this.$submitIcon = null;
+		this.$submit = null;
+		this.$group = null;
+		this.$identity = null;
+		this.$body = null;
+		this.$link = null;
+		this.$writerhead = null;
   }
 
 	//this opens & closes menu!
   _showMenu(user) {
 
-    //check if menu exists
-    if ($id('TopNav-menu-bg')) {
-      this.$menuicon.className = "icon icon-menu";
+    //check if menu exists --> remove it if it exists
+    if (this._openMenu) {
+      this.$menuicon.classList.remove('active');
       this._removeMenu();
       return;
     }
 
-    //set color of menu button and add menu
     //element that we'll use to get the menu
     const menuMount = document.createElement('nav');
     menuMount.id = "TopNav-menu-bg";
 
-    this.$menuicon.className = "icon icon-menu active";
+    this.$menuicon.classList.add('active');
 
-    //get template for either user logged in or not logged in
-    const getUserMenu = (user) => {
-      if (user.anonymous) {
-          return `
-          <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">
-            <span id="dd-icon-signup" class="icon icon-book ddicon">
-            </span>
-            <span class="ddtext">Signup for an account</span>
-          </li>
-          <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">
-            <span id="dd-icon-login" class="icon icon-book-open ddicon">
-            </span>
-            <span class="ddtext">Log in to your account</span>
-          </li>`;
-        } else {
-          return`
-          <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">
-            <span id="dd-icon-user" class="icon icon-cog ddicon">
-            </span>
-            <span class="ddtext">${user.username}</span>
-          </li>
-					<span id="TopNav-dropdown-logout">logout</span>
-					`;
-        }
-    };
-
-    //show menu -- submenu simply has class hide
-    const menu = `
-      <ul id="TopNav-menu-list" class="dropdown">
-				${getUserMenu(user)}
-        <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">
-          <span id="dd-icon-about" class="icon icon-info ddicon"></span>
-          <span class="ddtext">About</span>
-        </li>
-        <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">
-          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
-          <span class="ddtext">Privacy</span>
-        </li>
-				<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">
-					<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
-					<span class="ddtext">Secret Menu</span>
-					<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>
-				</li>
-				<ul id="TopNav-menu-secretmenu" class="dropdown hide">
-					<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">
-						<span id="dd-icon-faq" class="icon icon-help ddicon">
-						</span>
-						<span class="ddtext">How do I use this?</span>
-					</li>
-					<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">
-						<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">
-						</span>
-						<span class="ddtext">Dragon or Wyvern?</span>
-					</li>
-				</ul>
-        <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">
-          <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>
-          <span class="ddtext">Rules for Posting</span>
-        </li>
-      </ul>
-    `;
+		const menu = generateMenu(user);
 
     //set div's contents to the above
     menuMount.innerHTML = menu;
@@ -450,20 +424,24 @@ export default class View {
 
     //bind events here
     $on($dropdown, 'click', handleDropdown, false);
-    $on($dropdownBg, 'click', this._removeMenu, false);
+    $on($dropdownBg, 'click', this._removeMenu.bind(this), false);
 		$on($dropdownBg, 'touchmove', e => e.preventDefault(), false);
+
+		//set reference to menubg and set menu to open
+		this.$menubg = menuMount;
+		this._openMenu = true;
   }
 
   _removeMenu() {
     //unset color of menu button & remove menu
-    let menu = $id('TopNav-menu-bg');
-    if (menu) {
+    if (this._openMenu) {
       //get $menuicon which is here too deep to reference by class
-			document.body.className = '';
-      let $menuicon = $id('TopNav-menu-icon');
-      $menuicon.className = "icon icon-menu";
-      menu.className = "";
-      menu.parentNode.removeChild(menu);
+			this._unsetActiveBody();
+			this._openMenu = false;
+      this.$menuicon.className = "icon icon-menu";
+      this.$menubg.className = "";
+      this.$menubg.parentNode.removeChild(this.$menubg);
+			this.$menubg = null;
     }
   }
 

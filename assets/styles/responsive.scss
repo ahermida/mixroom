@@ -108,7 +108,13 @@
     height: 100% !important;
     width: 100% !important;
   }
+  //kind of redundant, but it allows for consistent styling
   .originalWriter #TopNav-writer-head:hover:after{
+    color: #CCCCCA;
+    content:' minimize';
+  }
+  .originalWriter #TopNav-writer-head:after{
+    color: #CCCCCA;
     content:' minimize';
   }
   #TopNav-writer-head {
@@ -126,9 +132,12 @@
   #TopNav-writer-mount textarea {
     border-top: solid 1px #ccc;
     border-right: solid 1px #F9EBEB;
-    resize: horizontal;
   }
 
+  #TopNav-writer-send {
+    cursor: pointer;
+  }
+  
   //search
   #TopNav-searchbox-clear, #TopNav-searchbox-exit {
     top: 5px;

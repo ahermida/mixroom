@@ -4896,23 +4896,22 @@ var handleUpload = function () {
               content: resp.url,
               contentType: file.type
             };
-            _context.next = 14;
-            break;
+            return _context.abrupt('return', true);
 
-          case 11:
-            _context.prev = 11;
+          case 12:
+            _context.prev = 12;
             _context.t0 = _context['catch'](1);
-
 
             //log error, should only happen if invalid upload - type or large file
             console.log(_context.t0);
+            return _context.abrupt('return', false);
 
-          case 14:
+          case 16:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, this, [[1, 11]]);
+    }, _callee, this, [[1, 12]]);
   }));
   return function handleUpload(_x) {
     return ref.apply(this, arguments);
@@ -4929,7 +4928,7 @@ var handleSubmit = function () {
     var to = arguments[2];
     var identity = arguments.length <= 3 || arguments[3] === undefined ? 'Anonymous' : arguments[3];
 
-    var anon, getReferences, cont, contentType, isgrp, res, resp, getPath, path, thread, responseTo, _res, _resp;
+    var anon, cont, contentType, isgrp, res, resp, getPath, path, thread, responseTo, _res, _resp;
 
     return _regenerator2.default.wrap(function _callee2$(_context2) {
       while (1) {
@@ -4937,24 +4936,7 @@ var handleSubmit = function () {
           case 0:
             anon = identity === 'Anonymous' ? true : false;
 
-            //should return all references to other posts in thread
-
-            getReferences = function getReferences(body) {
-
-              //regex for reference (post: 12312)
-              var ref = /\(post:(\S*?)\)/g;
-              var idrefs = void 0;
-              var matches = body.match(ref);
-              if (matches) {
-                idrefs = matches.map(function (match) {
-                  return match.slice(6, -1).trim();
-                });
-              }
-              return idrefs || [];
-            };
-
             //if there's no content, shove the link in there and set upload to link
-
 
             if (!_store2.default.upload.content && link) {
               if ((0, _oembed.validate)(link)) {
@@ -4978,20 +4960,20 @@ var handleSubmit = function () {
             isgrp = _store2.default.groups.includes(to);
 
             if (!isgrp) {
-              _context2.next = 24;
+              _context2.next = 23;
               break;
             }
 
-            _context2.prev = 7;
-            _context2.next = 10;
+            _context2.prev = 6;
+            _context2.next = 9;
             return (0, _threads.createThread)(to, body, identity, cont, contentType, anon);
 
-          case 10:
+          case 9:
             res = _context2.sent;
-            _context2.next = 13;
+            _context2.next = 12;
             return res.json();
 
-          case 13:
+          case 12:
             resp = _context2.sent;
 
 
@@ -5006,19 +4988,19 @@ var handleSubmit = function () {
 
             return _context2.abrupt('return');
 
-          case 19:
-            _context2.prev = 19;
-            _context2.t0 = _context2['catch'](7);
+          case 18:
+            _context2.prev = 18;
+            _context2.t0 = _context2['catch'](6);
 
 
             //if something went wrong, let ourselves know
             console.log(_context2.t0);
 
-          case 22:
-            _context2.next = 42;
+          case 21:
+            _context2.next = 41;
             break;
 
-          case 24:
+          case 23:
             //is thread
 
             //get path (thread id)
@@ -5036,16 +5018,16 @@ var handleSubmit = function () {
 
             //try to send post to thread
 
-            _context2.prev = 28;
-            _context2.next = 31;
+            _context2.prev = 27;
+            _context2.next = 30;
             return (0, _threads.post)(thread, identity, body, cont, responseTo, anon, contentType);
 
-          case 31:
+          case 30:
             _res = _context2.sent;
-            _context2.next = 34;
+            _context2.next = 33;
             return _res.json();
 
-          case 34:
+          case 33:
             _resp = _context2.sent;
 
 
@@ -5058,23 +5040,23 @@ var handleSubmit = function () {
             //clear upload in store
             _store2.default.upload = false;
 
-            _context2.next = 42;
+            _context2.next = 41;
             break;
 
-          case 39:
-            _context2.prev = 39;
-            _context2.t1 = _context2['catch'](28);
+          case 38:
+            _context2.prev = 38;
+            _context2.t1 = _context2['catch'](27);
 
 
             //if something went wrong in trying to post it, let ourselves know
             console.log(_context2.t1);
 
-          case 42:
+          case 41:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[7, 19], [28, 39]]);
+    }, _callee2, this, [[6, 18], [27, 38]]);
   }));
   return function handleSubmit(_x2, _x3, _x4, _x5) {
     return ref.apply(this, arguments);
@@ -5084,6 +5066,7 @@ var handleSubmit = function () {
 //options are functions passed into view handlers
 
 
+exports.getReferences = getReferences;
 exports.default = start;
 
 var _navv = require('./navv.js');
@@ -5115,6 +5098,20 @@ var options = {
 
 //create view obj
 var nav = exports.nav = new _navv2.default(_store2.default.groups, _store2.default.user, options);;
+
+//export extract references function
+function getReferences(body) {
+  //regex for reference (post: 12312)
+  var ref = /\(post:(.*?)\)/g;
+  var idrefs = void 0;
+  var matches = body.match(ref);
+  if (matches) {
+    idrefs = matches.map(function (match) {
+      return match.slice(6, -1).trim();
+    });
+  }
+  return idrefs || [];
+}
 
 //initialize the core app
 function start() {
@@ -5201,7 +5198,7 @@ function getContext() {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+		value: true
 });
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -5236,506 +5233,539 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var View = function () {
 
-  //pass in top groups and user -- with username, id, notifications
+		//pass in top groups and user -- with username, id, notifications
 
-  function View(groups, user, options) {
-    var _this = this;
+		function View(groups, user, options) {
+				var _this = this;
 
-    (0, _classCallCheck3.default)(this, View);
-
-
-    //get functions from options
-    this.handleUpload = options.handleUpload;
-    this.handleSubmit = options.handleSubmit;
-
-    //set data
-    this.groups = groups;
-    this.user = user;
-
-    //set base view data -- core to component
-    this._openMenu = false;
-    this._openWriter = false;
-    this._hiddenWriter = false;
-    this._openSearch = false;
-
-    //event.keyCode code for enter is 13
-    var ENTER_KEY = 13;
-
-    //get a reference to DOM elements we need
-    this.$nav = (0, _helpers.$id)('navbar');
-    this.$pencil = (0, _helpers.$id)('TopNav-post');
-    this.$search = (0, _helpers.$id)('TopNav-search');
-    this.$menu = (0, _helpers.$id)('TopNav-menu');
-    this.$menuicon = (0, _helpers.$id)('TopNav-menu-icon');
-    this.$searchbox = (0, _helpers.$id)('TopNav-searchbox-box');
-    this.$searchboxBg = (0, _helpers.$id)('TopNav-searchbox-bg');
-    this.$searchboxExit = (0, _helpers.$id)('TopNav-searchbox-exit');
-    this.$searchboxClear = (0, _helpers.$id)('TopNav-searchbox-clear');
-
-    //account for references to later objects
-    this.$writermount = null;
-    this.$savebutton = null;
-    this.$cancelbutton = null;
-    this.$fileSubmit = null;
-    this.$submitIcon = null;
-    this.$submit = null;
-    this.$group = null;
-    this.$identity = null;
-    this.$body = null;
-    this.$link = null;
-    this.$writerhead = null;
-
-    //setup commands for view actions
-    this.viewCommands = {
-      openWriter: function openWriter(to) {
-        _this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit, to);
-      },
-      showWriter: function showWriter(e) {
-        e.preventDefault();
-        _this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit);
-      },
-      removeWriter: function removeWriter(e) {
-        _this._unsetActiveBody();
-        e.preventDefault();
-        _this._removeWriter();
-      },
-      showSearch: function showSearch(e) {
-        _this._setActiveBody();
-        e.preventDefault();
-        _this._showSearch();
-      },
-      clearSearch: function clearSearch(e) {
-        e.stopPropagation();
-        _this._clearSearch();
-      },
-      hideSearch: function hideSearch(e) {
-        _this._unsetActiveBody();
-        _this._hideSearch(e);
-      },
-      submitSearch: function submitSearch(e) {
-        return _this._submitSearch(e);
-      },
-      showMenu: function showMenu(e) {
-        //use this so we can see when the writer is open as opposed to menu (desktop view stuff)
-        _this._setActiveBody();
-        _this._showMenu(user);
-      },
-      removeMenu: function removeMenu(e) {
-        _this._unsetActiveBody();
-        _this._removeMenu();
-      }
-    };
-  }
-
-  //body handlers --> this is so Mobile isn't allowed to scroll while Menu items are active
+				(0, _classCallCheck3.default)(this, View);
 
 
-  (0, _createClass3.default)(View, [{
-    key: '_setActiveBody',
-    value: function _setActiveBody(type) {
-      document.body.className = 'menu-active ' + (type ? type : '');
-    }
+				//get functions from options
+				this.handleUpload = options.handleUpload;
+				this.handleSubmit = options.handleSubmit;
 
-    //unset body class which prevents scroll (only on mobile)
+				//set data
+				this.groups = groups;
+				this.user = user;
 
-  }, {
-    key: '_unsetActiveBody',
-    value: function _unsetActiveBody() {
-      document.body.className = '';
-    }
+				//set base view data -- core to component
+				this._openMenu = false;
+				this._openWriter = false;
+				this._hiddenWriter = false;
+				this._openSearch = false;
 
-    //bind all handlers --> we bind them to the 'this' context because that references the class
+				//event.keyCode code for enter is 13
+				var ENTER_KEY = 13;
 
-  }, {
-    key: 'bind',
-    value: function bind() {
+				//get a reference to DOM elements we need
+				this.$nav = (0, _helpers.$id)('navbar');
+				this.$pencil = (0, _helpers.$id)('TopNav-post');
+				this.$search = (0, _helpers.$id)('TopNav-search');
+				this.$menu = (0, _helpers.$id)('TopNav-menu');
+				this.$menuicon = (0, _helpers.$id)('TopNav-menu-icon');
+				this.$searchbox = (0, _helpers.$id)('TopNav-searchbox-box');
+				this.$searchboxBg = (0, _helpers.$id)('TopNav-searchbox-bg');
+				this.$searchboxExit = (0, _helpers.$id)('TopNav-searchbox-exit');
+				this.$searchboxClear = (0, _helpers.$id)('TopNav-searchbox-clear');
 
-      //search
-      (0, _helpers.$on)(this.$search, 'click', this.viewCommands.showSearch.bind(this), false);
+				//account for references to later objects
+				this.$writermount = null;
+				this.$savebutton = null;
+				this.$cancelbutton = null;
+				this.$fileSubmit = null;
+				this.$submitIcon = null;
+				this.$submit = null;
+				this.$group = null;
+				this.$identity = null;
+				this.$body = null;
+				this.$link = null;
+				this.$writerhead = null;
+				this.$menubg = null;
 
-      //hide search on outside click
-      (0, _helpers.$on)(this.$searchboxBg, 'click', this.viewCommands.hideSearch.bind(this), false);
+				//setup commands for view actions
+				this.viewCommands = {
+						openWriter: function openWriter(to) {
+								_this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit, to);
+						},
+						showWriter: function showWriter(e) {
+								e.preventDefault();
+								_this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit);
+						},
+						removeWriter: function removeWriter(e) {
+								_this._unsetActiveBody();
+								e.preventDefault();
+								_this._removeWriter();
+						},
+						showSearch: function showSearch(e) {
+								_this._setActiveBody();
+								e.preventDefault();
+								_this._showSearch();
+						},
+						clearSearch: function clearSearch(e) {
+								e.stopPropagation();
+								_this._clearSearch();
+						},
+						hideSearch: function hideSearch(e) {
+								_this._unsetActiveBody();
+								_this._hideSearch(e);
+						},
+						submitSearch: function submitSearch(e) {
+								return _this._submitSearch(e);
+						},
+						showMenu: function showMenu(e) {
+								//use this so we can see when the writer is open as opposed to menu (desktop view stuff)
+								_this._setActiveBody();
+								_this._showMenu(user);
+						},
+						removeMenu: function removeMenu(e) {
+								_this._unsetActiveBody();
+								_this._removeMenu();
+						}
+				};
+		}
 
-      //do nothing on touchmove
-      (0, _helpers.$on)(this.$searchboxBg, 'touchmove', function (e) {
-        return e.preventDefault();
-      }, false);
+		//body handlers --> this is so Mobile isn't allowed to scroll while Menu items are active
 
-      //do nothing on searchbox click
-      (0, _helpers.$on)(this.$searchbox, 'click', function (e) {
-        return e.stopPropagation();
-      }, false);
 
-      //hide search from button
-      (0, _helpers.$on)(this.$searchboxExit, 'click', this.viewCommands.hideSearch.bind(this), false);
+		(0, _createClass3.default)(View, [{
+				key: '_setActiveBody',
+				value: function _setActiveBody(type) {
+						document.body.className = 'menu-active ' + (type ? type : '');
+				}
 
-      //clear search
-      (0, _helpers.$on)(this.$searchboxClear, 'click', this.viewCommands.clearSearch.bind(this), false);
+				//unset body class which prevents scroll (only on mobile)
 
-      //keyup for search (send on enter)
-      (0, _helpers.$on)(this.$searchbox, 'keyup', this._handleSearch.bind(this), false);
+		}, {
+				key: '_unsetActiveBody',
+				value: function _unsetActiveBody() {
+						document.body.className = '';
+				}
 
-      //show writer
-      (0, _helpers.$on)(this.$pencil, 'click', this.viewCommands.showWriter.bind(this), false);
+				//bind all handlers --> we bind them to the 'this' context because that references the class
 
-      //show menu
-      (0, _helpers.$on)(this.$menu, 'click', this.viewCommands.showMenu.bind(this), false);
-    }
+		}, {
+				key: 'bind',
+				value: function bind() {
 
-    //Exposes the writer-opening action -- allowing target to be dynamically set
+						//search
+						(0, _helpers.$on)(this.$search, 'click', this.viewCommands.showSearch.bind(this), false);
 
-  }, {
-    key: 'openWriter',
-    value: function openWriter(to) {
+						//hide search on outside click
+						(0, _helpers.$on)(this.$searchboxBg, 'click', this.viewCommands.hideSearch.bind(this), false);
 
-      //set target to 'to'
-      this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
-    }
+						//do nothing on touchmove
+						(0, _helpers.$on)(this.$searchboxBg, 'touchmove', function (e) {
+								return e.preventDefault();
+						}, false);
 
-    //show the searchbox
+						//do nothing on searchbox click
+						(0, _helpers.$on)(this.$searchbox, 'click', function (e) {
+								return e.stopPropagation();
+						}, false);
 
-  }, {
-    key: '_showSearch',
-    value: function _showSearch() {
-      var _this2 = this;
+						//hide search from button
+						(0, _helpers.$on)(this.$searchboxExit, 'click', this.viewCommands.hideSearch.bind(this), false);
 
-      //set search to open
-      this._openSearch = true;
+						//clear search
+						(0, _helpers.$on)(this.$searchboxClear, 'click', this.viewCommands.clearSearch.bind(this), false);
 
-      //remove menu
-      if (this._openMenu) this._removeMenu();
+						//keyup for search (send on enter)
+						(0, _helpers.$on)(this.$searchbox, 'keyup', this._handleSearch.bind(this), false);
 
-      //allows smooth scrolling to top
-      var sleep = function sleep() {
-        var ms = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
+						//show writer
+						(0, _helpers.$on)(this.$pencil, 'click', this.viewCommands.showWriter.bind(this), false);
 
-        return new _promise2.default(function (resolve) {
-          return setTimeout(resolve, ms);
-        });
-      };
+						//show menu
+						(0, _helpers.$on)(this.$menu, 'click', this.viewCommands.showMenu.bind(this), false);
+				}
 
-      //calls the scroll-to-top action
-      (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-        var Break;
-        return _regenerator2.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                if (!(window.scrollY <= 5)) {
-                  _context.next = 2;
-                  break;
-                }
+				//Exposes the writer-opening action -- allowing target to be dynamically set
 
-                return _context.abrupt('return');
+		}, {
+				key: 'openWriter',
+				value: function openWriter(to) {
 
-              case 2:
-                if (!(window.scrollY > 6)) {
-                  _context.next = 9;
-                  break;
-                }
+						//set target to 'to'
+						this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
+				}
 
-                Break = -20 - window.scrollY / 5;
+				//Exposes the writer and adds target post
 
-                window.scrollBy(0, Break);
-                _context.next = 7;
-                return sleep();
+		}, {
+				key: 'openWriterRef',
+				value: function openWriterRef(id) {
+						//make sure writer is open
+						if (!this._openWriter) this.openWriter();
 
-              case 7:
-                _context.next = 2;
-                break;
+						//now since it's open, we append the content (presumably an id)
+						this.$body.value += this.$body.value ? '\n>(post: ' + id + ')\n' : '>(post: ' + id + ')\n';
+				}
 
-              case 9:
-              case 'end':
-                return _context.stop();
-            }
-          }
-        }, _callee, _this2);
-      }))();
+				//show the searchbox
 
-      //remove hide from element's classname --> show searchbox
-      this.$searchboxBg.className = '';
+		}, {
+				key: '_showSearch',
+				value: function _showSearch() {
+						var _this2 = this;
 
-      //focus searchbox after opening it
-      this.$searchbox.focus();
-    }
+						//set search to open
+						this._openSearch = true;
 
-    //submit search on enter key hit
+						//remove menu
+						if (this._openMenu) this._removeMenu();
 
-  }, {
-    key: '_handleSearch',
-    value: function _handleSearch(e) {
-      if (e.keyCode === this.ENTER_KEY) {
-        //transition to search view
-        //router.doSearch(e.target.value)
+						//allows smooth scrolling to top
+						var sleep = function sleep() {
+								var ms = arguments.length <= 0 || arguments[0] === undefined ? 10 : arguments[0];
 
-      }
-    }
+								return new _promise2.default(function (resolve) {
+										return setTimeout(resolve, ms);
+								});
+						};
 
-    //clears searchbox on click
+						//calls the scroll-to-top action
+						(0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+								var Break;
+								return _regenerator2.default.wrap(function _callee$(_context) {
+										while (1) {
+												switch (_context.prev = _context.next) {
+														case 0:
+																if (!(window.scrollY <= 5)) {
+																		_context.next = 2;
+																		break;
+																}
 
-  }, {
-    key: '_clearSearch',
-    value: function _clearSearch() {
+																return _context.abrupt('return');
 
-      //clears the searchbox
-      this.$searchbox.value = '';
-    }
+														case 2:
+																if (!(window.scrollY > 6)) {
+																		_context.next = 9;
+																		break;
+																}
 
-    //hide the searchbox once more
+																Break = -20 - window.scrollY / 5;
 
-  }, {
-    key: '_hideSearch',
-    value: function _hideSearch(e) {
+																window.scrollBy(0, Break);
+																_context.next = 7;
+																return sleep();
 
-      //set unset openSearch
-      this._openSearch = false;
+														case 7:
+																_context.next = 2;
+																break;
 
-      /*
+														case 9:
+														case 'end':
+																return _context.stop();
+												}
+										}
+								}, _callee, _this2);
+						}))();
+
+						//remove hide from element's classname --> show searchbox
+						this.$searchboxBg.className = '';
+
+						//focus searchbox after opening it
+						this.$searchbox.focus();
+				}
+
+				//submit search on enter key hit
+
+		}, {
+				key: '_handleSearch',
+				value: function _handleSearch(e) {
+						if (e.keyCode === this.ENTER_KEY) {
+								//transition to search view
+								//router.doSearch(e.target.value)
+
+						}
+				}
+
+				//clears searchbox on click
+
+		}, {
+				key: '_clearSearch',
+				value: function _clearSearch() {
+
+						//clears the searchbox
+						this.$searchbox.value = '';
+				}
+
+				//hide the searchbox once more
+
+		}, {
+				key: '_hideSearch',
+				value: function _hideSearch(e) {
+
+						//set unset openSearch
+						this._openSearch = false;
+
+						/*
        since we don't have an event that we can stop from propating to close form,
        we'll just cut it if the id of the click event target is the box
       */
-      //if (e.target.id === 'TopNav-searchbox-box') return;
+						//if (e.target.id === 'TopNav-searchbox-box') return;
 
-      //add hide to element's class (back to normal)
-      this.$searchboxBg.className = "hide";
-    }
+						//add hide to element's class (back to normal)
+						this.$searchboxBg.className = "hide";
+				}
 
-    //show the writer box, created dynamically
+				//show the writer box, created dynamically
 
-  }, {
-    key: '_showWriter',
-    value: function _showWriter(groups, user, handleUpload, handleSubmit) {
-      var _this3 = this;
+		}, {
+				key: '_showWriter',
+				value: function _showWriter(groups, user, handleUpload, handleSubmit) {
+						var _this3 = this;
 
-      var to = arguments.length <= 4 || arguments[4] === undefined ? '' : arguments[4];
-
-
-      //remove menu if it's open
-      if (this._openMenu) this._removeMenu();
-
-      //if writer isn't in the DOM
-      if (!this._openWriter && !this._hiddenWriter) {
-        (function () {
-
-          //handle sending the form -- slightly wrapped AJAX version
-
-          var handleSend = function handleSend() {
-
-            //no empty posts
-            if (!this.$body.value.length && !this.$link.value) return;
-
-            //set the targeted group to the full 'to' value, as opposed to the cutoff version
-            var grp = this.$group.value === (0, _template.cutoff)(to) ? to : this.$group.value;
-
-            //send request
-            handleSubmit(this.$link.value, this.$body.value, grp, this.$identity.value);
-
-            //remove writer from view entirely
-            this._removeWriter();
-
-            //reload the location --> feels more like it's doing something IMO
-            _router2.default.check();
-          };
-
-          //handle hiding the writer
+						var to = arguments.length <= 4 || arguments[4] === undefined ? '' : arguments[4];
 
 
-          var handleHide = function handleHide() {
-            this._hiddenWriter = true;
-            writerMount.className = 'hide';
-            this._unsetActiveBody();
-          };
+						//remove menu if it's open
+						if (this._openMenu) this._removeMenu();
 
-          //let ourselves know that we uploaded a file successfully
+						//if writer isn't in the DOM
+						if (!this._openWriter && !this._hiddenWriter) {
+								(function () {
+
+										//handle sending the form -- slightly wrapped AJAX version
+
+										var handleSend = function handleSend() {
+
+												//no empty posts
+												if (!this.$body.value.length && !this.$link.value) return;
+
+												//set the targeted group to the full 'to' value, as opposed to the cutoff version
+												var grp = this.$group.value === (0, _template.cutoff)(to) ? to : this.$group.value;
+
+												//send request
+												handleSubmit(this.$link.value, this.$body.value, grp, this.$identity.value);
+
+												//remove writer from view entirely
+												this._removeWriter();
+
+												//reload the location --> feels more like it's doing something IMO
+												_router2.default.check();
+										};
+
+										//handle hiding the writer
 
 
-          var handleContent = function handleContent(e) {
-            handleUpload($fileSubmit.files[0]);
-            $submitIcon.className = 'icon icon-check';
-          };
+										var handleHide = function handleHide() {
+												this._hiddenWriter = true;
+												this._openWriter = false;
+												writerMount.className = 'hide';
+												this._unsetActiveBody();
+										};
 
-          //handle hover event for fullscreen writer
+										//let ourselves know that we uploaded a file successfully
 
 
-          var onTitleClick = function onTitleClick(e) {
-            this.$writermount.classList.contains('originalWriter') ? this.$writermount.classList.remove('originalWriter') : this.$writermount.classList.add('originalWriter');
-          };
+										var handleContent = function handleContent(e) {
+												var _this4 = this;
 
-          //set writer to open
-          _this3._openWriter = true;
+												var res = handleUpload(this.$fileSubmit.files[0]);
+												res.then(function (success) {
+														if (success) return _this4.$submitIcon.className = 'icon icon-check';
 
-          //stop scroll on body
-          _this3._setActiveBody('writemode');
+														//else set icon to icon x -- set
+														_this4.$submitIcon.className = 'icon icon-cancel';
+														_this4.$submitIcon.style.color = 'red';
 
-          //element that we'll use to get the writer
-          var writerMount = document.createElement('div');
+														window.setTimeout(function () {
+																_this4.$submitIcon.className = 'icon icon-camera';
+																_this4.$submitIcon.style.color = '';
+														}, 3000);
+												});
+										};
 
-          //set new element's id
-          writerMount.id = "TopNav-writer-mount";
+										//handle hover event for fullscreen writer
 
-          //generate writer from the template
-          var writer = (0, _template.generateWriter)(groups, user.usernames, to);
 
-          //set div's contents to the above
-          writerMount.innerHTML = writer;
+										var onTitleClick = function onTitleClick(e) {
+												this.$writermount.classList.contains('originalWriter') ? this.$writermount.classList.remove('originalWriter') : this.$writermount.classList.add('originalWriter');
+										};
 
-          //append writer
-          _this3.$nav.appendChild(writerMount);
+										//set writer to open
+										_this3._openWriter = true;
 
-          //set reference
-          _this3.$writermount = writerMount;
+										//stop scroll on body
+										_this3._setActiveBody('writemode');
 
-          //set references to DOM elements generated by writer
-          _this3.$savebutton = (0, _helpers.$id)('TopNav-writer-save');
-          _this3.$cancelbutton = (0, _helpers.$id)('TopNav-writer-cancel');
-          _this3.$fileSubmit = (0, _helpers.$id)('TopNav-writer-content-submit');
-          _this3.$submitIcon = (0, _helpers.$id)('TopNav-writer-submit-icon');
-          _this3.$submit = (0, _helpers.$id)('TopNav-writer-send');
-          _this3.$group = (0, _helpers.$id)('TopNav-writer-select');
-          _this3.$identity = (0, _helpers.$id)('TopNav-writer-identity-select');
-          _this3.$body = (0, _helpers.$id)('TopNav-writer-input');
-          _this3.$link = (0, _helpers.$id)('TopNav-writer-link-box');
-          _this3.$writerhead = (0, _helpers.$id)('TopNav-writer-head');
+										//element that we'll use to get the writer
+										var writerMount = document.createElement('div');
 
-          (0, _helpers.$on)(_this3.$cancelbutton, 'click', _this3._removeWriter.bind(_this3), false);
-          (0, _helpers.$on)(_this3.$savebutton, 'click', handleHide.bind(_this3), false);
-          (0, _helpers.$on)(_this3.$fileSubmit, 'change', handleContent.bind(_this3), false);
-          (0, _helpers.$on)(_this3.$submit, 'click', handleSend.bind(_this3), false);
-          (0, _helpers.$on)(_this3.$writermount, 'touchmove', function (e) {
-            return e.preventDefault();
-          }, false);
-          (0, _helpers.$on)(_this3.$writerhead, 'click', onTitleClick.bind(_this3), false);
-        })();
-      } else {
-        if (this._hiddenWriter) {
-          this._hiddenWriter = false;
-          this._openWriter = true;
-          this._setActiveBody('writemode');
-          this.$writermount.className = '';
-        } else {
-          this._hiddenWriter = true;
-          this.$writermount.className = 'hide';
-          this._unsetActiveBody();
-        }
-      }
-    }
-  }, {
-    key: '_removeWriter',
-    value: function _removeWriter() {
-      this._openWriter = false;
-      this._unsetActiveBody();
+										//set new element's id
+										writerMount.id = "TopNav-writer-mount";
 
-      //remove writer from view
-      var writer = this.$writermount;
-      if (writer) writer.parentNode.removeChild(writer);
-    }
+										//generate writer from the template
+										var writer = (0, _template.generateWriter)(groups, user.usernames, to);
 
-    //this opens & closes menu!
+										//set div's contents to the above
+										writerMount.innerHTML = writer;
 
-  }, {
-    key: '_showMenu',
-    value: function _showMenu(user) {
+										//append writer
+										_this3.$nav.appendChild(writerMount);
 
-      //check if menu exists
-      if ((0, _helpers.$id)('TopNav-menu-bg')) {
-        this.$menuicon.className = "icon icon-menu";
-        this._removeMenu();
-        return;
-      }
+										//set reference
+										_this3.$writermount = writerMount;
 
-      //set color of menu button and add menu
-      //element that we'll use to get the menu
-      var menuMount = document.createElement('nav');
-      menuMount.id = "TopNav-menu-bg";
+										//set references to DOM elements generated by writer
+										_this3.$savebutton = (0, _helpers.$id)('TopNav-writer-save');
+										_this3.$cancelbutton = (0, _helpers.$id)('TopNav-writer-cancel');
+										_this3.$fileSubmit = (0, _helpers.$id)('TopNav-writer-content-submit');
+										_this3.$submitIcon = (0, _helpers.$id)('TopNav-writer-submit-icon');
+										_this3.$submit = (0, _helpers.$id)('TopNav-writer-send');
+										_this3.$group = (0, _helpers.$id)('TopNav-writer-select');
+										_this3.$identity = (0, _helpers.$id)('TopNav-writer-identity-select');
+										_this3.$body = (0, _helpers.$id)('TopNav-writer-input');
+										_this3.$link = (0, _helpers.$id)('TopNav-writer-link-box');
+										_this3.$writerhead = (0, _helpers.$id)('TopNav-writer-head');
 
-      this.$menuicon.className = "icon icon-menu active";
+										(0, _helpers.$on)(_this3.$cancelbutton, 'click', _this3._removeWriter.bind(_this3), false);
+										(0, _helpers.$on)(_this3.$savebutton, 'click', handleHide.bind(_this3), false);
+										(0, _helpers.$on)(_this3.$fileSubmit, 'change', handleContent.bind(_this3), false);
+										(0, _helpers.$on)(_this3.$submit, 'click', handleSend.bind(_this3), false);
+										(0, _helpers.$on)(_this3.$writermount, 'touchmove', function (e) {
+												return e.preventDefault();
+										}, false);
+										(0, _helpers.$on)(_this3.$writerhead, 'click', onTitleClick.bind(_this3), false);
+								})();
+						} else {
+								if (this._hiddenWriter) {
+										this._hiddenWriter = false;
+										this._openWriter = true;
+										this._setActiveBody('writemode');
+										this.$writermount.className = '';
+								} else {
+										this._hiddenWriter = true;
+										this.$writermount.className = 'hide';
+										this._unsetActiveBody();
+								}
+						}
+				}
+		}, {
+				key: '_removeWriter',
+				value: function _removeWriter() {
+						this._openWriter = false;
+						this._unsetActiveBody();
 
-      //get template for either user logged in or not logged in
-      var getUserMenu = function getUserMenu(user) {
-        if (user.anonymous) {
-          return '\n          <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">\n            <span id="dd-icon-signup" class="icon icon-book ddicon">\n            </span>\n            <span class="ddtext">Signup for an account</span>\n          </li>\n          <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">\n            <span id="dd-icon-login" class="icon icon-book-open ddicon">\n            </span>\n            <span class="ddtext">Log in to your account</span>\n          </li>';
-        } else {
-          return '\n          <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">\n            <span id="dd-icon-user" class="icon icon-cog ddicon">\n            </span>\n            <span class="ddtext">' + user.username + '</span>\n          </li>\n\t\t\t\t\t<span id="TopNav-dropdown-logout">logout</span>\n\t\t\t\t\t';
-        }
-      };
+						//remove writer from view
+						var writer = this.$writermount;
+						if (writer) writer.parentNode.removeChild(writer);
 
-      //show menu -- submenu simply has class hide
-      var menu = '\n      <ul id="TopNav-menu-list" class="dropdown">\n\t\t\t\t' + getUserMenu(user) + '\n        <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">\n          <span id="dd-icon-about" class="icon icon-info ddicon"></span>\n          <span class="ddtext">About</span>\n        </li>\n        <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">\n          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>\n          <span class="ddtext">Privacy</span>\n        </li>\n\t\t\t\t<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">\n\t\t\t\t\t<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>\n\t\t\t\t\t<span class="ddtext">Secret Menu</span>\n\t\t\t\t\t<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>\n\t\t\t\t</li>\n\t\t\t\t<ul id="TopNav-menu-secretmenu" class="dropdown hide">\n\t\t\t\t\t<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t\t<span id="dd-icon-faq" class="icon icon-help ddicon">\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span class="ddtext">How do I use this?</span>\n\t\t\t\t\t</li>\n\t\t\t\t\t<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t\t<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">\n\t\t\t\t\t\t</span>\n\t\t\t\t\t\t<span class="ddtext">Dragon or Wyvern?</span>\n\t\t\t\t\t</li>\n\t\t\t\t</ul>\n        <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">\n          <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>\n          <span class="ddtext">Rules for Posting</span>\n        </li>\n      </ul>\n    ';
+						//reset references to writer components
+						this.$writermount = null;
+						this.$savebutton = null;
+						this.$cancelbutton = null;
+						this.$fileSubmit = null;
+						this.$submitIcon = null;
+						this.$submit = null;
+						this.$group = null;
+						this.$identity = null;
+						this.$body = null;
+						this.$link = null;
+						this.$writerhead = null;
+				}
 
-      //set div's contents to the above
-      menuMount.innerHTML = menu;
+				//this opens & closes menu!
 
-      //append menu
-      this.$nav.appendChild(menuMount);
+		}, {
+				key: '_showMenu',
+				value: function _showMenu(user) {
 
-      //get important dom elements
-      var $dropdownBg = (0, _helpers.$id)('TopNav-menu-bg');
-      var $dropdown = (0, _helpers.$id)('TopNav-menu-list');
-      var $down = (0, _helpers.$id)('TopNav-dropdown-down');
-      var $secret = (0, _helpers.$id)('TopNav-menu-secretmenu');
+						//check if menu exists --> remove it if it exists
+						if (this._openMenu) {
+								this.$menuicon.classList.remove('active');
+								this._removeMenu();
+								return;
+						}
 
-      //handle dropdown click
-      var handleDropdown = function handleDropdown(e) {
-        e.stopPropagation();
-        var el = e.target.id ? e.target.id : e.target.parentNode.id;
-        switch (el) {
-          case 'TopNav-menu-about':
-            console.log('About Hit');
-            break;
-          case 'TopNav-menu-username':
-            console.log('Hit username');
-            break;
-          case 'TopNav-menu-signup':
-            console.log('Hit signup');
-            break;
-          case 'TopNav-menu-login':
-            console.log('Hit login');
-            break;
-          case 'TopNav-menu-faq':
-            console.log('Hit faq');
-            break;
-          case 'TopNav-dropdown-down':
-          case 'TopNav-menu-secret':
-            console.log('Hit Secret');
-            var hidden = $secret.className === "dropdown hide";
-            hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
-            hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
-            break;
-          case 'TopNav-menu-dragons':
-            console.log('Hit dragons');
-            break;
-          case 'TopNav-menu-privacy':
-            console.log('Hit privacy');
-            break;
-          case 'TopNav-menu-relevant':
-            console.log('Hit relevant');
-            break;
-        }
-      };
+						//element that we'll use to get the menu
+						var menuMount = document.createElement('nav');
+						menuMount.id = "TopNav-menu-bg";
 
-      //bind events here
-      (0, _helpers.$on)($dropdown, 'click', handleDropdown, false);
-      (0, _helpers.$on)($dropdownBg, 'click', this._removeMenu, false);
-      (0, _helpers.$on)($dropdownBg, 'touchmove', function (e) {
-        return e.preventDefault();
-      }, false);
-    }
-  }, {
-    key: '_removeMenu',
-    value: function _removeMenu() {
-      //unset color of menu button & remove menu
-      var menu = (0, _helpers.$id)('TopNav-menu-bg');
-      if (menu) {
-        //get $menuicon which is here too deep to reference by class
-        document.body.className = '';
-        var $menuicon = (0, _helpers.$id)('TopNav-menu-icon');
-        $menuicon.className = "icon icon-menu";
-        menu.className = "";
-        menu.parentNode.removeChild(menu);
-      }
-    }
-  }]);
-  return View;
+						this.$menuicon.classList.add('active');
+
+						var menu = (0, _template.generateMenu)(user);
+
+						//set div's contents to the above
+						menuMount.innerHTML = menu;
+
+						//append menu
+						this.$nav.appendChild(menuMount);
+
+						//get important dom elements
+						var $dropdownBg = (0, _helpers.$id)('TopNav-menu-bg');
+						var $dropdown = (0, _helpers.$id)('TopNav-menu-list');
+						var $down = (0, _helpers.$id)('TopNav-dropdown-down');
+						var $secret = (0, _helpers.$id)('TopNav-menu-secretmenu');
+
+						//handle dropdown click
+						var handleDropdown = function handleDropdown(e) {
+								e.stopPropagation();
+								var el = e.target.id ? e.target.id : e.target.parentNode.id;
+								switch (el) {
+										case 'TopNav-menu-about':
+												console.log('About Hit');
+												break;
+										case 'TopNav-menu-username':
+												console.log('Hit username');
+												break;
+										case 'TopNav-menu-signup':
+												console.log('Hit signup');
+												break;
+										case 'TopNav-menu-login':
+												console.log('Hit login');
+												break;
+										case 'TopNav-menu-faq':
+												console.log('Hit faq');
+												break;
+										case 'TopNav-dropdown-down':
+										case 'TopNav-menu-secret':
+												console.log('Hit Secret');
+												var hidden = $secret.className === "dropdown hide";
+												hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
+												hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
+												break;
+										case 'TopNav-menu-dragons':
+												console.log('Hit dragons');
+												break;
+										case 'TopNav-menu-privacy':
+												console.log('Hit privacy');
+												break;
+										case 'TopNav-menu-relevant':
+												console.log('Hit relevant');
+												break;
+								}
+						};
+
+						//bind events here
+						(0, _helpers.$on)($dropdown, 'click', handleDropdown, false);
+						(0, _helpers.$on)($dropdownBg, 'click', this._removeMenu.bind(this), false);
+						(0, _helpers.$on)($dropdownBg, 'touchmove', function (e) {
+								return e.preventDefault();
+						}, false);
+
+						//set reference to menubg and set menu to open
+						this.$menubg = menuMount;
+						this._openMenu = true;
+				}
+		}, {
+				key: '_removeMenu',
+				value: function _removeMenu() {
+						//unset color of menu button & remove menu
+						if (this._openMenu) {
+								//get $menuicon which is here too deep to reference by class
+								this._unsetActiveBody();
+								this._openMenu = false;
+								this.$menuicon.className = "icon icon-menu";
+								this.$menubg.className = "";
+								this.$menubg.parentNode.removeChild(this.$menubg);
+								this.$menubg = null;
+						}
+				}
+		}]);
+		return View;
 }(); /**
       * navv.js is the view for the navbar and app-container
       */
@@ -6444,6 +6474,7 @@ var generatePostHeadFooter = function () {
 //handle footer of thread post (head)
 
 
+exports.generateMenu = generateMenu;
 exports.cutoff = cutoff;
 exports.generateWriter = generateWriter;
 exports.generateTimestamp = generateTimestamp;
@@ -6462,14 +6493,31 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  * Nav View Templates
  */
 
+//get template for either user logged in or not logged in
+function getUserMenu(user) {
+  if (user.anonymous) {
+    return '\n      <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">\n        <span id="dd-icon-signup" class="icon icon-book ddicon">\n        </span>\n        <span class="ddtext">Signup for an account</span>\n      </li>\n      <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-login" class="icon icon-book-open ddicon">\n        </span>\n        <span class="ddtext">Log in to your account</span>\n      </li>';
+  } else {
+    return '\n       <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">\n         <span id="dd-icon-user" class="icon icon-cog ddicon">\n         </span>\n         <span class="ddtext">' + user.username + '</span>\n       </li>\n       <span id="TopNav-dropdown-logout">logout</span>\n       ';
+  }
+}
+
+//generate Menu
+/**
+ * dom template helpers
+ */
+
+function generateMenu(user) {
+  //show menu -- submenu simply has class hide
+  return '\n    <ul id="TopNav-menu-list" class="dropdown">\n\t\t\t' + getUserMenu(user) + '\n      <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-about" class="icon icon-info ddicon"></span>\n        <span class="ddtext">About</span>\n      </li>\n      <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>\n        <span class="ddtext">Privacy</span>\n      </li>\n\t\t\t<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">\n\t\t\t\t<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>\n\t\t\t\t<span class="ddtext">Secret Menu</span>\n\t\t\t\t<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>\n\t\t\t</li>\n\t\t\t<ul id="TopNav-menu-secretmenu" class="dropdown hide">\n\t\t\t\t<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t<span id="dd-icon-faq" class="icon icon-help ddicon">\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class="ddtext">How do I use this?</span>\n\t\t\t\t</li>\n\t\t\t\t<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class="ddtext">Dragon or Wyvern?</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n      <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>\n        <span class="ddtext">Rules for Posting</span>\n      </li>\n    </ul>\n  ';
+}
+
 //cut off the lenght of thread id so it doesn't cover the whole screen
 function cutoff(sendTo) {
   if (sendTo.length > 10) {
     return sendTo.substring(0, 12) + '...';
   }
-} /**
-   * dom template helpers
-   */
+}
 
 function generateWriter(groups, usernames, to) {
   //set all of the groups as options
@@ -6487,7 +6535,7 @@ function generateWriter(groups, usernames, to) {
   };
 
   //show post submission form
-  var writer = '\n    <div id="TopNav-writer-top">\n      <span id="TopNav-writer-save" class="icon icon-left-open-big DTReaction"></span>\n      <span id="TopNav-writer-head">new post</span>\n      <span id="TopNav-writer-cancel" class="icon icon-cancel DTReaction"></span>\n    </div>\n    <div id="TopNav-writer-link">\n      <input placeholder="submit a link (or don\'t)" id="TopNav-writer-link-box"/>\n      <span id="TopNav-writer-content">\n        <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">\n          <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>\n          <input id="TopNav-writer-content-submit" type="file"/>\n        </label>\n      </span>\n    </div>\n    <div id="TopNav-writer-main">\n      <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>\n    </div>\n    <div id="TopNav-writer-identity">\n      <span>posting as</span>\n      <select id="TopNav-writer-identity-select"><option>Anonymous</option>' + getUsernames(usernames) + '</select></span>\n    </div>\n    <div id="TopNav-writer-foot">\n      <span id="TopNav-writer-group">Posting to:\n        <select id="TopNav-writer-select">\n        <option>' + (to != '' ? cutoff(to) : (0, _helpers.getContext)()) + '\n        </option>' + getTopOptions(groups) + '\n        </select></span>\n      <span id="TopNav-writer-send">send</span>\n    </div>\n  ';
+  var writer = '\n    <div id="TopNav-writer-top">\n      <span id="TopNav-writer-save" class="icon icon-left-open-big DTReaction"></span>\n      <span id="TopNav-writer-head">new post</span>\n      <span id="TopNav-writer-cancel" class="icon icon-cancel DTReaction"></span>\n    </div>\n    <div id="TopNav-writer-link">\n      <input placeholder="submit a link (or don\'t)" id="TopNav-writer-link-box"/>\n      <span id="TopNav-writer-content">\n        <label id="TopNav-writer-submit-label" for="TopNav-writer-content-submit">\n          <span id="TopNav-writer-submit-icon" class="icon icon-camera"></span>\n          <input id="TopNav-writer-content-submit" type="file"/>\n        </label>\n      </span>\n    </div>\n    <div id="TopNav-writer-main">\n      <textarea id="TopNav-writer-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Write something here"></textarea>\n    </div>\n    <div id="TopNav-writer-identity">\n      <span>posting as</span>\n      <select id="TopNav-writer-identity-select"><option>Anonymous</option>' + getUsernames(usernames) + '</select></span>\n    </div>\n    <div id="TopNav-writer-foot">\n      <span id="TopNav-writer-group">Posting to:\n        <select id="TopNav-writer-select">\n        <option>' + (to != '' ? cutoff(to) : (0, _helpers.getContext)()) + '\n        </option>' + getTopOptions(groups) + '\n        </select></span>\n      <span id="TopNav-writer-send">send</span>\n    </div>\n  ';
 
   return writer;
 }function generateTimestamp(timestamp) {
@@ -6936,14 +6984,21 @@ var View = function () {
   (0, _createClass3.default)(View, [{
     key: 'bind',
     value: function bind() {
+      var _this2 = this;
 
       //get references (as elements are dynamically rendered)
       var $listing = (0, _helpers.$id)('List');
       var $prev = (0, _helpers.$id)('prevpage');
       var $next = (0, _helpers.$id)('nextpage');
+      var $popular = (0, _helpers.$id)('Main-desktop-group');
+      var $author = (0, _helpers.$id)('Main-desktop-author');
 
-      //clicks on listing section
+      //clicks on listing sections --> reuses _onPostClick for convenience
       (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
+      (0, _helpers.$on)($popular, 'click', this._onPostClick.bind(this), false);
+      (0, _helpers.$on)($author, 'click', function () {
+        return _this2._goToUser(_this2.info.author);
+      }.bind(this), false);
 
       //set up handlers for pagination
       if ($prev) (0, _helpers.$on)($prev, 'click', this.viewCommands.prevPage.bind(this), false);
@@ -7008,7 +7063,7 @@ var View = function () {
       var target = e.target;
       switch (target.className) {
         case 'Head-author':
-          if (target.textContent !== 'Anonymous') _router2.default.navigate('/user/${target.textContent}');
+          this._goToUser(target.textContent);
           break;
         case 'Head-group':
           this.viewCommands.group(e);
@@ -7077,8 +7132,8 @@ var View = function () {
 
   }, {
     key: '_goToUser',
-    value: function _goToUser(e) {
-      if (e.target.textContent !== 'Anonymous') _router2.default.navigate('/user/${e.target.textContent}');
+    value: function _goToUser(username) {
+      if (username !== 'Anonymous') _router2.default.navigate('/user/${username}');
     }
 
     //save post
@@ -7162,7 +7217,7 @@ var View = function () {
   }, {
     key: 'generateStaticView',
     value: function generateStaticView(threads, info, popular, user) {
-      var _this2 = this;
+      var _this3 = this;
 
       var getposts = function () {
         var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
@@ -7186,7 +7241,7 @@ var View = function () {
                   return _context.stop();
               }
             }
-          }, _callee, _this2);
+          }, _callee, _this3);
         }));
         return function getposts() {
           return ref.apply(this, arguments);
@@ -7215,7 +7270,7 @@ var View = function () {
                   return _context2.stop();
               }
             }
-          }, _callee2, _this2);
+          }, _callee2, _this3);
         }));
         return function getpopularposts() {
           return ref.apply(this, arguments);
@@ -7243,7 +7298,7 @@ var View = function () {
 
 
                   //pagination controls
-                  footer = '\n      <div class="Main-Footer">\n      ' + (_this2.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : '') + '\n      ' + (_this2.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : '') + '\n      </div>\n      ';
+                  footer = '\n      <div class="Main-Footer">\n      ' + (_this3.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : '') + '\n      ' + (_this3.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : '') + '\n      </div>\n      ';
 
                   //desktop view information
 
@@ -7254,7 +7309,7 @@ var View = function () {
                   _context3.t2 = _context3.sent;
                   _context3.t3 = '\n        <div id="Main-desktop-group" class="desktop">\n          <div class="PopularList">\n            <span id="Main-desktop-title">\n              <span id="Main-desktop-title-text">Popular</span>\n            </span>\n            ' + _context3.t2;
                   desktopright = _context3.t3 + '\n          </div>\n        </div>\n      ';
-                  desktopleft = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p class="GroupAuthor-name">' + info.author + '</p>\n          </div>\n          <div class="GroupPage">\n            <p class="GroupPage-page">Page:</p>\n            <p class="GroupPage-num">' + _this2.page + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n        </div>\n      ';
+                  desktopleft = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p id="Main-desktop-author" class="GroupAuthor-name">' + info.author + '</p>\n          </div>\n          <div class="GroupPage">\n            <p class="GroupPage-page">Page:</p>\n            <p class="GroupPage-num">' + _this3.page + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n        </div>\n      ';
 
                   //final template for section
 
@@ -7265,7 +7320,7 @@ var View = function () {
                   return _context3.stop();
               }
             }
-          }, _callee3, _this2);
+          }, _callee3, _this3);
         }));
         return function buildView() {
           return ref.apply(this, arguments);
@@ -8034,7 +8089,7 @@ var View = function () {
   }, {
     key: '_reply',
     value: function _reply(e) {
-      _core.nav.openWriter(e.target.parentNode.dataset.thread);
+      _core.nav.openWriterRef(e.target.parentNode.dataset.post);
     }
 
     //open thread

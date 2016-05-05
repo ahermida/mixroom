@@ -35,10 +35,11 @@ async function handleUpload(file) {
       content: resp.url,
       contentType: file.type
     };
+    return true;
   } catch (e) {
-
     //log error, should only happen if invalid upload - type or large file
     console.log(e);
+    return false;
   }
 }
 
@@ -46,19 +47,6 @@ async function handleUpload(file) {
 async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
 
   const anon = identity === 'Anonymous' ? true : false;
-
-  //should return all references to other posts in thread
-  const getReferences = (body) => {
-
-    //regex for reference (post: 12312)
-    const ref = /\(post:(\S*?)\)/g;
-    let idrefs;
-    let matches = body.match(ref);
-    if (matches) {
-      idrefs = matches.map(match => match.slice(6, -1).trim());
-    }
-    return idrefs || [];
-  }
 
   //if there's no content, shove the link in there and set upload to link
   if (!store.upload.content && link) {
@@ -153,6 +141,18 @@ const options = {
 
 //create view obj
 export const nav = new view(store.groups, store.user, options);;
+
+//export extract references function
+export function getReferences(body) {
+  //regex for reference (post: 12312)
+  const ref = /\(post:(.*?)\)/g;
+  let idrefs;
+  let matches = body.match(ref);
+  if (matches) {
+    idrefs = matches.map(match => match.slice(6, -1).trim());
+  }
+  return idrefs || [];
+}
 
 //initialize the core app
 export default function start() {

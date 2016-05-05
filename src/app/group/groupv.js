@@ -60,9 +60,13 @@ export default class View {
     let $listing = $id('List');
     let $prev = $id('prevpage');
     let $next = $id('nextpage');
+    let $popular = $id('Main-desktop-group');
+    let $author = $id('Main-desktop-author');
 
-    //clicks on listing section
+    //clicks on listing sections --> reuses _onPostClick for convenience
     $on($listing, 'click', this._onPostClick.bind(this), false);
+    $on($popular, 'click', this._onPostClick.bind(this), false);
+    $on($author, 'click', (() => this._goToUser(this.info.author)).bind(this), false);
 
     //set up handlers for pagination
     if ($prev) $on($prev, 'click', this.viewCommands.prevPage.bind(this), false);
@@ -119,7 +123,7 @@ export default class View {
     let target = e.target;
     switch (target.className) {
       case 'Head-author':
-      if (target.textContent !== 'Anonymous') router.navigate('/user/${target.textContent}');
+      this._goToUser(target.textContent);
       break;
       case 'Head-group':
       this.viewCommands.group(e);
@@ -176,8 +180,8 @@ export default class View {
   }
 
   //go to user
-  _goToUser(e) {
-    if (e.target.textContent !== 'Anonymous') router.navigate('/user/${e.target.textContent}');
+  _goToUser(username) {
+    if (username !== 'Anonymous') router.navigate('/user/${username}');
   }
 
   //save post
@@ -296,7 +300,7 @@ export default class View {
           <div class="GroupName">${info.name}</div>
           <div class="GroupAuthor">
             <p class="GroupAuthor-title">Made by:</p>
-            <p class="GroupAuthor-name">${info.author}</p>
+            <p id="Main-desktop-author" class="GroupAuthor-name">${info.author}</p>
           </div>
           <div class="GroupPage">
             <p class="GroupPage-page">Page:</p>

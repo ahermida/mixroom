@@ -10,6 +10,71 @@ import { getContext } from './helpers.js';
  * Nav View Templates
  */
 
+//get template for either user logged in or not logged in
+function getUserMenu(user){
+  if (user.anonymous) {
+    return `
+      <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">
+        <span id="dd-icon-signup" class="icon icon-book ddicon">
+        </span>
+        <span class="ddtext">Signup for an account</span>
+      </li>
+      <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">
+        <span id="dd-icon-login" class="icon icon-book-open ddicon">
+        </span>
+        <span class="ddtext">Log in to your account</span>
+      </li>`;
+   } else {
+     return`
+       <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">
+         <span id="dd-icon-user" class="icon icon-cog ddicon">
+         </span>
+         <span class="ddtext">${user.username}</span>
+       </li>
+       <span id="TopNav-dropdown-logout">logout</span>
+       `;
+   }
+}
+
+//generate Menu
+export function generateMenu(user) {
+  //show menu -- submenu simply has class hide
+  return `
+    <ul id="TopNav-menu-list" class="dropdown">
+			${getUserMenu(user)}
+      <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">
+        <span id="dd-icon-about" class="icon icon-info ddicon"></span>
+        <span class="ddtext">About</span>
+      </li>
+      <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">
+        <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
+        <span class="ddtext">Privacy</span>
+      </li>
+			<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">
+				<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
+				<span class="ddtext">Secret Menu</span>
+				<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>
+			</li>
+			<ul id="TopNav-menu-secretmenu" class="dropdown hide">
+				<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">
+					<span id="dd-icon-faq" class="icon icon-help ddicon">
+					</span>
+					<span class="ddtext">How do I use this?</span>
+				</li>
+				<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">
+					<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">
+					</span>
+					<span class="ddtext">Dragon or Wyvern?</span>
+				</li>
+			</ul>
+      <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">
+        <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>
+        <span class="ddtext">Rules for Posting</span>
+      </li>
+    </ul>
+  `;
+}
+
 //cut off the lenght of thread id so it doesn't cover the whole screen
 export function cutoff(sendTo) {
   if (sendTo.length > 10) {
@@ -45,7 +110,7 @@ export function generateWriter(groups, usernames, to) {
       </span>
     </div>
     <div id="TopNav-writer-main">
-      <textarea id="TopNav-writer-input" placeholder="Write something here"></textarea>
+      <textarea id="TopNav-writer-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Write something here"></textarea>
     </div>
     <div id="TopNav-writer-identity">
       <span>posting as</span>
