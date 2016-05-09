@@ -24,7 +24,7 @@ const italics = /~(\S*?)~/g;
 //regex for code
 const code = /\[code](.*?)\[\/code]/g;
 //regex for reference
-const ref = /\(post:(\S*?)\)/g;
+const ref = /\(post:(.*?)\)/g;
 //regex for mentions
 const mention = /@(\S*?)\s/g
 //regex for getting links back into place
@@ -33,7 +33,7 @@ const links = /`l`i`n`k`/g
 const url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
 //returns html for a given body
-export default function parse(body) {
+export default function parse(body, author) {
   //array of links that we'll keep for later
   let matches = [];
   //set urls -- fails for javascript protocol (important) --> this way links won't be broken
@@ -94,11 +94,11 @@ export default function parse(body) {
   //set underline text
   htmlbody = htmlbody.replace(code, '<code class="Body-code">$1</code>');
 
-  //set refs
-  htmlbody = htmlbody.replace(ref, '<span class="Body-ref">$1</span>');
-
   //set mentions
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
+
+  //set refs
+  htmlbody = author ? htmlbody.replace(ref, `<span data-id="$1" class="Body-ref">@${author}</span>`) : htmlbody;
 
   //set links
   htmlbody = htmlbody.replace(links, match => {

@@ -8,6 +8,7 @@ import {createThread, post} from '../ajax/threads.js';
 import fastclick from 'fastclick';
 import fetch from 'isomorphic-fetch';
 import {validate} from './oembed.js';
+import config from '../config.js';
 
 /**
   AJAX Handlers passed in as view actions
@@ -81,15 +82,13 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
       let resp = await res.json();
 
       //send this on delete or edit if we do so
-      store.owned = {
+      store.addOwned({
         postId: resp.postId,
         id: resp.id
-      }
+      });
 
       //clear upload in store
       store.upload = false;
-
-      return;
 
     } catch (e) {
 
@@ -117,10 +116,10 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
       let resp = await res.json();
 
       //send this on delete or edit if we do so
-      store.owned = {
+      store.addOwned({
         postId: resp.postId,
         id: resp.id
-      }
+      });
 
       //clear upload in store
       store.upload = false;
@@ -140,7 +139,7 @@ const options = {
 };
 
 //create view obj
-export const nav = new view(store.groups, store.user, options);;
+export const nav = new view(config.groups, store.user, options);
 
 //export extract references function
 export function getReferences(body) {

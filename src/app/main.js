@@ -7,8 +7,7 @@ import router from './router/router.js';
 import {getUser} from './ajax/user.js';
 import oembed from './core/oembed.js';
 import parser from './core/parser.js';
-window.parser = parser;
-//init
+
 //handle getting user (usernames, username) data via ajax
 {
   //first order of business, get user data and store it
@@ -21,7 +20,7 @@ window.parser = parser;
       if (!usr) return;
 
       //else continue
-      store.user = await usr.json();
+      store.addUser(await usr.json());
 
     } catch (err) {
 

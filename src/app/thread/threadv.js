@@ -13,7 +13,6 @@ export default class View {
    //pass in top groups and user -- with username, id, notifications
  	constructor(thread, user) {
 
-    console.log(thread);
     //set group
     this.thread = thread;
 

@@ -57,13 +57,23 @@ img {
 .Content-iv {
   width: 100%;
 }
+
 .Body {
   width:100%;
   max-height: 400px;
 }
+
+.Body p {
+  white-space: pre-wrap;
+}
+
 .Body-content {
   margin: 10px;
   min-height: 60px;
+}
+.Body-ref {
+  color: #3b5998;
+  cursor: pointer;
 }
 .Footer {
 
@@ -78,6 +88,14 @@ img {
   font-size: 16px;
   float: right;
   color: #3b5998;
+}
+.Footer-right span ::-moz-selection, .Footer-right::moz-selection,
+.Footer-left span::moz-selection, .Footer-left::moz-selection {
+  background-color:Transparent;
+}
+.Footer-right span::selection, .Footer-right::selection,
+.Footer-left span::selection, .Footer-left::selection {
+  background-color:Transparent;
 }
 .Main-Footer {
   min-height: 48px;

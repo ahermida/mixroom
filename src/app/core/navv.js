@@ -56,11 +56,11 @@ export default class View {
     //setup commands for view actions
 		this.viewCommands = {
 			openWriter: (to) => {
-				this._showWriter(groups, user, this.handleUpload, this.handleSubmit, to);
+				this._showWriter(this.groups.auto, user, this.handleUpload, this.handleSubmit, to);
 			},
       showWriter: (e) => {
        	e.preventDefault();
-        this._showWriter(groups, user, this.handleUpload, this.handleSubmit);
+        this._showWriter(this.groups.auto, user, this.handleUpload, this.handleSubmit);
       },
       removeWriter: (e) => {
 				this._unsetActiveBody();
@@ -84,7 +84,7 @@ export default class View {
       showMenu: (e) => {
 				//use this so we can see when the writer is open as opposed to menu (desktop view stuff)
 				this._setActiveBody();
-				this._showMenu(user)
+				this._showMenu(user, groups)
 			},
       removeMenu: (e) => {
 				this._unsetActiveBody();
@@ -136,9 +136,11 @@ export default class View {
 
 	//Exposes the writer-opening action -- allowing target to be dynamically set
 	openWriter(to) {
+		//reset writer
+		this._removeWriter();
 
 		//set target to 'to'
-    this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
+    this._showWriter(this.groups.auto, this.user, this.handleUpload, this.handleSubmit, to);
 	}
 
 	//Exposes the writer and adds target post
@@ -147,7 +149,12 @@ export default class View {
 		if (!this._openWriter) this.openWriter();
 
 		//now since it's open, we append the content (presumably an id)
-		this.$body.value += this.$body.value ? `\n>(post: ${id})\n` : `>(post: ${id})\n`;
+		this.$body.value += this.$body.value ? `\n(post: ${id})\n` : `(post: ${id})\n`;
+	}
+
+	//navigate to group
+	_goToGroup(group) {
+		router.navigate(group);
 	}
 
 	//show the searchbox
@@ -260,7 +267,7 @@ export default class View {
       this.$link = $id('TopNav-writer-link-box');
 			this.$writerhead = $id('TopNav-writer-head');
 
-      //handle sending the form -- slightly wrapped AJAX version
+      //handle sending the form -- wrapped AJAX version
       function handleSend() {
 
 				//no empty posts
@@ -354,7 +361,7 @@ export default class View {
   }
 
 	//this opens & closes menu!
-  _showMenu(user) {
+  _showMenu(user, groups) {
 
     //check if menu exists --> remove it if it exists
     if (this._openMenu) {
@@ -367,9 +374,11 @@ export default class View {
     const menuMount = document.createElement('nav');
     menuMount.id = "TopNav-menu-bg";
 
+		//add active as to prevent scroling on mobile
     this.$menuicon.classList.add('active');
 
-		const menu = generateMenu(user);
+		//generate menu from the array of groups
+		const menu = generateMenu(user, groups);
 
     //set div's contents to the above
     menuMount.innerHTML = menu;
@@ -383,40 +392,45 @@ export default class View {
     let $down = $id('TopNav-dropdown-down');
     let $secret = $id('TopNav-menu-secretmenu');
 
+		const toggleMore = () => {
+			$secret.classList.contains('hide') ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
+			$secret.classList.toggle('hide');
+		}
+
     //handle dropdown click
     const handleDropdown = (e) => {
       e.stopPropagation();
-      const el = e.target.id ? e.target.id : e.target.parentNode.id;
+      const el = e.target.dataset.type ? e.target.dataset.type : e.target.parentNode.dataset.type;
+
+			//delegate clicks based on their data-type label
       switch (el) {
-        case 'TopNav-menu-about':
+        case 'about':
           console.log('About Hit');
           break;
-        case 'TopNav-menu-username':
+        case 'user':
           console.log('Hit username');
           break;
-        case 'TopNav-menu-signup':
+        case 'signup':
           console.log('Hit signup');
           break;
-        case 'TopNav-menu-login':
+        case 'login':
           console.log('Hit login');
           break;
-        case 'TopNav-menu-faq':
+        case 'faq':
           console.log('Hit faq');
           break;
-				case 'TopNav-dropdown-down':
-				case 'TopNav-menu-secret':
+				case 'more':
 					console.log('Hit Secret');
-					const hidden = $secret.className === "dropdown hide";
-					hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
-					hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
+					toggleMore();
 					break;
-        case 'TopNav-menu-dragons':
-          console.log('Hit dragons');
-          break;
-        case 'TopNav-menu-privacy':
+        case 'privacy':
           console.log('Hit privacy');
           break;
-        case 'TopNav-menu-relevant':
+				case 'group':
+					this._goToGroup(e.target.dataset.group);
+					this._removeMenu();
+					break;
+        case 'rules':
           console.log('Hit relevant')
           break;
       }

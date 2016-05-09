@@ -5,6 +5,7 @@
 import { threadLength } from '../ajax/threads.js';
 import oembed from './oembed.js';
 import { getContext } from './helpers.js';
+import parser from './parser';
 
 /**
  * Nav View Templates
@@ -14,19 +15,19 @@ import { getContext } from './helpers.js';
 function getUserMenu(user){
   if (user.anonymous) {
     return `
-      <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">
+      <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">
         <span id="dd-icon-signup" class="icon icon-book ddicon">
         </span>
         <span class="ddtext">Signup for an account</span>
       </li>
-      <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">
+      <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">
         <span id="dd-icon-login" class="icon icon-book-open ddicon">
         </span>
         <span class="ddtext">Log in to your account</span>
       </li>`;
    } else {
      return`
-       <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">
+       <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">
          <span id="dd-icon-user" class="icon icon-cog ddicon">
          </span>
          <span class="ddtext">${user.username}</span>
@@ -36,38 +37,46 @@ function getUserMenu(user){
    }
 }
 
+//generate Menu groups --> should only
+function getMenuGroups(groups) {
+  return groups.auto.map(group => `
+       <li data-type="group" data-group="${group}" class="TopNav-menu-dropdown-row">
+          <span class="icon ddgroup-icon">G</span>
+          <span data-group="${group}" class="ddgroup-description">
+            <span data-group="${group}" class="ddgroup">${group}</span>
+            ${groups.descriptions[group]}
+          </span>
+  		 </li>`).join('');
+}
+
 //generate Menu
-export function generateMenu(user) {
+export function generateMenu(user, groups) {
   //show menu -- submenu simply has class hide
   return `
     <ul id="TopNav-menu-list" class="dropdown">
 			${getUserMenu(user)}
-      <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">
-        <span id="dd-icon-about" class="icon icon-info ddicon"></span>
-        <span class="ddtext">About</span>
-      </li>
-      <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">
-        <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
-        <span class="ddtext">Privacy</span>
-      </li>
-			<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">
+			<li id="TopNav-menu-secret" data-type="more" class="TopNav-menu-dropdown-row">
 				<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
-				<span class="ddtext">Secret Menu</span>
-				<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>
+				<span class="ddtext">More</span>
+				<span id="TopNav-dropdown-down" data-type="more" class="icon icon-down-open-big"></span>
 			</li>
 			<ul id="TopNav-menu-secretmenu" class="dropdown hide">
-				<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">
+        <li id="TopNav-menu-about" data-type="about" class="TopNav-menu-dropdown-row ddnested">
+          <span id="dd-icon-about" class="icon icon-info ddicon"></span>
+          <span class="ddtext">About</span>
+        </li>
+        <li id="TopNav-menu-privacy" data-type="privacy" class="TopNav-menu-dropdown-row ddnested">
+          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
+          <span class="ddtext">Privacy</span>
+        </li>
+				<li id="TopNav-menu-faq" data-type="faq" class="TopNav-menu-dropdown-row ddnested">
 					<span id="dd-icon-faq" class="icon icon-help ddicon">
 					</span>
 					<span class="ddtext">How do I use this?</span>
 				</li>
-				<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">
-					<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">
-					</span>
-					<span class="ddtext">Dragon or Wyvern?</span>
-				</li>
 			</ul>
-      <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">
+      ${getMenuGroups(groups)}
+      <li id="TopNav-menu-relevant" data-type="rules" class="TopNav-menu-dropdown-row">
         <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>
         <span class="ddtext">Rules for Posting</span>
       </li>
@@ -149,7 +158,7 @@ export async function generatePost(group, post, user) {
       ${await generateContent(post.content, post.contentType)}
       </div>
       <div class="Body">
-      ${generateBody(post.body)}
+      ${generateBody(post)}
       </div>
       <footer class="Footer">
       ${generatePostFooter(post, owned)}
@@ -174,7 +183,7 @@ export async function generatePopularPost(post, user) {
       ${await generateContent(post.content, post.contentType)}
       </div>
       <div class="Body">
-      ${generateBody(post.body)}
+      ${generateBody(post)}
       </div>
       <footer class="Footer">
       ${generatePopFooter(post.size, post.thread, postID, user.user.anonymous, owned)}
@@ -202,7 +211,7 @@ export async function generateHeadPost(thread, user) {
       ${await generateContent(post.content, post.contentType)}
       </div>
       <div class="Body">
-      ${generateBody(post.body)}
+      ${generateBody(post)}
       </div>
       <footer class="Footer">
       ${await generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads)}
@@ -292,12 +301,19 @@ async function generateContent(content, contentType) {
 }
 
 //handle body of post
-function generateBody(str) {
+function generateBody(post) {
+  let str = post.body;
+  let author = post.author;
+
+  //generate string
   if (str) {
-    return parser(str);
+    str = parser(str, author);
   } else {
-    return '';
+    str = '';
   }
+
+  //finally get body string...
+  return str;
 }
 
 function generateDelete(postId, owned) {

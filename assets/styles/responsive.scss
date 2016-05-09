@@ -137,7 +137,7 @@
   #TopNav-writer-send {
     cursor: pointer;
   }
-  
+
   //search
   #TopNav-searchbox-clear, #TopNav-searchbox-exit {
     top: 5px;
@@ -167,7 +167,7 @@
   #TopNav-menu-list {
     border: 1px solid #CCC;
     position: absolute;
-    width: 240px;
+    width: 280px;
     z-index: 11;
     left: auto;
     top: 0px;
@@ -175,7 +175,6 @@
     font-size: 15px;
     overflow-y: hidden;
     font-size: 14px;
-    background: transparent !important;
     padding-bottom: 0px !important;
   }
 

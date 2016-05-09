@@ -4828,12 +4828,39 @@ function unfriend(username, frnd) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = {
-  api: window.location.host + '/api',
-  isNode: typeof window === 'undefined'
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//outline groups
+var groups = {
+  '/cs/': 'computer science board',
+  '/music/': 'music discussion',
+  '/vid/': 'webms, gifs, and videos',
+  '/bored/': 'entertainment',
+  '/random/': 'random posts'
 };
 
-},{}],111:[function(require,module,exports){
+//for convenience, keep an array of group names
+var auto = (0, _keys2.default)(groups);
+
+//this is config
+exports.default = {
+  api: window.location.host + '/api',
+  isNode: typeof window === 'undefined',
+  groups: {
+    main: '/random/',
+    descriptions: groups,
+
+    //just for convenience
+    auto: auto
+  }
+};
+
+},{"babel-runtime/core-js/object/keys":4}],111:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -4854,9 +4881,6 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
  */
 
 /*  Handle File Upload   */
-/**
- * core.js is pretty much the controller for the nav & basic app functionality
- */
 
 var handleUpload = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(file) {
@@ -4919,7 +4943,9 @@ var handleUpload = function () {
 }();
 
 /*  Handle Form Submission  */
-
+/**
+ * core.js is pretty much the controller for the nav & basic app functionality
+ */
 
 var handleSubmit = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
@@ -4960,7 +4986,7 @@ var handleSubmit = function () {
             isgrp = _store2.default.groups.includes(to);
 
             if (!isgrp) {
-              _context2.next = 23;
+              _context2.next = 22;
               break;
             }
 
@@ -4978,29 +5004,30 @@ var handleSubmit = function () {
 
 
             //send this on delete or edit if we do so
-            _store2.default.owned = {
+            _store2.default.addOwned({
               postId: resp.postId,
               id: resp.id
-            };
+            });
 
             //clear upload in store
             _store2.default.upload = false;
 
-            return _context2.abrupt('return');
+            _context2.next = 20;
+            break;
 
-          case 18:
-            _context2.prev = 18;
+          case 17:
+            _context2.prev = 17;
             _context2.t0 = _context2['catch'](6);
 
 
             //if something went wrong, let ourselves know
             console.log(_context2.t0);
 
-          case 21:
-            _context2.next = 41;
+          case 20:
+            _context2.next = 40;
             break;
 
-          case 23:
+          case 22:
             //is thread
 
             //get path (thread id)
@@ -5018,45 +5045,45 @@ var handleSubmit = function () {
 
             //try to send post to thread
 
-            _context2.prev = 27;
-            _context2.next = 30;
+            _context2.prev = 26;
+            _context2.next = 29;
             return (0, _threads.post)(thread, identity, body, cont, responseTo, anon, contentType);
 
-          case 30:
+          case 29:
             _res = _context2.sent;
-            _context2.next = 33;
+            _context2.next = 32;
             return _res.json();
 
-          case 33:
+          case 32:
             _resp = _context2.sent;
 
 
             //send this on delete or edit if we do so
-            _store2.default.owned = {
+            _store2.default.addOwned({
               postId: _resp.postId,
               id: _resp.id
-            };
+            });
 
             //clear upload in store
             _store2.default.upload = false;
 
-            _context2.next = 41;
+            _context2.next = 40;
             break;
 
-          case 38:
-            _context2.prev = 38;
-            _context2.t1 = _context2['catch'](27);
+          case 37:
+            _context2.prev = 37;
+            _context2.t1 = _context2['catch'](26);
 
 
             //if something went wrong in trying to post it, let ourselves know
             console.log(_context2.t1);
 
-          case 41:
+          case 40:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[6, 18], [27, 38]]);
+    }, _callee2, this, [[6, 17], [26, 37]]);
   }));
   return function handleSubmit(_x2, _x3, _x4, _x5) {
     return ref.apply(this, arguments);
@@ -5089,6 +5116,10 @@ var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
 
 var _oembed = require('./oembed.js');
 
+var _config = require('../config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var options = {
@@ -5097,7 +5128,7 @@ var options = {
 };
 
 //create view obj
-var nav = exports.nav = new _navv2.default(_store2.default.groups, _store2.default.user, options);;
+var nav = exports.nav = new _navv2.default(_config2.default.groups, _store2.default.user, options);
 
 //export extract references function
 function getReferences(body) {
@@ -5123,7 +5154,7 @@ function start() {
   nav.bind();
 }
 
-},{"../ajax/threads.js":108,"./navv.js":113,"./oembed.js":114,"./store.js":116,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],112:[function(require,module,exports){
+},{"../ajax/threads.js":108,"../config.js":110,"./navv.js":113,"./oembed.js":114,"./store.js":116,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5286,11 +5317,11 @@ var View = function () {
 				//setup commands for view actions
 				this.viewCommands = {
 						openWriter: function openWriter(to) {
-								_this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit, to);
+								_this._showWriter(_this.groups.auto, user, _this.handleUpload, _this.handleSubmit, to);
 						},
 						showWriter: function showWriter(e) {
 								e.preventDefault();
-								_this._showWriter(groups, user, _this.handleUpload, _this.handleSubmit);
+								_this._showWriter(_this.groups.auto, user, _this.handleUpload, _this.handleSubmit);
 						},
 						removeWriter: function removeWriter(e) {
 								_this._unsetActiveBody();
@@ -5316,7 +5347,7 @@ var View = function () {
 						showMenu: function showMenu(e) {
 								//use this so we can see when the writer is open as opposed to menu (desktop view stuff)
 								_this._setActiveBody();
-								_this._showMenu(user);
+								_this._showMenu(user, groups);
 						},
 						removeMenu: function removeMenu(e) {
 								_this._unsetActiveBody();
@@ -5385,9 +5416,11 @@ var View = function () {
 		}, {
 				key: 'openWriter',
 				value: function openWriter(to) {
+						//reset writer
+						this._removeWriter();
 
 						//set target to 'to'
-						this._showWriter(this.groups, this.user, this.handleUpload, this.handleSubmit, to);
+						this._showWriter(this.groups.auto, this.user, this.handleUpload, this.handleSubmit, to);
 				}
 
 				//Exposes the writer and adds target post
@@ -5399,7 +5432,15 @@ var View = function () {
 						if (!this._openWriter) this.openWriter();
 
 						//now since it's open, we append the content (presumably an id)
-						this.$body.value += this.$body.value ? '\n>(post: ' + id + ')\n' : '>(post: ' + id + ')\n';
+						this.$body.value += this.$body.value ? '\n(post: ' + id + ')\n' : '(post: ' + id + ')\n';
+				}
+
+				//navigate to group
+
+		}, {
+				key: '_goToGroup',
+				value: function _goToGroup(group) {
+						_router2.default.navigate(group);
 				}
 
 				//show the searchbox
@@ -5527,7 +5568,7 @@ var View = function () {
 						if (!this._openWriter && !this._hiddenWriter) {
 								(function () {
 
-										//handle sending the form -- slightly wrapped AJAX version
+										//handle sending the form -- wrapped AJAX version
 
 										var handleSend = function handleSend() {
 
@@ -5671,7 +5712,8 @@ var View = function () {
 
 		}, {
 				key: '_showMenu',
-				value: function _showMenu(user) {
+				value: function _showMenu(user, groups) {
+						var _this5 = this;
 
 						//check if menu exists --> remove it if it exists
 						if (this._openMenu) {
@@ -5684,9 +5726,11 @@ var View = function () {
 						var menuMount = document.createElement('nav');
 						menuMount.id = "TopNav-menu-bg";
 
+						//add active as to prevent scroling on mobile
 						this.$menuicon.classList.add('active');
 
-						var menu = (0, _template.generateMenu)(user);
+						//generate menu from the array of groups
+						var menu = (0, _template.generateMenu)(user, groups);
 
 						//set div's contents to the above
 						menuMount.innerHTML = menu;
@@ -5700,40 +5744,45 @@ var View = function () {
 						var $down = (0, _helpers.$id)('TopNav-dropdown-down');
 						var $secret = (0, _helpers.$id)('TopNav-menu-secretmenu');
 
+						var toggleMore = function toggleMore() {
+								$secret.classList.contains('hide') ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
+								$secret.classList.toggle('hide');
+						};
+
 						//handle dropdown click
 						var handleDropdown = function handleDropdown(e) {
 								e.stopPropagation();
-								var el = e.target.id ? e.target.id : e.target.parentNode.id;
+								var el = e.target.dataset.type ? e.target.dataset.type : e.target.parentNode.dataset.type;
+
+								//delegate clicks based on their data-type label
 								switch (el) {
-										case 'TopNav-menu-about':
+										case 'about':
 												console.log('About Hit');
 												break;
-										case 'TopNav-menu-username':
+										case 'user':
 												console.log('Hit username');
 												break;
-										case 'TopNav-menu-signup':
+										case 'signup':
 												console.log('Hit signup');
 												break;
-										case 'TopNav-menu-login':
+										case 'login':
 												console.log('Hit login');
 												break;
-										case 'TopNav-menu-faq':
+										case 'faq':
 												console.log('Hit faq');
 												break;
-										case 'TopNav-dropdown-down':
-										case 'TopNav-menu-secret':
+										case 'more':
 												console.log('Hit Secret');
-												var hidden = $secret.className === "dropdown hide";
-												hidden ? $secret.className = "dropdown" : $secret.className = "dropdown hide";
-												hidden ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
+												toggleMore();
 												break;
-										case 'TopNav-menu-dragons':
-												console.log('Hit dragons');
-												break;
-										case 'TopNav-menu-privacy':
+										case 'privacy':
 												console.log('Hit privacy');
 												break;
-										case 'TopNav-menu-relevant':
+										case 'group':
+												_this5._goToGroup(e.target.dataset.group);
+												_this5._removeMenu();
+												break;
+										case 'rules':
 												console.log('Hit relevant');
 												break;
 								}
@@ -6006,7 +6055,7 @@ var italics = /~(\S*?)~/g;
 //regex for code
 var code = /\[code](.*?)\[\/code]/g;
 //regex for reference
-var ref = /\(post:(\S*?)\)/g;
+var ref = /\(post:(.*?)\)/g;
 //regex for mentions
 var mention = /@(\S*?)\s/g;
 //regex for getting links back into place
@@ -6015,7 +6064,7 @@ var links = /`l`i`n`k`/g;
 var url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
 //returns html for a given body
-function parse(body) {
+function parse(body, author) {
   //array of links that we'll keep for later
   var matches = [];
   //set urls -- fails for javascript protocol (important) --> this way links won't be broken
@@ -6076,11 +6125,11 @@ function parse(body) {
   //set underline text
   htmlbody = htmlbody.replace(code, '<code class="Body-code">$1</code>');
 
-  //set refs
-  htmlbody = htmlbody.replace(ref, '<span class="Body-ref">$1</span>');
-
   //set mentions
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
+
+  //set refs
+  htmlbody = author ? htmlbody.replace(ref, '<span data-id="$1" class="Body-ref">@' + author + '</span>') : htmlbody;
 
   //set links
   htmlbody = htmlbody.replace(links, function (match) {
@@ -6131,19 +6180,19 @@ var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var auto = _config2.default.groups.auto; /**
+                                          * Store for core actions (particularly those caused by nav)
+                                          */
+
 var isNode = _config2.default.isNode;
 
 //export appStore, handles general user data
-/**
- * Store for core actions (particularly those caused by nav)
- */
-
-exports.default = {
+var store = {
   //initialize user as anon
   _user: { anonymous: true, username: '', usernames: [] },
 
   //initialize groups
-  _groups: ['/cs/', '/music/', '/vid/', '/bored/', '/random/'],
+  _groups: auto,
 
   //initialized owned data -- by id -- ONLY HEAD POSTS & POSTS
   _owned: function () {
@@ -6159,16 +6208,16 @@ exports.default = {
   },
 
   //set user data
-  set user(user) {
+  addUser: function addUser(user) {
     if (user.anonymous) {
-      this._user = {
+      store._user = {
         anonymous: true,
         username: '',
         usernames: [],
         notifications: 0
       };
     } else {
-      this._user = {
+      store._user = {
         username: user.username,
         anonymous: user.anonymous,
         usernames: user.usernames,
@@ -6184,12 +6233,11 @@ exports.default = {
   },
 
   //get groups
-  set groups(groups) {
-    var _this = this;
+  addGroups: function addGroups(groups) {
 
     //loop through array of groups & push them to our internal list
     groups.forEach(function (grp) {
-      return _this._groups.push();
+      return undefined._groups.push();
     });
   },
 
@@ -6201,12 +6249,12 @@ exports.default = {
   },
 
   //push data to owned ids
-  set owned(opts) {
-    this._owned[opts.postId] = opts.id;
+  addOwned: function addOwned(opts) {
+    store._owned[opts.postId] = opts.id;
 
     if (!isNode) {
       //set owned in localStorage (the cheap way)
-      window.localStorage._owned = (0, _stringify2.default)(this._owned);
+      window.localStorage._owned = (0, _stringify2.default)(store._owned);
     }
   },
 
@@ -6231,6 +6279,8 @@ exports.default = {
     return this._uploadData;
   }
 };
+
+exports.default = store;
 
 },{"../config.js":110,"babel-runtime/core-js/json/stringify":1}],117:[function(require,module,exports){
 'use strict';
@@ -6276,7 +6326,7 @@ var generatePost = exports.generatePost = function () {
             _context.t1 = _context.sent;
             _context.t2 = _context.t0 + _context.t1;
             _context.t3 = _context.t2 + '\n      </div>\n      <div class="Body">\n      ';
-            _context.t4 = generateBody(post.body);
+            _context.t4 = generateBody(post);
             _context.t5 = _context.t3 + _context.t4;
             _context.t6 = _context.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
             _context.t7 = generatePostFooter(post, owned);
@@ -6317,7 +6367,7 @@ var generatePopularPost = exports.generatePopularPost = function () {
             _context2.t1 = _context2.sent;
             _context2.t2 = _context2.t0 + _context2.t1;
             _context2.t3 = _context2.t2 + '\n      </div>\n      <div class="Body">\n      ';
-            _context2.t4 = generateBody(post.body);
+            _context2.t4 = generateBody(post);
             _context2.t5 = _context2.t3 + _context2.t4;
             _context2.t6 = _context2.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
             _context2.t7 = generatePopFooter(post.size, post.thread, postID, user.user.anonymous, owned);
@@ -6360,7 +6410,7 @@ var generateHeadPost = exports.generateHeadPost = function () {
             _context3.t1 = _context3.sent;
             _context3.t2 = _context3.t0 + _context3.t1;
             _context3.t3 = _context3.t2 + '\n      </div>\n      <div class="Body">\n      ';
-            _context3.t4 = generateBody(post.body);
+            _context3.t4 = generateBody(post);
             _context3.t5 = _context3.t3 + _context3.t4;
             _context3.t6 = _context3.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
             _context3.next = 16;
@@ -6487,6 +6537,10 @@ var _oembed2 = _interopRequireDefault(_oembed);
 
 var _helpers = require('./helpers.js');
 
+var _parser = require('./parser');
+
+var _parser2 = _interopRequireDefault(_parser);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /**
@@ -6494,22 +6548,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
  */
 
 //get template for either user logged in or not logged in
-function getUserMenu(user) {
-  if (user.anonymous) {
-    return '\n      <li id="TopNav-menu-signup" class="TopNav-menu-dropdown-row ddtop">\n        <span id="dd-icon-signup" class="icon icon-book ddicon">\n        </span>\n        <span class="ddtext">Signup for an account</span>\n      </li>\n      <li id="TopNav-menu-login" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-login" class="icon icon-book-open ddicon">\n        </span>\n        <span class="ddtext">Log in to your account</span>\n      </li>';
-  } else {
-    return '\n       <li id="TopNav-menu-username" class="TopNav-menu-dropdown-row ddtop">\n         <span id="dd-icon-user" class="icon icon-cog ddicon">\n         </span>\n         <span class="ddtext">' + user.username + '</span>\n       </li>\n       <span id="TopNav-dropdown-logout">logout</span>\n       ';
-  }
-}
-
-//generate Menu
 /**
  * dom template helpers
  */
 
-function generateMenu(user) {
+function getUserMenu(user) {
+  if (user.anonymous) {
+    return '\n      <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">\n        <span id="dd-icon-signup" class="icon icon-book ddicon">\n        </span>\n        <span class="ddtext">Signup for an account</span>\n      </li>\n      <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-login" class="icon icon-book-open ddicon">\n        </span>\n        <span class="ddtext">Log in to your account</span>\n      </li>';
+  } else {
+    return '\n       <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">\n         <span id="dd-icon-user" class="icon icon-cog ddicon">\n         </span>\n         <span class="ddtext">' + user.username + '</span>\n       </li>\n       <span id="TopNav-dropdown-logout">logout</span>\n       ';
+  }
+}
+
+//generate Menu groups --> should only
+function getMenuGroups(groups) {
+  return groups.auto.map(function (group) {
+    return '\n       <li data-type="group" data-group="' + group + '" class="TopNav-menu-dropdown-row">\n          <span class="icon ddgroup-icon">G</span>\n          <span data-group="' + group + '" class="ddgroup-description">\n            <span data-group="' + group + '" class="ddgroup">' + group + '</span>\n            ' + groups.descriptions[group] + '\n          </span>\n  \t\t </li>';
+  }).join('');
+}
+
+//generate Menu
+function generateMenu(user, groups) {
   //show menu -- submenu simply has class hide
-  return '\n    <ul id="TopNav-menu-list" class="dropdown">\n\t\t\t' + getUserMenu(user) + '\n      <li id="TopNav-menu-about" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-about" class="icon icon-info ddicon"></span>\n        <span class="ddtext">About</span>\n      </li>\n      <li id="TopNav-menu-privacy" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>\n        <span class="ddtext">Privacy</span>\n      </li>\n\t\t\t<li id="TopNav-menu-secret" class="TopNav-menu-dropdown-row">\n\t\t\t\t<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>\n\t\t\t\t<span class="ddtext">Secret Menu</span>\n\t\t\t\t<span id="TopNav-dropdown-down" class="icon icon-down-open-big"></span>\n\t\t\t</li>\n\t\t\t<ul id="TopNav-menu-secretmenu" class="dropdown hide">\n\t\t\t\t<li id="TopNav-menu-faq" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t<span id="dd-icon-faq" class="icon icon-help ddicon">\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class="ddtext">How do I use this?</span>\n\t\t\t\t</li>\n\t\t\t\t<li id="TopNav-menu-dragons" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t<span id="dd-icon-dragons" class="icon icon-plus-squared ddicon">\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class="ddtext">Dragon or Wyvern?</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n      <li id="TopNav-menu-relevant" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>\n        <span class="ddtext">Rules for Posting</span>\n      </li>\n    </ul>\n  ';
+  return '\n    <ul id="TopNav-menu-list" class="dropdown">\n\t\t\t' + getUserMenu(user) + '\n\t\t\t<li id="TopNav-menu-secret" data-type="more" class="TopNav-menu-dropdown-row">\n\t\t\t\t<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>\n\t\t\t\t<span class="ddtext">More</span>\n\t\t\t\t<span id="TopNav-dropdown-down" data-type="more" class="icon icon-down-open-big"></span>\n\t\t\t</li>\n\t\t\t<ul id="TopNav-menu-secretmenu" class="dropdown hide">\n        <li id="TopNav-menu-about" data-type="about" class="TopNav-menu-dropdown-row ddnested">\n          <span id="dd-icon-about" class="icon icon-info ddicon"></span>\n          <span class="ddtext">About</span>\n        </li>\n        <li id="TopNav-menu-privacy" data-type="privacy" class="TopNav-menu-dropdown-row ddnested">\n          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>\n          <span class="ddtext">Privacy</span>\n        </li>\n\t\t\t\t<li id="TopNav-menu-faq" data-type="faq" class="TopNav-menu-dropdown-row ddnested">\n\t\t\t\t\t<span id="dd-icon-faq" class="icon icon-help ddicon">\n\t\t\t\t\t</span>\n\t\t\t\t\t<span class="ddtext">How do I use this?</span>\n\t\t\t\t</li>\n\t\t\t</ul>\n      ' + getMenuGroups(groups) + '\n      <li id="TopNav-menu-relevant" data-type="rules" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>\n        <span class="ddtext">Rules for Posting</span>\n      </li>\n    </ul>\n  ';
 }
 
 //cut off the lenght of thread id so it doesn't cover the whole screen
@@ -6568,12 +6629,19 @@ function generatePostHeader(group, author, created) {
 function generatePopularPostHeader(group, author) {
   //title for each of the posts, replies should be overflow-x
   return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <a class="Head-group">' + group + '</a>\n      </span>\n      <span class="Head-right">\n        <span class="Head-author">' + author + '</span>\n      </span>\n    </div>\n  ';
-}function generateBody(str) {
+}function generateBody(post) {
+  var str = post.body;
+  var author = post.author;
+
+  //generate string
   if (str) {
-    return parser(str);
+    str = (0, _parser2.default)(str, author);
   } else {
-    return '';
+    str = '';
   }
+
+  //finally get body string...
+  return str;
 }
 
 function generateDelete(postId, owned) {
@@ -6599,7 +6667,7 @@ function generatePostFooter(post, owned) {
   return footer;
 }
 
-},{"../ajax/threads.js":108,"./helpers.js":112,"./oembed.js":114,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],118:[function(require,module,exports){
+},{"../ajax/threads.js":108,"./helpers.js":112,"./oembed.js":114,"./parser":115,"babel-runtime/core-js/object/keys":4,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],118:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7386,13 +7454,10 @@ var _parser2 = _interopRequireDefault(_parser);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//handle getting user (usernames, username) data via ajax
 /*
   main.js -- entry point for the application
 */
-
-window.parser = _parser2.default;
-//init
-//handle getting user (usernames, username) data via ajax
 {
   //first order of business, get user data and store it
   (function () {
@@ -7417,28 +7482,32 @@ window.parser = _parser2.default;
               return _context.abrupt('return');
 
             case 6:
-              _context.next = 8;
+              _context.t0 = _store2.default;
+              _context.next = 9;
               return usr.json();
 
-            case 8:
-              _store2.default.user = _context.sent;
-              _context.next = 14;
+            case 9:
+              _context.t1 = _context.sent;
+
+              _context.t0.addUser.call(_context.t0, _context.t1);
+
+              _context.next = 16;
               break;
 
-            case 11:
-              _context.prev = 11;
-              _context.t0 = _context['catch'](0);
+            case 13:
+              _context.prev = 13;
+              _context.t2 = _context['catch'](0);
 
 
               //let ourselves know if there was an error getting the user
-              console.log(_context.t0);
+              console.log(_context.t2);
 
-            case 14:
+            case 16:
             case 'end':
               return _context.stop();
           }
         }
-      }, _callee, this, [[0, 11]]);
+      }, _callee, this, [[0, 13]]);
     }));
 
     function user() {
@@ -7604,6 +7673,10 @@ exports.default = setup;
 
 var _groups = require('../ajax/groups.js');
 
+var _config = require('../config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
 var _group = require('../group/group.js');
 
 var _group2 = _interopRequireDefault(_group);
@@ -7614,6 +7687,20 @@ var _thread2 = _interopRequireDefault(_thread);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//group gotten when hitting '/' route
+/**
+  Router init function (sets up routes)
+
+  layout:
+          / --> home (pg 0 for /main/)
+          /:group --> grp
+          /t/:thread --> front page threads
+          /:group/:page --> group view for page
+          /:group/t/:thread --> thread view for group
+*/
+
+var main = _config2.default.groups.main;
+
 //this is where views are set up
 function setup(router) {
   var _this = this;
@@ -7621,7 +7708,7 @@ function setup(router) {
   //middleware for routing
   router.onNavigate(function (path) {
 
-    //clear view on route change
+    //clear view on route change --> maybe put an animation
     document.getElementById('main').innerHTML = "";
   });
 
@@ -7633,7 +7720,7 @@ function setup(router) {
         switch (_context.prev = _context.next) {
           case 0:
             _context.next = 2;
-            return (0, _groups.getAuth)('/random/');
+            return (0, _groups.getAuth)(main);
 
           case 2:
             res = _context.sent;
@@ -7643,7 +7730,7 @@ function setup(router) {
           case 5:
             resp = _context.sent;
 
-            (0, _group2.default)('/random/', 0, resp);
+            (0, _group2.default)(main, 0, resp);
 
           case 7:
           case 'end':
@@ -7738,7 +7825,8 @@ function setup(router) {
               return _context3.abrupt('return', router.navigate('/404'));
 
             case 9:
-              //setup group once again
+
+              //setup group once again -- squiggles are a string -> int type conversion
               (0, _group2.default)(group, ~ ~page, resp);
 
             case 10:
@@ -7795,18 +7883,42 @@ function setup(router) {
       return ref.apply(this, arguments);
     };
   }());
-} /**
-    Router init function (sets up routes)
-  
-    layout:
-            / --> home (pg 0 for /random/)
-            /:group --> grp
-            /t/:thread --> front page threads
-            /:group/:page --> group view for page
-            /:group/t/:thread --> thread view for group
-  */
+}
 
-},{"../ajax/groups.js":107,"../group/group.js":118,"../thread/thread.js":123,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
+},{"../ajax/groups.js":107,"../config.js":110,"../group/group.js":118,"../thread/thread.js":124,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _config = require('../config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var isNode = _config2.default.isNode;
+
+//export appStore, handles general user data
+/**
+ * Store for thread -- helps to model posts
+ */
+
+exports.default = {
+  //initialize user as anon
+  _posts: [],
+
+  //set user data
+  get posts() {
+    return this._posts;
+  },
+
+  addPosts: function addPosts(posts) {}
+
+};
+
+},{"../config.js":110}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7827,6 +7939,10 @@ var _store = require('../core/store.js');
 
 var _store2 = _interopRequireDefault(_store);
 
+var _store3 = require('./store.js');
+
+var _store4 = _interopRequireDefault(_store3);
+
 var _threadv = require('./threadv.js');
 
 var _threadv2 = _interopRequireDefault(_threadv);
@@ -7834,10 +7950,13 @@ var _threadv2 = _interopRequireDefault(_threadv);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //init for group controller (or whatever you'd like to call it)
+/**
+ * group.js is a controller for group (kinda)
+ */
 
 exports.default = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(threadid) {
-    var res, jres, thread, user, thrd;
+    var res, thread, user, thrd;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
@@ -7852,10 +7971,7 @@ exports.default = function () {
             return res.json();
 
           case 6:
-            jres = _context.sent;
-
-            //get array of threads
-            thread = jres;
+            thread = _context.sent;
             user = {
               owned: _store2.default.owned,
               user: _store2.default.user
@@ -7868,18 +7984,18 @@ exports.default = function () {
             thrd.render();
             return _context.abrupt('return', thrd);
 
-          case 14:
-            _context.prev = 14;
+          case 13:
+            _context.prev = 13;
             _context.t0 = _context['catch'](0);
 
             console.log(_context.t0);
 
-          case 17:
+          case 16:
           case 'end':
             return _context.stop();
         }
       }
-    }, _callee, this, [[0, 14]]);
+    }, _callee, this, [[0, 13]]);
   }));
 
   function start(_x) {
@@ -7887,11 +8003,9 @@ exports.default = function () {
   }
 
   return start;
-}(); /**
-      * group.js is a controller for group (kinda)
-      */
+}();
 
-},{"../ajax/threads.js":108,"../core/store.js":116,"./threadv.js":124,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],124:[function(require,module,exports){
+},{"../ajax/threads.js":108,"../core/store.js":116,"./store.js":123,"./threadv.js":125,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7946,7 +8060,6 @@ var View = function () {
     (0, _classCallCheck3.default)(this, View);
 
 
-    console.log(thread);
     //set group
     this.thread = thread;
 

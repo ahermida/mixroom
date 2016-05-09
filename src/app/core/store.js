@@ -4,15 +4,16 @@
 
 import config from '../config.js';
 
+const auto = config.groups.auto;
 const isNode = config.isNode;
 
 //export appStore, handles general user data
-export default {
+const store = {
   //initialize user as anon
   _user: {anonymous: true, username:'', usernames: []},
 
   //initialize groups
-  _groups: ['/cs/','/music/','/vid/','/bored/', '/random/'],
+  _groups: auto,
 
   //initialized owned data -- by id -- ONLY HEAD POSTS & POSTS
   _owned: (() => {
@@ -28,16 +29,16 @@ export default {
   },
 
   //set user data
-  set user (user) {
+  addUser: user => {
     if (user.anonymous) {
-      this._user = {
+      store._user = {
         anonymous: true,
         username: '',
         usernames: [],
         notifications: 0
       };
     } else {
-      this._user = {
+      store._user = {
         username: user.username,
         anonymous: user.anonymous,
         usernames: user.usernames,
@@ -53,7 +54,7 @@ export default {
   },
 
   //get groups
-  set groups(groups) {
+  addGroups: groups => {
 
     //loop through array of groups & push them to our internal list
     groups.forEach(grp => this._groups.push());
@@ -67,12 +68,12 @@ export default {
   },
 
   //push data to owned ids
-  set owned(opts) {
-    this._owned[opts.postId] = opts.id;
+  addOwned: opts => {
+    store._owned[opts.postId] = opts.id;
 
     if (!isNode) {
       //set owned in localStorage (the cheap way)
-      window.localStorage._owned = JSON.stringify(this._owned);
+      window.localStorage._owned = JSON.stringify(store._owned);
     }
   },
 
@@ -97,3 +98,5 @@ export default {
     return this._uploadData;
   }
 };
+
+export default store;

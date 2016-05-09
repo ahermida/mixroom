@@ -2,7 +2,7 @@
   Router init function (sets up routes)
 
   layout:
-          / --> home (pg 0 for /random/)
+          / --> home (pg 0 for /main/)
           /:group --> grp
           /t/:thread --> front page threads
           /:group/:page --> group view for page
@@ -10,23 +10,28 @@
 */
 
 import {getAuth} from '../ajax/groups.js';
+import config from '../config.js';
 import grp from '../group/group.js';
 import thrd from '../thread/thread.js';
+
+//group gotten when hitting '/' route
+const main = config.groups.main;
+
 //this is where views are set up
 export default function setup(router) {
 
   //middleware for routing
   router.onNavigate((path) => {
 
-    //clear view on route change
+    //clear view on route change --> maybe put an animation
     document.getElementById('main').innerHTML = "";
   });
 
   //set up root handler '/'
   router.onRoot(async () => {
-    let res = await getAuth('/random/');
+    let res = await getAuth(main);
     let resp = await res.json();
-    grp('/random/', 0, resp);
+    grp(main, 0, resp);
   });
 
   //route for user view and settings '/user/:username'
@@ -59,7 +64,8 @@ export default function setup(router) {
     let res = await getAuth(group);
     let resp = await res.json();
     if (!resp.allowed && group != "/404/") return router.navigate('/404');
-    //setup group once again
+
+    //setup group once again -- squiggles are a string -> int type conversion
     grp(group, ~~page, resp);
   });
 

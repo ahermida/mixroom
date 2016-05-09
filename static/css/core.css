@@ -336,6 +336,23 @@ body, figure {
   left: 50px;
   top: 12px; }
 
+.ddgroup {
+  color: #6879FF;
+  font-weight: bold;
+  font-size: 14px; }
+
+.ddgroup-icon {
+  font-size: 22px !important;
+  position: absolute;
+  left: 13px;
+  top: 6px; }
+
+.ddgroup-description {
+  position: absolute;
+  top: 12px;
+  left: 50px;
+  font-size: 14px; }
+
 #TopNav-dropdown-down {
   position: absolute;
   right: 10px;
