@@ -26,9 +26,9 @@ const code = /\[code](.*?)\[\/code]/g;
 //regex for reference
 const ref = /\(post:(.*?)\)/g;
 //regex for mentions
-const mention = /@(\S*?)\s/g
+const mention = /@(\S*?)\s/g;
 //regex for getting links back into place
-const links = /`l`i`n`k`/g
+const links = /`l`i`n`k`/g;
 //regex for links ('holy grail' via Matthew O'Riordan)
 const url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
@@ -38,7 +38,7 @@ export default function parse(body, author) {
   let matches = [];
   //set urls -- fails for javascript protocol (important) --> this way links won't be broken
   body = body.replace(url, (match, $1) => {
-    matches.push(`<a class="Body-url" href="${$1}">${$1}</a>`)
+    matches.push(`<a class="Body-url" href="${$1.indexOf('http') == -1 ? `http://${$1}` : $1}">${$1}</a>`)
     return '`l`i`n`k`';
   });
 
@@ -108,7 +108,7 @@ export default function parse(body, author) {
   });
 
   //return html wrapped in parent div
-  return `<div class="Body-content">${htmlbody}</div>`;
+  return `<div data-type="body" class="Body-content">${htmlbody}</div>`;
 }
 
 //precompile regex

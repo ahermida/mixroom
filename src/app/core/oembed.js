@@ -10,12 +10,17 @@ import config from '../config.js';
 const isNode = config.isNode;
 const apihost = isNode ? "localhost/": window.location.host;
 const endpoint = '/embed';
-
+const urlPattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 export const validate = (url) => {
-  let pattern = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
-  return pattern.test(url);
+  return urlPattern.test(url);
 };
 
+//should break if there's a bad protocol
+export const replacelink = (url) => {
+  return url.replace(urlPattern, (match, $1) => `<a class="Body-url" href="${$1.indexOf('http') == -1 ? `http://${$1}` : $1}">
+                                                   ${$1}
+                                                 </a>`);
+};
 const extract = (str) => {
     let oembedUrl, patternMatch;
 
@@ -43,7 +48,7 @@ const extract = (str) => {
       //still a legitimate url, so let's fetch the title
       return {
         oembed: false,
-        html: `<a href="${str}">${str}</a>`
+        html: `<h4 class="Content-text">${replacelink(str)}</h4>`
       };
 
     } else {
@@ -128,10 +133,9 @@ const oembed = async (url) => {
       let content = await followEmbed(url);
       let resp = await content.json();
       let jresp = JSON.parse(resp.embed);
-      return jresp.html || `<a href="${url}">
-                              <iframe style="background-image: url(${jresp.url}); min-height: 400px; min-width: 100%; background-size: contain; background-size: cover;">
-                              </iframe>
-                            </a>`;
+
+      //sometimes the oembed just sends a link to an image
+      return jresp.html || `<a class="Content-link" href="${url}"><img src="${jresp.url}"></img></a>`;
     } catch (err) {
       console.log(err);
     }

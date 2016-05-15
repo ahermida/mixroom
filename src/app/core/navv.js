@@ -137,7 +137,7 @@ export default class View {
 	//Exposes the writer-opening action -- allowing target to be dynamically set
 	openWriter(to) {
 		//reset writer
-		this._removeWriter();
+		if (this._openWriter || this._hiddenWriter) this._removeWriter();
 
 		//set target to 'to'
     this._showWriter(this.groups.auto, this.user, this.handleUpload, this.handleSubmit, to);
@@ -146,7 +146,7 @@ export default class View {
 	//Exposes the writer and adds target post
 	openWriterRef(id) {
 		//make sure writer is open
-		if (!this._openWriter) this.openWriter();
+		if (!this._openWriter || this._hiddenWriter) this._showWriter();
 
 		//now since it's open, we append the content (presumably an id)
 		this.$body.value += this.$body.value ? `\n(post: ${id})\n` : `(post: ${id})\n`;
@@ -173,21 +173,18 @@ export default class View {
 
 		//calls the scroll-to-top action
 		(async () => {
-			if (window.scrollY <= 5) {
-				return;
-      }
 			while (window.scrollY > 6) {
-				var Break = -20 - window.scrollY / 5;
+				var Break = -10 - window.scrollY / 5;
 				window.scrollBy(0, Break);
 				await sleep();
 			}
+
+			//remove hide from element's classname --> show searchbox
+			this.$searchboxBg.className = '';
+
+			//focus searchbox after opening it
+			this.$searchbox.focus();
 		})();
-
-		//remove hide from element's classname --> show searchbox
-		this.$searchboxBg.className = '';
-
-		//focus searchbox after opening it
-		this.$searchbox.focus();
   }
 
 	//submit search on enter key hit
@@ -289,8 +286,7 @@ export default class View {
 			//handle hiding the writer
 			function handleHide() {
 				this._hiddenWriter = true;
-				this._openWriter = false;
-				writerMount.className = 'hide';
+				this.$writermount.className = 'hide';
 				this._unsetActiveBody();
 			}
 
@@ -340,6 +336,7 @@ export default class View {
 
   _removeWriter() {
 		this._openWriter = false;
+		this._hiddenWriter = false;
 		this._unsetActiveBody();
 
     //remove writer from view

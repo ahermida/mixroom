@@ -2,7 +2,7 @@
  * group.js is a controller for group (kinda)
  */
 
-import {getGroup, getGroupInfo, getPopular} from '../ajax/groups.js';
+import {getGroup, getGroupInfo, getPopular, getAuth} from '../ajax/groups.js';
 import {saveThread, unsaveThread} from '../ajax/user.js';
 import {rmThread} from '../ajax/threads.js';
 import appstore from '../core/store.js'
@@ -29,6 +29,17 @@ async function unsave(threadId) {
     await unsaveThread(threadId);
   } catch (e) {
     console.log(e);
+  }
+}
+
+async function checkAuth(group) {
+  try {
+    let res = await getAuth(group);
+    let resp = res.json();
+    return resp;
+  } catch (e) {
+    //this happens when a group doesn't exist
+    return;
   }
 }
 
@@ -74,7 +85,8 @@ export default async function start(group, page, auth) {
   let utils = {
     deleteThread: deleteThread,
     saveThread: save,
-    unsaveThread: unsave
+    unsaveThread: unsave,
+    checkAuth: checkAuth
   };
 
   let data = {

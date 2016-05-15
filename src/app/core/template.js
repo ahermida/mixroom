@@ -55,12 +55,15 @@ export function generateMenu(user, groups) {
   return `
     <ul id="TopNav-menu-list" class="dropdown">
 			${getUserMenu(user)}
-			<li id="TopNav-menu-secret" data-type="more" class="TopNav-menu-dropdown-row">
-				<span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
-				<span class="ddtext">More</span>
-				<span id="TopNav-dropdown-down" data-type="more" class="icon icon-down-open-big"></span>
-			</li>
-			<ul id="TopNav-menu-secretmenu" class="dropdown hide">
+      <li class="listsection"></li>
+      ${getMenuGroups(groups)}
+      <li class="listsection"></li>
+      <li id="TopNav-menu-secret" data-type="more" class="TopNav-menu-dropdown-row">
+        <span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
+        <span class="ddtext">More</span>
+        <span id="TopNav-dropdown-down" data-type="more" class="icon icon-down-open-big"></span>
+      </li>
+      <ul id="TopNav-menu-secretmenu" class="dropdown hide">
         <li id="TopNav-menu-about" data-type="about" class="TopNav-menu-dropdown-row ddnested">
           <span id="dd-icon-about" class="icon icon-info ddicon"></span>
           <span class="ddtext">About</span>
@@ -69,13 +72,12 @@ export function generateMenu(user, groups) {
           <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
           <span class="ddtext">Privacy</span>
         </li>
-				<li id="TopNav-menu-faq" data-type="faq" class="TopNav-menu-dropdown-row ddnested">
-					<span id="dd-icon-faq" class="icon icon-help ddicon">
-					</span>
-					<span class="ddtext">How do I use this?</span>
-				</li>
-			</ul>
-      ${getMenuGroups(groups)}
+        <li id="TopNav-menu-faq" data-type="faq" class="TopNav-menu-dropdown-row ddnested">
+          <span id="dd-icon-faq" class="icon icon-help ddicon">
+          </span>
+          <span class="ddtext">How do I use this?</span>
+        </li>
+      </ul>
       <li id="TopNav-menu-relevant" data-type="rules" class="TopNav-menu-dropdown-row">
         <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>
         <span class="ddtext">Rules for Posting</span>
@@ -150,7 +152,7 @@ export async function generatePost(group, post, user) {
   const owned = Object.keys(user.owned);
 
   let filledpost = `
-    <div id="${postID}" class="Post">
+    <div data-type="post" id="${postID}" class="Post">
       <header class="Header">
       ${generatePostHeader(group, post.author, timestamp)}
       </header>
@@ -175,14 +177,14 @@ export async function generatePopularPost(post, user) {
   const owned = Object.keys(user.owned);
 
   let poppost = `
-    <div id="${postID}" class="PopularPost">
+    <div data-type="post" id="${postID}" class="PopularPost">
       <header class="Header">
       ${generatePopularPostHeader(post.group, post.author, timestamp)}
       </header>
-      <div class="Content">
+      <div data-type="content" class="Content">
       ${await generateContent(post.content, post.contentType)}
       </div>
-      <div class="Body">
+      <div data-type="body" class="Body">
       ${generateBody(post)}
       </div>
       <footer class="Footer">
@@ -203,14 +205,14 @@ export async function generateHeadPost(thread, user) {
   const ownedThreads = Object.keys(user.owned);
 
   let headpost = `
-    <div id="${threadID}" class="HeadPost">
+    <div data-type="post" id="${threadID}" class="HeadPost">
       <header class="Header">
       ${generatePostHeader(thread.group, post.author, timestamp)}
       </header>
-      <div class="Content">
+      <div data-type="content" class="Content">
       ${await generateContent(post.content, post.contentType)}
       </div>
-      <div class="Body">
+      <div data-type="body" class="Body">
       ${generateBody(post)}
       </div>
       <footer class="Footer">
@@ -248,14 +250,14 @@ function generatePostHeader(group, author, created) {
   return `
     <div class="Head-content">
       <span class="Head-left">
-        <span class="Head-author">${author}</span>
+        <span data-type="author" class="Head-author">${author}</span>
         -
-        <a class="Head-group">${group}</a>
+        <a data-type="group" class="Head-group">${group}</a>
         -
-        <span class="Head-created">${generateTimestamp(created)}</span>
+        <span data-type="timestamp" class="Head-created">${generateTimestamp(created)}</span>
       </span>
-      <span class="Head-rm">
-        <span class="icon-down-open-big"></span>
+      <span data-type="hide" class="Head-rm">
+        <span data-type="hide" class="icon-down-open-big"></span>
       </span>
     </div>
   `;
@@ -267,10 +269,10 @@ function generatePopularPostHeader(group, author) {
   return `
     <div class="Head-content">
       <span class="Head-left">
-        <a class="Head-group">${group}</a>
+        <a data-type="group" class="Head-group">${group}</a>
       </span>
       <span class="Head-right">
-        <span class="Head-author">${author}</span>
+        <span data-type="author" class="Head-author">${author}</span>
       </span>
     </div>
   `;
@@ -281,23 +283,23 @@ async function generateContent(content, contentType) {
   if (!content || contentType == "") return "";
   let html;
   if (contentType === 'link') {
-    html = `<div class="Content-frame">${await oembed(content)}</div>`
+    html = `<div data-type="content" class="Content-frame">${await oembed(content)}</div>`
   } else {
     //treat video and images differently
     if (contentType.split('/')[0] === 'video') {
       html = `
-      <video controls="controls" muted class="Content-iv">
+      <video data-type="content" controls="controls" muted class="Content-iv">
         <source src="${content}" type="${contentType}">
       </video>`;
     } else if (contentType == "text") {
-      html = `<h4 class="Content-text">${content}</h4>`
+      html = `<h4 data-type="content" class="Content-text">${content}</h4>`
     } else {
-      html = `<img class="Content-img" src="${content}">`;
+      html = `<div data-type="content" class="Content-frame"><img class="Content-frame" src="${content}"></div>`;
     }
   }
 
   //if all works out, return proper html
-  return `<div class="Content-wrapper">${html}</div>`;
+  return `<div data-type="content" class="Content-wrapper">${html}</div>`;
 }
 
 //handle body of post
@@ -319,10 +321,10 @@ function generateBody(post) {
 function generateDelete(postId, owned) {
   for (let i = 0; i < owned.length; i++) {
     if (postId === owned[i]) {
-      return '<span class="Footer-right-delete space">delete</span>';
+      return '<span data-type="delete" class="Footer-right-delete space">delete</span>';
     }
   }
-  return '<span class="report space">report</span>';
+  return '<span data-type="report" class="report space">report</span>';
 }
 
 
@@ -336,10 +338,10 @@ async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) 
       <span class="Footer-left-size">${length || 0} ${length != 1 ? 'posts' : 'post'}</span>
     </span>
     <span class="Footer-right" data-post="${postid}" data-thread="${threadid}">
-      ${anonymous ? '' : '<span class="Footer-right-save">save</span>'}
+      ${anonymous ? '' : '<span data-type="save" class="Footer-right-save">save</span>'}
       ${generateDelete(postid, owned)}
-      <span class="Footer-right-reply space">reply</span>
-      <span class="Footer-open space">open</span>
+      <span data-type="reply" class="Footer-right-reply space">reply</span>
+      <span data-type="open" class="Footer-open space">open</span>
     </span>
   </div>
   `;
@@ -356,8 +358,8 @@ function generatePopFooter(size, threadid, postid, anonymous, owned) {
       <span class="Footer-left-size">${length || 0} ${length != 1 ? 'posts' : 'post'}</span>
     </span>
     <span class="Footer-right" data-post="${postid}" data-thread="${threadid}">
-      <span class="Footer-right-reply space">reply</span>
-      <span class="Footer-open space">open</span>
+      <span data-type="reply" class="Footer-right-reply space">reply</span>
+      <span data-type="open" class="Footer-open space">open</span>
     </span>
   </div>
   `;
@@ -378,7 +380,7 @@ function generatePostFooter(post, owned) {
     </span>
     <span class="Footer-right" data-post="${postid}">
       ${generateDelete(postid, owned)}
-      <span class="Footer-right-reply space">reply</span>
+      <span data-type="reply" class="Footer-right-reply space">reply</span>
     </span>
   </div>
   `;

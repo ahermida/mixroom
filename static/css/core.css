@@ -353,6 +353,12 @@ body, figure {
   left: 50px;
   font-size: 14px; }
 
+.listsection {
+  width: 90%;
+  display: flex;
+  margin: auto;
+  border-bottom: 1px solid #DCDCDC; }
+
 #TopNav-dropdown-down {
   position: absolute;
   right: 10px;

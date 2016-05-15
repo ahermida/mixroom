@@ -28,7 +28,8 @@ export default class View {
       showPost: (e) => this._showPost(e),
       report: (e) => this._reportPost(e),
       toggleBody: (e) => this._toggleBody(e),
-      peek: (e) => this._peek(e)
+      peek: (e) => this._peek(e),
+      delete: (e) => this._delete(e)
  		};
  	}
 
@@ -42,6 +43,40 @@ export default class View {
     //clicks on listing section
     $on($listing, 'click', this._onPostClick.bind(this), false);
     $on($prev, 'click', this._back.bind(this), false);
+  }
+
+  _delete(e) {
+    let content = e.target.innerHTML;
+    if (content === 'delete') {
+      this._cancelDelete();
+      e.target.innerHTML = "sure?"
+      e.target.id = 'delete-pending';
+      return;
+    }
+    let thread = e.target.parentNode.dataset.thread;
+    let post = e.target.parentNode.dataset.post;
+    console.log(thread);
+    let match;
+    let owned = Object.keys(this.user.owned);
+    for (let i = 0; i < owned.length; i++) {
+      if (post === owned[i]) {
+        match = owned[i];
+      }
+    }
+    console.log(match);
+    if (match) this.deleteThread(thread, this.user.owned[match]);
+
+    //reload this page (but not refresh)
+    router.check();
+  }
+
+  _cancelDelete() {
+    //only one deleteable at a time
+    let pending = $id('delete-pending');
+    if (pending) {
+      pending.innerHTML = 'delete';
+      pending.id = '';
+    }
   }
 
   _back() {
@@ -88,37 +123,41 @@ export default class View {
   //handle post clicks
   _onPostClick(e) {
     let target = e.target;
-    switch (target.className) {
-      case 'Head-author':
-      if (target.textContent !== 'Anonymous') router.navigate('/user/${target.textContent}');
+    switch (target.dataset.type) {
+      case 'author':
+      this._goToUser(target.textContent);
       break;
-      case 'Head-group':
+      case 'group':
       this.viewCommands.group(e);
       break;
-      case 'icon-down-open-big':
-      //hacky solution to delegation tactics
-      this.viewCommands.hidePost(e);
+      case 'hide':
+      this.viewCommands.togglePost(e);
       break;
-      case 'icon-up-open-big':
-      //hacky solution to delegation tactics
-      this.viewCommands.showPost(e);
-      break;
-      case 'Body':
+      case 'body':
       this.viewCommands.toggleBody(e);
       break;
-      case 'report space':
+      case 'report':
+      //sends request off to dev server
       this.viewCommands.report(e);
       break;
-      case 'Footer-right-save space':
+      case 'save':
+      //saves and unsaves posts
       this.viewCommands.savePost(e);
       break;
-      case 'Footer-right-reply space':
+      case 'reply':
+      //opens writer with thread as target
       this.viewCommands.reply(e);
       break;
-      case 'Footer-open space':
+      case 'open':
+      //opens thread
       this.viewCommands.open(e);
       break;
-
+      case 'delete':
+      //deletes thread
+      this.viewCommands.delete(e);
+      break;
+      default:
+      this._cancelDelete(e);
     }
   }
 

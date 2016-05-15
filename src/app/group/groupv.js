@@ -35,21 +35,21 @@ export default class View {
     this.saveThread = options.saveThread;
     this.unsaveThread = options.unsaveThread;
     this.deleteThread = options.deleteThread;
+    this.checkAuth = options.checkAuth;
 
      //setup commands for view actions
  		this.viewCommands = {
       reply: (e) => this._reply(e),
       open: (e) => this._open(e),
-      group: (e) => this._goToGroup(e),
+      group: (e) => this._goToGroup(e.target.textContent),
       user: (e) => this._goToUser(e),
       savePost: (e) => this._savePost(e),
-      hidePost: (e) => this._hidePost(e),
-      showPost: (e) => this._showPost(e),
       report: (e) => this._reportPost(e),
       toggleBody: (e) => this._toggleBody(e),
       nextPage: (e) => this._nextPage(e),
       prevPage: (e) => this._prevPage(e),
-      delete: (e) => this._deletePost(e)
+      delete: (e) => this._deletePost(e),
+      togglePost: (e) => this._togglePost(e)
  		};
  	}
 
@@ -62,11 +62,13 @@ export default class View {
     let $next = $id('nextpage');
     let $popular = $id('Main-desktop-group');
     let $author = $id('Main-desktop-author');
+    let $groupinput = $id('GroupNav-input');
 
     //clicks on listing sections --> reuses _onPostClick for convenience
     $on($listing, 'click', this._onPostClick.bind(this), false);
     $on($popular, 'click', this._onPostClick.bind(this), false);
     $on($author, 'click', (() => this._goToUser(this.info.author)).bind(this), false);
+    $on($groupinput, 'keyup', this._handleGoToGroup.bind(this), false);
 
     //set up handlers for pagination
     if ($prev) $on($prev, 'click', this.viewCommands.prevPage.bind(this), false);
@@ -76,37 +78,61 @@ export default class View {
   _postOwned(id) {
     //checks if we own post (so we can add delete when we render)
     if (this.user.auth.mod) return true;
+    let owned = false;
     this.user.owned.forEach((currId) => {
-      if (currId === id) return
+      if (currId === id) owned = true;
     });
+    return owned;
   }
 
-  _hidePost(e) {
-    e.target.className = 'icon-up-open-big';
-    let target = e.target.parentNode;
-    while(target.className != 'HeadPost') {
-      //get headpost & remove the children we want
+
+  _togglePost(e) {
+    //flip icon
+    e.target.className = e.target.dataset.open ?  'icon-down-open-big' : 'icon-up-open-big';
+
+    //because it's not initialized in the dom --> switches off
+    e.target.dataset.open = e.target.dataset.open ? false : true;
+
+    //move up in the dom until we find the post
+    let target = e.target;
+    while (target.dataset.type != 'post') {
       target = target.parentNode;
     }
-    Array.prototype.forEach.call(target.childNodes, node => {
-      if (node.className === 'Body' || node.className === 'Content') {
-        node.style.display = 'none';
-      }
-    });
+
+    //toggle post visibility
+    target.classList.toggle('Post-Hide');
   }
 
-  _showPost(e) {
-    e.target.className = 'icon-down-open-big';
-    let target = e.target.parentNode;
-    while(target.className != 'HeadPost') {
-      target = target.parentNode;
+  //handles the group navigation in the desktop view -- OnKeyUp
+  _handleGoToGroup(e) {
+    const badresp = (inputEl) => {
+      inputEl.placeholder = `Group is unavailable.`
+      setTimeout(() => inputEl.placeholder = 'Go to group...',3000);
     }
-    //get headpost & show the children we want
-    Array.prototype.forEach.call(target.childNodes, node => {
-      if (node.className === 'Body' || node.className === 'Content') {
-        node.style.display = 'block';
-      }
-    });
+    if (e.keyCode === 13) {
+      const entered = e.target.value;
+      let smoothed = `/${entered.replace(/\//g, '')}/`;
+
+
+      let resp = this.checkAuth(smoothed);
+
+      //reject bad responses
+      if (!resp) badresp(e.target);
+
+      //handle json from response
+      resp.then(res => {
+
+        //check if allowed, reject if we're not
+        if (!res.allowed) {
+          badresp(e.target);
+        } else {
+
+        //here we are allowed to visit group --> navigate to group
+        this._goToGroup(smoothed);
+        }
+      });
+      e.target.value = '';
+    }
   }
 
   _prevPage(e) {
@@ -121,41 +147,36 @@ export default class View {
   //handle post clicks
   _onPostClick(e) {
     let target = e.target;
-    switch (target.className) {
-      case 'Head-author':
+    switch (target.dataset.type) {
+      case 'author':
       this._goToUser(target.textContent);
       break;
-      case 'Head-group':
+      case 'group':
       this.viewCommands.group(e);
       break;
-      case 'icon-down-open-big':
-      //hacky solution to delegation tactics
-      this.viewCommands.hidePost(e);
+      case 'hide':
+      this.viewCommands.togglePost(e);
       break;
-      case 'icon-up-open-big':
-      //hacky solution to delegation tactics
-      this.viewCommands.showPost(e);
-      break;
-      case 'Body':
+      case 'body':
       this.viewCommands.toggleBody(e);
       break;
-      case 'report space':
+      case 'report':
       //sends request off to dev server
       this.viewCommands.report(e);
       break;
-      case 'Footer-right-save space':
+      case 'save':
       //saves and unsaves posts
       this.viewCommands.savePost(e);
       break;
-      case 'Footer-right-reply space':
+      case 'reply':
       //opens writer with thread as target
       this.viewCommands.reply(e);
       break;
-      case 'Footer-open space':
+      case 'open':
       //opens thread
       this.viewCommands.open(e);
       break;
-      case 'Footer-right-delete space':
+      case 'delete':
       //deletes thread
       this.viewCommands.delete(e);
       break;
@@ -175,8 +196,8 @@ export default class View {
   }
 
   //go to group
-  _goToGroup(e) {
-    router.navigate(e.target.textContent);
+  _goToGroup(grp) {
+    router.navigate(grp);
   }
 
   //go to user
@@ -244,7 +265,7 @@ export default class View {
   }
 
   _toggleBody(e) {
-    e.target.maxHeight = e.target.maxHeight === '400px' ? '1000px' : '400px';
+    e.target.style.maxHeight = e.target.style.maxHeight === '500px' ? '1000px' : '500px';
   }
 
   //generate html
@@ -309,6 +330,10 @@ export default class View {
           <div class="Created">
             <p>Created</p>
             <p>${generateTimestamp(info.created)}</p>
+          </div>
+          <div class="GroupNav">
+            <p></p>
+            <input id="GroupNav-input" placeholder="Go to group...">
           </div>
         </div>
       `;
