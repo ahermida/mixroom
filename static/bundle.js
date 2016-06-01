@@ -4850,6 +4850,7 @@ var auto = (0, _keys2.default)(groups);
 //this is config
 exports.default = {
   api: window.location.host + '/api',
+  ws: window.location.host + '/ws',
   isNode: typeof window === 'undefined',
   groups: {
     main: '/random/',
@@ -5429,7 +5430,7 @@ var View = function () {
 				key: 'openWriterRef',
 				value: function openWriterRef(id) {
 						//make sure writer is open
-						if (!this._openWriter || this._hiddenWriter) this._showWriter();
+						if (!this._openWriter) this._showWriter();
 
 						//now since it's open, we append the content (presumably an id)
 						this.$body.value += this.$body.value ? '\n(post: ' + id + ')\n' : '(post: ' + id + ')\n';
@@ -5656,9 +5657,7 @@ var View = function () {
 								(0, _helpers.$on)(this.$savebutton, 'click', handleHide.bind(this), false);
 								(0, _helpers.$on)(this.$fileSubmit, 'change', handleContent.bind(this), false);
 								(0, _helpers.$on)(this.$submit, 'click', handleSend.bind(this), false);
-								(0, _helpers.$on)(this.$writermount, 'touchmove', function (e) {
-										return e.preventDefault();
-								}, false);
+								//$on(this.$writermount, 'touchmove', e => e.preventDefault(), false);
 								(0, _helpers.$on)(this.$writerhead, 'click', onTitleClick.bind(this), false);
 						} else {
 								if (this._hiddenWriter) {
@@ -5781,8 +5780,8 @@ var View = function () {
 						//bind events here
 						(0, _helpers.$on)($dropdown, 'click', handleDropdown, false);
 						(0, _helpers.$on)($dropdownBg, 'click', this._removeMenu.bind(this), false);
-						(0, _helpers.$on)($dropdownBg, 'touchmove', function (e) {
-								return e.preventDefault();
+						(0, _helpers.$on)($dropdownBg, 'scroll', function (e) {
+								if (e.target.classList.contains('dropdown')) e.stopPropagation();
 						}, false);
 
 						//set reference to menubg and set menu to open
@@ -5975,7 +5974,7 @@ var oembed = function () {
 
                         //sometimes the oembed just sends a link to an image
 
-                        return _context.abrupt('return', jresp.html || '<a class="Content-link" href="' + url + '"><img src="' + jresp.url + '"></img></a>');
+                        return _context.abrupt('return', jresp.html || '<a class="Content-link" href="' + url + '"><img class="Content-frame" src="' + jresp.url + '"></img></a>');
 
                       case 15:
                         _context.prev = 15;
@@ -6552,7 +6551,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function getUserMenu(user) {
   if (user.anonymous) {
-    return '\n      <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">\n        <span id="dd-icon-signup" class="icon icon-book ddicon">\n        </span>\n        <span class="ddtext">Signup for an account</span>\n      </li>\n      <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">\n        <span id="dd-icon-login" class="icon icon-book-open ddicon">\n        </span>\n        <span class="ddtext">Log in to your account</span>\n      </li>';
+    return '\n      <a href="/register" class="nostylelink">\n        <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">\n            <span id="dd-icon-signup" class="icon icon-book ddicon">\n            </span>\n            <span class="ddtext">Register for an account</span>\n        </li>\n      </a>\n      <a href="/login" class="nostylelink">\n        <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">\n            <span id="dd-icon-login" class="icon icon-book-open ddicon">\n            </span>\n            <span class="ddtext">Log in to your account</span>\n        </li>\n      </a>\n      ';
   } else {
     return '\n       <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">\n         <span id="dd-icon-user" class="icon icon-cog ddicon">\n         </span>\n         <span class="ddtext">' + user.username + '</span>\n       </li>\n       <span id="TopNav-dropdown-logout">logout</span>\n       ';
   }
@@ -6620,7 +6619,7 @@ function generateWriter(groups, usernames, to) {
 //generate the header for a post --> don't show replies if head
 function generatePostHeader(group, author, created) {
   //title for each of the posts, replies should be overflow-x
-  return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span data-type="author" class="Head-author">' + author + '</span>\n        -\n        <a data-type="group" class="Head-group">' + group + '</a>\n        -\n        <span data-type="timestamp" class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span data-type="hide" class="Head-rm">\n        <span data-type="hide" class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
+  return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <span data-type="author" class="Head-author">' + author + '</span>\n        -\n        <a data-type="group" class="Head-group">' + group + '</a>\n        -\n        <span data-type="timestamp" class="Head-created">' + generateTimestamp(created) + '</span>\n      </span>\n      <span class="Head-rm">\n        <span data-type="hide" class="icon-down-open-big"></span>\n      </span>\n    </div>\n  ';
 }
 
 //generate the header for a post --> don't show replies if head
@@ -7119,10 +7118,10 @@ var View = function () {
     key: '_togglePost',
     value: function _togglePost(e) {
       //flip icon
-      e.target.className = e.target.dataset.open ? 'icon-down-open-big' : 'icon-up-open-big';
+      e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
 
       //because it's not initialized in the dom --> switches off
-      e.target.dataset.open = e.target.dataset.open ? false : true;
+      e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
 
       //move up in the dom until we find the post
       var target = e.target;
@@ -7404,7 +7403,7 @@ var View = function () {
 
       var buildView = function () {
         var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-          var header, list, footer, desktopright, desktopleft;
+          var header, list, footer, groupInfo, popularInfo;
           return _regenerator2.default.wrap(function _callee3$(_context3) {
             while (1) {
               switch (_context3.prev = _context3.next) {
@@ -7425,20 +7424,20 @@ var View = function () {
                   //pagination controls
                   footer = '\n      <div class="Main-Footer">\n      ' + (_this4.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : '') + '\n      ' + (_this4.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : '') + '\n      </div>\n      ';
 
-                  //desktop view information
+                  //desktop view information about groups --> allows group navigation
 
-                  _context3.next = 9;
+                  groupInfo = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p id="Main-desktop-author" class="GroupAuthor-name">' + info.author + '</p>\n          </div>\n          <div class="GroupPage">\n            <p class="GroupPage-page">Page:</p>\n            <p class="GroupPage-num">' + _this4.page + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n          <div class="GroupNav">\n            <input id="GroupNav-input" placeholder="Go to group...">\n          </div>\n        </div>\n      ';
+
+                  //desktop view information --> popular posts and stuff like that
+
+                  _context3.next = 10;
                   return getpopularposts();
 
-                case 9:
+                case 10:
                   _context3.t2 = _context3.sent;
                   _context3.t3 = '\n        <div id="Main-desktop-group" class="desktop">\n          <div class="PopularList">\n            <span id="Main-desktop-title">\n              <span id="Main-desktop-title-text">Popular</span>\n            </span>\n            ' + _context3.t2;
-                  desktopright = _context3.t3 + '\n          </div>\n        </div>\n      ';
-                  desktopleft = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p id="Main-desktop-author" class="GroupAuthor-name">' + info.author + '</p>\n          </div>\n          <div class="GroupPage">\n            <p class="GroupPage-page">Page:</p>\n            <p class="GroupPage-num">' + _this4.page + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n          <div class="GroupNav">\n            <p></p>\n            <input id="GroupNav-input" placeholder="Go to group...">\n          </div>\n        </div>\n      ';
-
-                  //final template for section
-
-                  return _context3.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + desktopleft + '\n          ' + desktopright + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+                  popularInfo = _context3.t3 + '\n          </div>\n        </div>\n      ';
+                  return _context3.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + groupInfo + '\n          ' + popularInfo + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
 
                 case 14:
                 case 'end':
@@ -7519,7 +7518,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
   //first order of business, get user data and store it
   (function () {
     var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-      var usr;
+      var usr, usrjson;
       return _regenerator2.default.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -7530,41 +7529,38 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
             case 3:
               usr = _context.sent;
+              _context.next = 6;
+              return usr.json();
 
-              if (usr) {
-                _context.next = 6;
+            case 6:
+              usrjson = _context.sent;
+
+              if (usrjson) {
+                _context.next = 9;
                 break;
               }
 
               return _context.abrupt('return');
 
-            case 6:
-              _context.t0 = _store2.default;
-              _context.next = 9;
-              return usr.json();
-
             case 9:
-              _context.t1 = _context.sent;
 
-              _context.t0.addUser.call(_context.t0, _context.t1);
+              //else continue
+              _store2.default.addUser(usrjson);
 
-              _context.next = 16;
+              _context.next = 15;
               break;
 
-            case 13:
-              _context.prev = 13;
-              _context.t2 = _context['catch'](0);
+            case 12:
+              _context.prev = 12;
+              _context.t0 = _context['catch'](0);
+              return _context.abrupt('return');
 
-
-              //let ourselves know if there was an error getting the user
-              console.log(_context.t2);
-
-            case 16:
+            case 15:
             case 'end':
               return _context.stop();
           }
         }
-      }, _callee, this, [[0, 13]]);
+      }, _callee, this, [[0, 12]]);
     }));
 
     function user() {
@@ -8081,10 +8077,6 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
-
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
 var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
@@ -8115,7 +8107,7 @@ var View = function () {
 
   //pass in top groups and user -- with username, id, notifications
 
-  function View(thread, user) {
+  function View(thread, user, owned) {
     var _this = this;
 
     (0, _classCallCheck3.default)(this, View);
@@ -8150,6 +8142,9 @@ var View = function () {
       toggleBody: function toggleBody(e) {
         return _this._toggleBody(e);
       },
+      togglePost: function togglePost(e) {
+        return _this._togglePost(e);
+      },
       peek: function peek(e) {
         return _this._peek(e);
       },
@@ -8177,28 +8172,46 @@ var View = function () {
   }, {
     key: '_delete',
     value: function _delete(e) {
-      var content = e.target.innerHTML;
+      /*let content = e.target.innerHTML;
       if (content === 'delete') {
         this._cancelDelete();
-        e.target.innerHTML = "sure?";
+        e.target.innerHTML = "sure?"
         e.target.id = 'delete-pending';
         return;
       }
-      var thread = e.target.parentNode.dataset.thread;
-      var post = e.target.parentNode.dataset.post;
+      let thread = e.target.parentNode.dataset.thread;
+      let post = e.target.parentNode.dataset.post;
       console.log(thread);
-      var match = void 0;
-      var owned = (0, _keys2.default)(this.user.owned);
-      for (var i = 0; i < owned.length; i++) {
+      let match;
+      let owned = Object.keys(this.user.owned);
+      for (let i = 0; i < owned.length; i++) {
         if (post === owned[i]) {
           match = owned[i];
         }
       }
       console.log(match);
       if (match) this.deleteThread(thread, this.user.owned[match]);
+       //reload this page (but not refresh)
+      router.check();
+      */
+    }
+  }, {
+    key: '_togglePost',
+    value: function _togglePost(e) {
+      //flip icon
+      e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
 
-      //reload this page (but not refresh)
-      _router2.default.check();
+      //because it's not initialized in the dom --> switches off
+      e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
+
+      //move up in the dom until we find the post
+      var target = e.target;
+      while (target.dataset.type != 'post') {
+        target = target.parentNode;
+      }
+
+      //toggle post visibility
+      target.classList.toggle('Post-Hide');
     }
   }, {
     key: '_cancelDelete',
@@ -8214,36 +8227,6 @@ var View = function () {
     key: '_back',
     value: function _back() {
       _router2.default.back();
-    }
-  }, {
-    key: '_hidePost',
-    value: function _hidePost(e) {
-      e.target.className = 'icon-up-open-big';
-      var target = e.target.parentNode;
-      while (target.className != 'Post') {
-        //get post & remove the children we want
-        target = target.parentNode;
-      }
-      Array.prototype.forEach.call(target.childNodes, function (node) {
-        if (node.className === 'Body' || node.className === 'Content') {
-          node.style.display = 'none';
-        }
-      });
-    }
-  }, {
-    key: '_showPost',
-    value: function _showPost(e) {
-      e.target.className = 'icon-down-open-big';
-      var target = e.target.parentNode;
-      while (target.className != 'Post') {
-        target = target.parentNode;
-      }
-      //get post & show the children we want
-      Array.prototype.forEach.call(target.childNodes, function (node) {
-        if (node.className === 'Body' || node.className === 'Content') {
-          node.style.display = 'block';
-        }
-      });
     }
   }, {
     key: '_prevPage',
@@ -8454,4 +8437,4 @@ var View = function () {
 
 exports.default = View;
 
-},{"../core/core.js":111,"../core/helpers.js":112,"../core/oembed.js":114,"../core/template.js":117,"../router/router.js":121,"babel-runtime/core-js/object/keys":4,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}]},{},[120]);
+},{"../core/core.js":111,"../core/helpers.js":112,"../core/oembed.js":114,"../core/template.js":117,"../router/router.js":121,"babel-runtime/core-js/promise":6,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/helpers/classCallCheck":10,"babel-runtime/helpers/createClass":11,"babel-runtime/regenerator":13}]},{},[120]);

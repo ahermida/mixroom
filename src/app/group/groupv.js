@@ -88,10 +88,10 @@ export default class View {
 
   _togglePost(e) {
     //flip icon
-    e.target.className = e.target.dataset.open ?  'icon-down-open-big' : 'icon-up-open-big';
+    e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
 
     //because it's not initialized in the dom --> switches off
-    e.target.dataset.open = e.target.dataset.open ? false : true;
+    e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
 
     //move up in the dom until we find the post
     let target = e.target;
@@ -304,19 +304,8 @@ export default class View {
       </div>
       `;
 
-      //desktop view information
-      const desktopright = `
-        <div id="Main-desktop-group" class="desktop">
-          <div class="PopularList">
-            <span id="Main-desktop-title">
-              <span id="Main-desktop-title-text">Popular</span>
-            </span>
-            ${await getpopularposts()}
-          </div>
-        </div>
-      `;
-
-      const desktopleft = `
+      //desktop view information about groups --> allows group navigation
+      const groupInfo = `
         <div id="Main-desktop-info" class="desktop">
           <div class="GroupName">${info.name}</div>
           <div class="GroupAuthor">
@@ -332,8 +321,19 @@ export default class View {
             <p>${generateTimestamp(info.created)}</p>
           </div>
           <div class="GroupNav">
-            <p></p>
             <input id="GroupNav-input" placeholder="Go to group...">
+          </div>
+        </div>
+      `;
+
+      //desktop view information --> popular posts and stuff like that
+      const popularInfo = `
+        <div id="Main-desktop-group" class="desktop">
+          <div class="PopularList">
+            <span id="Main-desktop-title">
+              <span id="Main-desktop-title-text">Popular</span>
+            </span>
+            ${await getpopularposts()}
           </div>
         </div>
       `;
@@ -342,8 +342,8 @@ export default class View {
       return `
         <div id="Main-container">
           ${header}
-          ${desktopleft}
-          ${desktopright}
+          ${groupInfo}
+          ${popularInfo}
           ${list}
           ${footer}
         </div>

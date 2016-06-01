@@ -17,15 +17,18 @@ import parser from './core/parser.js';
       let usr = await getUser();
 
       //in the likely case we're not logged in & have no token, return
-      if (!usr) return;
+      let usrjson = await usr.json();
+
+      //if getting the user fails, return
+      if (!usrjson) return;
 
       //else continue
-      store.addUser(await usr.json());
+      store.addUser(usrjson);
 
     } catch (err) {
 
-      //let ourselves know if there was an error getting the user
-      console.log(err);
+      //let ourselves know if there was an error getting the user --> this happens when user doesn't exist
+      return;
     }
   })();
 

@@ -30,7 +30,8 @@ img {
   padding: 5px 10px; }
 
 .Head-author {
-  color: #3b5998; }
+  color: #3b5998;
+  cursor: pointer; }
 
 .Head-group {
   color: #6879FF; }

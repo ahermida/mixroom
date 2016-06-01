@@ -135,7 +135,7 @@ const oembed = async (url) => {
       let jresp = JSON.parse(resp.embed);
 
       //sometimes the oembed just sends a link to an image
-      return jresp.html || `<a class="Content-link" href="${url}"><img src="${jresp.url}"></img></a>`;
+      return jresp.html || `<a class="Content-link" href="${url}"><img class="Content-frame" src="${jresp.url}"></img></a>`;
     } catch (err) {
       console.log(err);
     }

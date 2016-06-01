@@ -15,16 +15,21 @@ import parser from './parser';
 function getUserMenu(user){
   if (user.anonymous) {
     return `
-      <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">
-        <span id="dd-icon-signup" class="icon icon-book ddicon">
-        </span>
-        <span class="ddtext">Signup for an account</span>
-      </li>
-      <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">
-        <span id="dd-icon-login" class="icon icon-book-open ddicon">
-        </span>
-        <span class="ddtext">Log in to your account</span>
-      </li>`;
+      <a href="/register" class="nostylelink">
+        <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">
+            <span id="dd-icon-signup" class="icon icon-book ddicon">
+            </span>
+            <span class="ddtext">Register for an account</span>
+        </li>
+      </a>
+      <a href="/login" class="nostylelink">
+        <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">
+            <span id="dd-icon-login" class="icon icon-book-open ddicon">
+            </span>
+            <span class="ddtext">Log in to your account</span>
+        </li>
+      </a>
+      `;
    } else {
      return`
        <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">
@@ -256,7 +261,7 @@ function generatePostHeader(group, author, created) {
         -
         <span data-type="timestamp" class="Head-created">${generateTimestamp(created)}</span>
       </span>
-      <span data-type="hide" class="Head-rm">
+      <span class="Head-rm">
         <span data-type="hide" class="icon-down-open-big"></span>
       </span>
     </div>

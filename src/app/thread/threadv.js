@@ -11,7 +11,7 @@ import router from '../router/router.js';
 export default class View {
 
    //pass in top groups and user -- with username, id, notifications
- 	constructor(thread, user) {
+ 	constructor(thread, user, owned) {
 
     //set group
     this.thread = thread;
@@ -21,15 +21,16 @@ export default class View {
 
      //setup commands for view actions
  		this.viewCommands = {
-      reply: (e) => this._reply(e),
-      group: (e) => this._goToGroup(e),
-      user: (e) => this._goToUser(e),
-      hidePost: (e) => this._hidePost(e),
-      showPost: (e) => this._showPost(e),
-      report: (e) => this._reportPost(e),
-      toggleBody: (e) => this._toggleBody(e),
-      peek: (e) => this._peek(e),
-      delete: (e) => this._delete(e)
+      reply: e => this._reply(e),
+      group: e => this._goToGroup(e),
+      user: e => this._goToUser(e),
+      hidePost: e => this._hidePost(e),
+      showPost: e => this._showPost(e),
+      report: e => this._reportPost(e),
+      toggleBody: e => this._toggleBody(e),
+      togglePost: e => this._togglePost(e),
+      peek: e => this._peek(e),
+      delete: e => this._delete(e)
  		};
  	}
 
@@ -46,7 +47,7 @@ export default class View {
   }
 
   _delete(e) {
-    let content = e.target.innerHTML;
+    /*let content = e.target.innerHTML;
     if (content === 'delete') {
       this._cancelDelete();
       e.target.innerHTML = "sure?"
@@ -68,6 +69,24 @@ export default class View {
 
     //reload this page (but not refresh)
     router.check();
+    */
+  }
+
+  _togglePost(e) {
+    //flip icon
+    e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
+
+    //because it's not initialized in the dom --> switches off
+    e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
+
+    //move up in the dom until we find the post
+    let target = e.target;
+    while (target.dataset.type != 'post') {
+      target = target.parentNode;
+    }
+
+    //toggle post visibility
+    target.classList.toggle('Post-Hide');
   }
 
   _cancelDelete() {
@@ -81,34 +100,6 @@ export default class View {
 
   _back() {
     router.back();
-  }
-
-  _hidePost(e) {
-    e.target.className = 'icon-up-open-big';
-    let target = e.target.parentNode;
-    while(target.className != 'Post') {
-      //get post & remove the children we want
-      target = target.parentNode;
-    }
-    Array.prototype.forEach.call(target.childNodes, node => {
-      if (node.className === 'Body' || node.className === 'Content') {
-        node.style.display = 'none';
-      }
-    });
-  }
-
-  _showPost(e) {
-    e.target.className = 'icon-down-open-big';
-    let target = e.target.parentNode;
-    while(target.className != 'Post') {
-      target = target.parentNode;
-    }
-    //get post & show the children we want
-    Array.prototype.forEach.call(target.childNodes, node => {
-      if (node.className === 'Body' || node.className === 'Content') {
-        node.style.display = 'block';
-      }
-    });
   }
 
   _prevPage(e) {

@@ -25,6 +25,7 @@ select {
     -moz-appearance: none;
     text-indent: 1px;
     text-overflow: '';
+    cursor: pointer;
 }
 
 
@@ -83,8 +84,7 @@ body, figure {
 }
 
 .TopNav {
-    background-image: linear-gradient(to right,rgba(255,255,255,0) 0,#fff 15%);
-    background-color: #FCFCFB;
+    background-color: #FFF;
     height: 48px;
     position: fixed;
     width: 100%;
@@ -117,6 +117,10 @@ body, figure {
 
 .hide {
   display:none;
+}
+
+.hidden {
+  display: hidden;
 }
 
 .menu-active {
@@ -366,13 +370,17 @@ body, figure {
 #TopNav-menu-bg {
   background-color: rgba(0, 0, 0, 0.4);
   position: absolute;
-  width: 100%;
-  z-index: 11;
-  padding-bottom: calc(100% + 50px);
   top: 48px;
+  height: calc(100vh - 48px);
   left: 0;
   font-size: 15px;
-  overflow-y: hidden;
+  overflow-y: scroll;
+  width: 100%;
+}
+
+#TopNav-menu-list {
+  overflow-y: scroll;
+  max-height: 5000px;
 }
 
 .ddtop {

@@ -14,6 +14,7 @@ const auto = Object.keys(groups);
 //this is config
 export default {
   api: `${window.location.host}/api`,
+  ws: `${window.location.host}/ws`,
   isNode: typeof window === 'undefined',
   groups: {
     main: '/random/',

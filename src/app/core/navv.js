@@ -146,7 +146,7 @@ export default class View {
 	//Exposes the writer and adds target post
 	openWriterRef(id) {
 		//make sure writer is open
-		if (!this._openWriter || this._hiddenWriter) this._showWriter();
+		if (!this._openWriter) this._showWriter();
 
 		//now since it's open, we append the content (presumably an id)
 		this.$body.value += this.$body.value ? `\n(post: ${id})\n` : `(post: ${id})\n`;
@@ -317,7 +317,7 @@ export default class View {
 			$on(this.$savebutton, 'click', handleHide.bind(this), false);
       $on(this.$fileSubmit, 'change', handleContent.bind(this), false);
       $on(this.$submit, 'click', handleSend.bind(this), false);
-			$on(this.$writermount, 'touchmove', e => e.preventDefault(), false);
+			//$on(this.$writermount, 'touchmove', e => e.preventDefault(), false);
 			$on(this.$writerhead, 'click', onTitleClick.bind(this), false);
 
     } else {
@@ -392,7 +392,7 @@ export default class View {
 		const toggleMore = () => {
 			$secret.classList.contains('hide') ? $down.className = "icon icon-up-open-big" : $down.className = "icon icon-down-open-big";
 			$secret.classList.toggle('hide');
-		}
+		};
 
     //handle dropdown click
     const handleDropdown = (e) => {
@@ -436,7 +436,10 @@ export default class View {
     //bind events here
     $on($dropdown, 'click', handleDropdown, false);
     $on($dropdownBg, 'click', this._removeMenu.bind(this), false);
-		$on($dropdownBg, 'touchmove', e => e.preventDefault(), false);
+		$on($dropdownBg, 'scroll', e => {
+			if (e.target.classList.contains('dropdown'))
+			e.stopPropagation();
+		}, false);
 
 		//set reference to menubg and set menu to open
 		this.$menubg = menuMount;

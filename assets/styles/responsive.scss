@@ -12,6 +12,8 @@
   iframe {
     width: calc(75vh * 1.77) !important;
     height: 75vh !important;
+    display: flex;
+    margin: auto;
   }
   .Content-frame {
     text-align: center;
@@ -93,6 +95,7 @@
     color: #A3D4FF;
     cursor: pointer;
   }
+
   a{
     cursor: pointer;
   }
@@ -286,7 +289,7 @@
   }
 
   .Content-wrapper {
-    max-height: 75vh;
+    max-height: 100vh;
     overflow: hidden;
   }
 
@@ -295,20 +298,25 @@
     flex-flow: column;
     align-items: center;
     justify-content: center;
-    max-height: 75vh;
+  }
+
+  .Thread .Content-frame {
+    //max-height: 100vh;
+    height: auto !important;
+    //width: auto !important;
   }
 
   .Content-frame a {
-    max-height: 75vh;
+    //max-height: 100vh;
   }
 
   //set look of image to not 100% automatically
   .Thread img {
-    width: auto !important;
+    width: 100% !important;
     height: auto !important;
-    min-height: 90vh;
+    //min-height: 90vh;
     max-width: calc(75vh * 1.77) !important;
-    max-height: 75vh !important;
+    //max-height: 75vh !important;
   }
 
   /* show normal view in stream */
@@ -498,6 +506,15 @@
     position: absolute;
     left: calc(340px + 38%);
   }
+
+  .TopNav-right {
+    margin-right: 5%;
+  }
+
+  #TopNav-menu-list {
+    right: 5%;
+  }
+
 }
 
 //make media visible for large screens
@@ -509,5 +526,13 @@
     background-color: #FFFFFF;
     position: absolute;
     left: calc(325px + 35%);
+  }
+
+  #TopNav-menu-list {
+    right: 14.5%;
+  }
+
+  .TopNav-right {
+    margin-right: 14.5%;
   }
 }
