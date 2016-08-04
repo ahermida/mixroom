@@ -202,7 +202,7 @@ export default class View {
 
   //go to user
   _goToUser(username) {
-    if (username !== 'Anonymous') router.navigate('/user/${username}');
+    if (username !== 'Anonymous') router.navigate(`/user/${username}`);
   }
 
   //save post

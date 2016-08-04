@@ -43,6 +43,13 @@
 
 //desktop views
 @media only screen and (min-width : 900px) {
+
+  #svg-logo {
+    margin-left: 18px;
+    margin-top: 1.2px;
+    margin-right: 0px;
+  }
+
   .TopNav-menu-dropdown-row, .Head-author, .GroupAuthor-name {
     cursor: pointer;
   }
@@ -300,14 +307,14 @@
     justify-content: center;
   }
 
+  .Thread .Content-wrapper {
+    max-height: 100% !important;
+  }
+
   .Thread .Content-frame {
     //max-height: 100vh;
     height: auto !important;
     //width: auto !important;
-  }
-
-  .Content-frame a {
-    //max-height: 100vh;
   }
 
   //set look of image to not 100% automatically
@@ -317,6 +324,10 @@
     //min-height: 90vh;
     max-width: calc(75vh * 1.77) !important;
     //max-height: 75vh !important;
+  }
+
+  .Content-frame a {
+    //max-height: 100vh;
   }
 
   /* show normal view in stream */
@@ -369,8 +380,8 @@
   }
 
   .Thread {
-    margin: auto !important;
-    min-width: 800px !important;
+  //  margin: auto !important;
+    min-width: 620px !important;
   }
 
   .List {

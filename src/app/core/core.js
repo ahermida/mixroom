@@ -9,6 +9,8 @@ import fastclick from 'fastclick';
 import fetch from 'isomorphic-fetch';
 import {validate} from './oembed.js';
 import config from '../config.js';
+import socket from '../socket.js';
+import router from '../router/router.js';
 
 /**
   AJAX Handlers passed in as view actions
@@ -95,6 +97,10 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
       //if something went wrong, let ourselves know
       console.log(e);
     }
+
+    //reload page if were loading from group view
+    router.check();
+
   } else {
     //is thread
 
@@ -123,6 +129,17 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
 
       //clear upload in store
       store.upload = false;
+
+      socket.send(JSON.stringify({
+        thread: thread,
+        body: body,
+        author: identity,
+        content: cont,
+        responseTo: responseTo,
+        replies: [],
+        anonymous: anon,
+        contentType: contentType
+      }));
 
     } catch(e) {
 

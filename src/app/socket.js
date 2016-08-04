@@ -1,36 +1,77 @@
 /**
  *  Manages websocket connections
  */
-import config from './socket.js';
+import config from './config.js';
 
 //location of ws enpoint
 const ws = config.ws;
 
-const socket = (() => {
+//grab the connection
+const connection = new WebSocket(ws);
 
-  //grab the connection
-  const connection = new WebSocket(ws);
+connection.onopen = function (event) {
+  console.log('Socket opened!');
+};
 
-  //handle incoming messages
-  connection.onmessage = (event) => {
+//handle incoming messages
+connection.onmessage = (event) => {
+  //get message
+  let message = JSON.parse(event.data);
 
-    //get message
-    let message = JSON.parse(event.data);
+  //separate by kind
+  switch (message.kind) {
 
-    
-  };
+    //for now the only message we're sending is that to add a message
+    case 'thread': console.log(message);
+    break;
+  }
+};
 
-  //return the interface
-  const manager = {
-    connection: connection,
-    joinRoom: room => ,
-    leaveRoom: () => ,
-    send: message => ,
-    edit: (newMessage, id) => ,
-    delete: id => ,
-    receive: message =>
-  };
+//simple helper function to wait for the condition and try again each interval
+function waitFor(check, interval, func, args) {
+  if (check()) {
+    func.apply(this, args);
+  } else {
+    window.setTimeout(() => waitFor(check, interval, func, args), interval);
+  }
+}
 
-  return manager;
+//little interface to deal with websockets socket
+const socket = {
+  inRoom: false,
+  connection: connection,
+  joinRoom: room => {
+    if (socket.inRoom) {
+      socket.leaveRoom();
+    }
+    //make sure we're connected befor we start sending stuff
+    waitFor(() => connection.readyState === 1, 100, () => {
+      connection.send(JSON.stringify({
+        kind: 'join',
+        thread: room
+      }));
+      console.log('sent');
+    }, [room]);
+    socket.inRoom = true;
+  },
+  leaveRoom: () => {
+    socket.inRoom = false;
+    connection.send(JSON.stringify({
+      kind: 'leave'
+    }));
+  },
+  send: message => {
+    connection.send(JSON.stringify({
+      kind: 'thread',
+      body: message
+    }));
+  },
+  edit: (newMessage, id) => console.log('edit'),
+  delete: id => console.log('delete'),
+  receive: message => console.log('recieve')
+};
 
-})();
+window.socket = socket;
+
+
+export default socket;

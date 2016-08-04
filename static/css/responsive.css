@@ -31,6 +31,10 @@
     width: 90%; } }
 
 @media only screen and (min-width: 900px) {
+  #svg-logo {
+    margin-left: 18px;
+    margin-top: 1.2px;
+    margin-right: 0px; }
   .TopNav-menu-dropdown-row, .Head-author, .GroupAuthor-name {
     cursor: pointer; }
   .TopNav-menu-dropdown-row:hover {
@@ -196,6 +200,8 @@
     flex-flow: column;
     align-items: center;
     justify-content: center; }
+  .Thread .Content-wrapper {
+    max-height: 100% !important; }
   .Thread .Content-frame {
     height: auto !important; }
   .Thread img {
@@ -232,8 +238,7 @@
   .HeadPost, .Post, #Main-desktop-group {
     border: 1px solid #F9EBEB; }
   .Thread {
-    margin: auto !important;
-    min-width: 800px !important; }
+    min-width: 620px !important; }
   .List {
     min-height: calc(100vh - 90px);
     max-width: 500px;

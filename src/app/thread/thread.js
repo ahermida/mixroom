@@ -6,20 +6,21 @@ import {getThread} from '../ajax/threads.js';
 import appstore from '../core/store.js';
 import store from './store.js';
 import view from './threadv.js';
+import socket from '../socket.js';
 
 //init for group controller (or whatever you'd like to call it)
 export default async function start(threadid) {
   try {
     let res = await getThread(threadid);
     let thread = await res.json();
-    
+
     let user = {
       owned: appstore.owned,
       user: appstore.user
     }
 
     //in thread actions
-    const thrd = new view(thread, user);
+    const thrd = new view(thread, user, socket);
     thrd.render();
     return thrd;
 

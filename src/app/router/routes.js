@@ -13,6 +13,7 @@ import {getAuth} from '../ajax/groups.js';
 import config from '../config.js';
 import grp from '../group/group.js';
 import thrd from '../thread/thread.js';
+import socket from '../socket.js';
 
 //group gotten when hitting '/' route
 const main = config.groups.main;
@@ -22,6 +23,9 @@ export default function setup(router) {
 
   //middleware for routing
   router.onNavigate((path) => {
+    
+    //leave real time connection in thread
+    if (socket.inRoom) socket.leaveRoom();
 
     //clear view on route change --> maybe put an animation
     document.getElementById('main').innerHTML = "";
@@ -50,6 +54,7 @@ export default function setup(router) {
 
   //route for pagination on groups '/:group/:page'
   router.add(/(.*)\/t\/(.*)/, async (group, thread) => {
+    socket.joinRoom(thread);
     group = group ? group : '/';
     let res = await getAuth(`/${group}/`);
     let resp = await res.json();

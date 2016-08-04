@@ -278,9 +278,6 @@ export default class View {
 
 				//remove writer from view entirely
 				this._removeWriter();
-
-				//reload the location --> feels more like it's doing something IMO
-				router.check();
 			}
 
 			//handle hiding the writer
@@ -438,7 +435,7 @@ export default class View {
     $on($dropdownBg, 'click', this._removeMenu.bind(this), false);
 		$on($dropdownBg, 'scroll', e => {
 			if (e.target.classList.contains('dropdown'))
-			e.stopPropagation();
+				e.stopPropagation();
 		}, false);
 
 		//set reference to menubg and set menu to open

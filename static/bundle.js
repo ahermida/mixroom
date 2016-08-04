@@ -4850,7 +4850,7 @@ var auto = (0, _keys2.default)(groups);
 //this is config
 exports.default = {
   api: window.location.host + '/api',
-  ws: window.location.host + '/ws',
+  ws: 'ws:' + window.location.host + '/ws',
   isNode: typeof window === 'undefined',
   groups: {
     main: '/random/',
@@ -4868,6 +4868,10 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.nav = undefined;
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -4987,7 +4991,7 @@ var handleSubmit = function () {
             isgrp = _store2.default.groups.includes(to);
 
             if (!isgrp) {
-              _context2.next = 22;
+              _context2.next = 23;
               break;
             }
 
@@ -5025,10 +5029,14 @@ var handleSubmit = function () {
             console.log(_context2.t0);
 
           case 20:
-            _context2.next = 40;
+
+            //reload page if were loading from group view
+            _router2.default.check();
+
+            _context2.next = 42;
             break;
 
-          case 22:
+          case 23:
             //is thread
 
             //get path (thread id)
@@ -5046,16 +5054,16 @@ var handleSubmit = function () {
 
             //try to send post to thread
 
-            _context2.prev = 26;
-            _context2.next = 29;
+            _context2.prev = 27;
+            _context2.next = 30;
             return (0, _threads.post)(thread, identity, body, cont, responseTo, anon, contentType);
 
-          case 29:
+          case 30:
             _res = _context2.sent;
-            _context2.next = 32;
+            _context2.next = 33;
             return _res.json();
 
-          case 32:
+          case 33:
             _resp = _context2.sent;
 
 
@@ -5068,23 +5076,34 @@ var handleSubmit = function () {
             //clear upload in store
             _store2.default.upload = false;
 
-            _context2.next = 40;
+            _socket2.default.send((0, _stringify2.default)({
+              thread: thread,
+              body: body,
+              author: identity,
+              content: cont,
+              responseTo: responseTo,
+              replies: [],
+              anonymous: anon,
+              contentType: contentType
+            }));
+
+            _context2.next = 42;
             break;
 
-          case 37:
-            _context2.prev = 37;
-            _context2.t1 = _context2['catch'](26);
+          case 39:
+            _context2.prev = 39;
+            _context2.t1 = _context2['catch'](27);
 
 
             //if something went wrong in trying to post it, let ourselves know
             console.log(_context2.t1);
 
-          case 40:
+          case 42:
           case 'end':
             return _context2.stop();
         }
       }
-    }, _callee2, this, [[6, 17], [26, 37]]);
+    }, _callee2, this, [[6, 17], [27, 39]]);
   }));
   return function handleSubmit(_x2, _x3, _x4, _x5) {
     return ref.apply(this, arguments);
@@ -5121,6 +5140,14 @@ var _config = require('../config.js');
 
 var _config2 = _interopRequireDefault(_config);
 
+var _socket = require('../socket.js');
+
+var _socket2 = _interopRequireDefault(_socket);
+
+var _router = require('../router/router.js');
+
+var _router2 = _interopRequireDefault(_router);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var options = {
@@ -5155,7 +5182,7 @@ function start() {
   nav.bind();
 }
 
-},{"../ajax/threads.js":108,"../config.js":110,"./navv.js":113,"./oembed.js":114,"./store.js":116,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],112:[function(require,module,exports){
+},{"../ajax/threads.js":108,"../config.js":110,"../router/router.js":121,"../socket.js":123,"./navv.js":113,"./oembed.js":114,"./store.js":116,"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13,"fastclick":102,"isomorphic-fetch":103}],112:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -5575,9 +5602,6 @@ var View = function () {
 
 										//remove writer from view entirely
 										this._removeWriter();
-
-										//reload the location --> feels more like it's doing something IMO
-										_router2.default.check();
 								};
 
 								//handle hiding the writer
@@ -7257,7 +7281,7 @@ var View = function () {
   }, {
     key: '_goToUser',
     value: function _goToUser(username) {
-      if (username !== 'Anonymous') _router2.default.navigate('/user/${username}');
+      if (username !== 'Anonymous') _router2.default.navigate('/user/' + username);
     }
 
     //save post
@@ -7738,9 +7762,16 @@ var _thread = require('../thread/thread.js');
 
 var _thread2 = _interopRequireDefault(_thread);
 
+var _socket = require('../socket.js');
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //group gotten when hitting '/' route
+var main = _config2.default.groups.main;
+
+//this is where views are set up
 /**
   Router init function (sets up routes)
 
@@ -7752,14 +7783,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
           /:group/t/:thread --> thread view for group
 */
 
-var main = _config2.default.groups.main;
-
-//this is where views are set up
 function setup(router) {
   var _this = this;
 
   //middleware for routing
   router.onNavigate(function (path) {
+
+    //leave real time connection in thread
+    if (_socket2.default.inRoom) _socket2.default.leaveRoom();
 
     //clear view on route change --> maybe put an animation
     document.getElementById('main').innerHTML = "";
@@ -7815,30 +7846,31 @@ function setup(router) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
+              _socket2.default.joinRoom(thread);
               group = group ? group : '/';
-              _context2.next = 3;
+              _context2.next = 4;
               return (0, _groups.getAuth)('/' + group + '/');
 
-            case 3:
+            case 4:
               res = _context2.sent;
-              _context2.next = 6;
+              _context2.next = 7;
               return res.json();
 
-            case 6:
+            case 7:
               resp = _context2.sent;
 
               if (!(!resp.allowed && group != "/404/")) {
-                _context2.next = 9;
+                _context2.next = 10;
                 break;
               }
 
               return _context2.abrupt('return', router.navigate('/404'));
 
-            case 9:
+            case 10:
               //setup thread view
               (0, _thread2.default)(thread);
 
-            case 10:
+            case 11:
             case 'end':
               return _context2.stop();
           }
@@ -7938,7 +7970,110 @@ function setup(router) {
   }());
 }
 
-},{"../ajax/groups.js":107,"../config.js":110,"../group/group.js":118,"../thread/thread.js":124,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
+},{"../ajax/groups.js":107,"../config.js":110,"../group/group.js":118,"../socket.js":123,"../thread/thread.js":125,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],123:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _config = require('./config.js');
+
+var _config2 = _interopRequireDefault(_config);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+//location of ws enpoint
+var ws = _config2.default.ws;
+
+//grab the connection
+/**
+ *  Manages websocket connections
+ */
+var connection = new WebSocket(ws);
+
+connection.onopen = function (event) {
+  console.log('Socket opened!');
+};
+
+//handle incoming messages
+connection.onmessage = function (event) {
+  //get message
+  var message = JSON.parse(event.data);
+
+  //separate by kind
+  switch (message.kind) {
+
+    //for now the only message we're sending is that to add a message
+    case 'thread':
+      console.log(message);
+      break;
+  }
+};
+
+//simple helper function to wait for the condition and try again each interval
+function waitFor(check, interval, func, args) {
+  if (check()) {
+    func.apply(this, args);
+  } else {
+    window.setTimeout(function () {
+      return waitFor(check, interval, func, args);
+    }, interval);
+  }
+}
+
+//little interface to deal with websockets socket
+var socket = {
+  inRoom: false,
+  connection: connection,
+  joinRoom: function joinRoom(room) {
+    if (socket.inRoom) {
+      socket.leaveRoom();
+    }
+    //make sure we're connected befor we start sending stuff
+    waitFor(function () {
+      return connection.readyState === 1;
+    }, 100, function () {
+      connection.send((0, _stringify2.default)({
+        kind: 'join',
+        thread: room
+      }));
+      console.log('sent');
+    }, [room]);
+    socket.inRoom = true;
+  },
+  leaveRoom: function leaveRoom() {
+    socket.inRoom = false;
+    connection.send((0, _stringify2.default)({
+      kind: 'leave'
+    }));
+  },
+  send: function send(message) {
+    connection.send((0, _stringify2.default)({
+      kind: 'thread',
+      body: message
+    }));
+  },
+  edit: function edit(newMessage, id) {
+    return console.log('edit');
+  },
+  delete: function _delete(id) {
+    return console.log('delete');
+  },
+  receive: function receive(message) {
+    return console.log('recieve');
+  }
+};
+
+window.socket = socket;
+
+exports.default = socket;
+
+},{"./config.js":110,"babel-runtime/core-js/json/stringify":1}],124:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -7971,7 +8106,7 @@ exports.default = {
 
 };
 
-},{"../config.js":110}],124:[function(require,module,exports){
+},{"../config.js":110}],125:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8000,12 +8135,13 @@ var _threadv = require('./threadv.js');
 
 var _threadv2 = _interopRequireDefault(_threadv);
 
+var _socket = require('../socket.js');
+
+var _socket2 = _interopRequireDefault(_socket);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //init for group controller (or whatever you'd like to call it)
-/**
- * group.js is a controller for group (kinda)
- */
 
 exports.default = function () {
   var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(threadid) {
@@ -8032,7 +8168,7 @@ exports.default = function () {
 
             //in thread actions
 
-            thrd = new _threadv2.default(thread, user);
+            thrd = new _threadv2.default(thread, user, _socket2.default);
 
             thrd.render();
             return _context.abrupt('return', thrd);
@@ -8056,9 +8192,11 @@ exports.default = function () {
   }
 
   return start;
-}();
+}(); /**
+      * group.js is a controller for group (kinda)
+      */
 
-},{"../ajax/threads.js":108,"../core/store.js":116,"./store.js":123,"./threadv.js":125,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],125:[function(require,module,exports){
+},{"../ajax/threads.js":108,"../core/store.js":116,"../socket.js":123,"./store.js":124,"./threadv.js":126,"babel-runtime/helpers/asyncToGenerator":9,"babel-runtime/regenerator":13}],126:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -8107,7 +8245,7 @@ var View = function () {
 
   //pass in top groups and user -- with username, id, notifications
 
-  function View(thread, user, owned) {
+  function View(thread, user, socket) {
     var _this = this;
 
     (0, _classCallCheck3.default)(this, View);
@@ -8313,10 +8451,10 @@ var View = function () {
   }, {
     key: '_goToUser',
     value: function _goToUser(e) {
-      if (e.target.textContent !== 'Anonymous') _router2.default.navigate('/user/${e.target.textContent}');
+      if (e.target.textContent !== 'Anonymous') _router2.default.navigate('/user/' + e.target.textContent);
     }
 
-    //save post
+    //save post -- does nothing yet
 
   }, {
     key: '_savePost',
@@ -8324,7 +8462,7 @@ var View = function () {
       e.target.style.color = e.target.style.color === '#6879FF' ? '#6879FF' : '#3b5998';
     }
 
-    //report post
+    //report post -- does nothing yet
 
   }, {
     key: '_reportPost',
@@ -8416,6 +8554,45 @@ var View = function () {
       return buildView();
     }
 
+    //add post to view
+
+  }, {
+    key: 'addPost',
+    value: function addPost(post) {
+      var _this3 = this;
+
+      console.log(post);
+      console.log(post.replies.length);
+      var generateAddPost = function () {
+        var ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+          var data;
+          return _regenerator2.default.wrap(function _callee3$(_context3) {
+            while (1) {
+              switch (_context3.prev = _context3.next) {
+                case 0:
+                  _context3.next = 2;
+                  return (0, _template.generatePost)(_this3.thread, post, _this3.user);
+
+                case 2:
+                  data = _context3.sent;
+
+                  console.log(data);
+                  return _context3.abrupt('return', data);
+
+                case 5:
+                case 'end':
+                  return _context3.stop();
+              }
+            }
+          }, _callee3, _this3);
+        }));
+        return function generateAddPost() {
+          return ref.apply(this, arguments);
+        };
+      }();
+      generateAddPost();
+    }
+
     //bake html into view
 
   }, {
@@ -8427,6 +8604,9 @@ var View = function () {
         (0, _helpers.$id)('main').innerHTML = tmp;
         that.bind();
       });
+      this.addPost();
+      window.addPost = this.addPost;
+      socket.onMessage = this.addPost.bind(this);
     }
   }]);
   return View;

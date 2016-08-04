@@ -11,7 +11,7 @@ import router from '../router/router.js';
 export default class View {
 
    //pass in top groups and user -- with username, id, notifications
- 	constructor(thread, user, owned) {
+ 	constructor(thread, user, socket) {
 
     //set group
     this.thread = thread;
@@ -169,15 +169,15 @@ export default class View {
 
   //go to user
   _goToUser(e) {
-    if (e.target.textContent !== 'Anonymous') router.navigate('/user/${e.target.textContent}');
+    if (e.target.textContent !== 'Anonymous') router.navigate(`/user/${e.target.textContent}`);
   }
 
-  //save post
+  //save post -- does nothing yet
   _savePost(e) {
     e.target.style.color = e.target.style.color === '#6879FF' ? '#6879FF' : '#3b5998';
   }
 
-  //report post
+  //report post -- does nothing yet
   _reportPost(e) {
     if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
     e.target.innerHTML = 'report';
@@ -229,6 +229,18 @@ export default class View {
     return buildView();
   }
 
+  //add post to view
+  addPost(post) {
+    console.log(post);
+    console.log(post.replies.length);
+    let generateAddPost = async () => {
+      let data = await generatePost(this.thread, post, this.user);
+      console.log(data);
+      return data;
+    }
+    generateAddPost();
+  }
+
   //bake html into view
   render() {
     let that = this;
@@ -237,5 +249,8 @@ export default class View {
       $id('main').innerHTML = tmp;
       that.bind();
     });
+    this.addPost()
+    window.addPost = this.addPost;
+    socket.onMessage = this.addPost.bind(this);
   }
 }
