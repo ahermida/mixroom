@@ -161,6 +161,10 @@
   .Created {
     font-size: 16px;
     padding-left: 5px; }
+  .ThreadCreated {
+    font-size: 16px;
+    padding-left: 5px;
+    border-bottom: 1px solid #ccc; }
   #TopNav-writer-submit-label {
     top: 6.5px; }
   #Main-desktop-info {
@@ -174,7 +178,7 @@
     padding-left: 5px;
     font-size: 16px;
     border-bottom: solid 1px #ccc; }
-  .GroupName {
+  .GroupName, .ThreadNav {
     padding: 5px;
     font-size: 22px;
     display: flex;
@@ -189,7 +193,7 @@
     color: #3b5998; }
   .desktop {
     display: block; }
-  .PopularList, #Main-desktop-group {
+  .PopularList, #Main-desktop-group, #Main-desktop-thread {
     overflow: hidden;
     background-color: #F8F8F8; }
   .Content-wrapper {
@@ -235,7 +239,7 @@
     margin: 2.5px 0px; }
   .PopularPost .Head-right {
     float: right; }
-  .HeadPost, .Post, #Main-desktop-group {
+  .HeadPost, .Post, #Main-desktop-group, #Main-desktop-thread {
     border: 1px solid #F9EBEB; }
   .Thread {
     min-width: 620px !important; }
@@ -331,10 +335,11 @@
   #Main-desktop-group {
     top: 47px;
     width: calc(27% * 1.75 - 210px);
-    overflow-y: scroll;
     background-color: #FFFFFF;
     position: absolute;
     left: calc(340px + 38%); }
+  #Main-desktop-thread {
+    display: none; }
   .TopNav-right {
     margin-right: 5%; }
   #TopNav-menu-list {
@@ -344,10 +349,16 @@
   #Main-desktop-group {
     top: 47px;
     width: 350px;
-    overflow-y: scroll;
     background-color: #FFFFFF;
     position: absolute;
     left: calc(325px + 35%); }
+  #Main-desktop-thread {
+    top: 47px;
+    width: calc(27% * 1.75 - 220px);
+    background-color: #FFFFFF;
+    position: absolute;
+    left: calc(400px + 38%);
+    right: 38px; }
   #TopNav-menu-list {
     right: 14.5%; }
   .TopNav-right {

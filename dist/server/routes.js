@@ -417,10 +417,9 @@ routes.handleEmbed = _regenerator2.default.mark(function _callee10() {
           };
 
 
-          console.log(resp.statusCode);
           this.body = (0, _stringify2.default)(resp);
 
-        case 9:
+        case 8:
         case 'end':
           return _context10.stop();
       }

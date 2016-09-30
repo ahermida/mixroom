@@ -217,7 +217,8 @@ export async function generateHeadPost(thread, user) {
       <div data-type="content" class="Content">
       ${await generateContent(post.content, post.contentType)}
       </div>
-      <div data-type="body" class="Body">
+      <div data-type="body"
+       class="Body">
       ${generateBody(post)}
       </div>
       <footer class="Footer">
@@ -332,6 +333,17 @@ function generateDelete(postId, owned) {
   return '<span data-type="report" class="report space">report</span>';
 }
 
+function generateButtons(postId, owned) {
+  for (let i = 0; i < owned.length; i++) {
+    if (postId === owned[i]) {
+      return `<span data-type="delete" class="Footer-right-delete space">delete</span>
+              ${postId ? '<span data-type="reply" class="Footer-right-reply space">reply</span>' : ''}
+              `;
+    }
+  }
+  //<span data-type="edit" class="Footer-right-delete space">edit</span>
+  return `<span data-type="report" class="report space">report</span><span data-type="reply" class="Footer-right-reply space">reply</span>`;
+}
 
 //handle footer of thread post (head)
 async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) {
@@ -381,11 +393,11 @@ function generatePostFooter(post, owned) {
   <div class="Footer-content">
     <span class="Footer-left">
       <span class="icon-chat Footer-left-icon"></span>
-      <span class="Footer-left-size">${replies} replies</span>
+      <span class="Footer-left-size">${replies}</span>
+      replies
     </span>
     <span class="Footer-right" data-post="${postid}">
-      ${generateDelete(postid, owned)}
-      <span data-type="reply" class="Footer-right-reply space">reply</span>
+      ${generateButtons(postid, owned)}
     </span>
   </div>
   `;

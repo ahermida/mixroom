@@ -9,12 +9,12 @@ const ws = config.ws;
 //grab the connection
 const connection = new WebSocket(ws);
 
-connection.onopen = function (event) {
+connection.addEventListener('open', event => {
   console.log('Socket opened!');
-};
+});
 
 //handle incoming messages
-connection.onmessage = (event) => {
+connection.addEventListener('message', event => {
   //get message
   let message = JSON.parse(event.data);
 
@@ -22,10 +22,10 @@ connection.onmessage = (event) => {
   switch (message.kind) {
 
     //for now the only message we're sending is that to add a message
-    case 'thread': console.log(message);
+    case 'thread': ;
     break;
   }
-};
+});
 
 //simple helper function to wait for the condition and try again each interval
 function waitFor(check, interval, func, args) {

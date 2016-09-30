@@ -56,11 +56,11 @@ export default class View {
     //setup commands for view actions
 		this.viewCommands = {
 			openWriter: (to) => {
-				this._showWriter(this.groups.auto, user, this.handleUpload, this.handleSubmit, to);
+				this._showWriter(this.groups.auto, this.user, this.handleUpload, this.handleSubmit, to);
 			},
       showWriter: (e) => {
        	e.preventDefault();
-        this._showWriter(this.groups.auto, user, this.handleUpload, this.handleSubmit);
+        this._showWriter(this.groups.auto, this.user, this.handleUpload, this.handleSubmit);
       },
       removeWriter: (e) => {
 				this._unsetActiveBody();
@@ -145,8 +145,9 @@ export default class View {
 
 	//Exposes the writer and adds target post
 	openWriterRef(id) {
+		
 		//make sure writer is open
-		if (!this._openWriter) this._showWriter();
+		this.openWriter();
 
 		//now since it's open, we append the content (presumably an id)
 		this.$body.value += this.$body.value ? `\n(post: ${id})\n` : `(post: ${id})\n`;

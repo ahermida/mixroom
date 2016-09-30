@@ -91,7 +91,7 @@ body, figure {
     z-index: 11;
     -webkit-user-select: none;
     top: 0;
-    box-shadow: 0 0 5px 0 rgba(0,0,0,.2);
+    box-shadow: 0 0 5px 0 rgba(0,0,0,0.2);
 }
 
 .icon-down-open-big:before {
@@ -488,4 +488,23 @@ body, figure {
 .Body-code {
   font-family: monaco, roboto, sans-serif;
   background-color: #FCFCFB;
+}
+
+/* Animation */
+
+@-webkit-keyframes fadeIn {
+    0% {background-color: #ffffba;}
+    100% {background-color: white;}
+}
+
+@keyframes fadeIn {
+  0% {background-color: #ffffba;}
+  100% {background-color: white;}
+}
+
+.enter-animation {
+    -webkit-animation: fadeIn 1s;
+    animation: fadeIn 1s;
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
 }

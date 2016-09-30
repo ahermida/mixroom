@@ -1,9 +1,9 @@
 /**
  * groupv.js is the view for the group
  */
-import { $id, $on } from '../core/helpers.js';
+import { $id, $on, qs } from '../core/helpers.js';
 import oembed from '../core/oembed.js';
-import { generatePost } from '../core/template.js';
+import { generatePost, generateTimestamp } from '../core/template.js';
 import { nav } from '../core/core.js';
 import router from '../router/router.js';
 
@@ -11,10 +11,14 @@ import router from '../router/router.js';
 export default class View {
 
    //pass in top groups and user -- with username, id, notifications
- 	constructor(thread, user, socket) {
+ 	constructor(thread, user, actions, socket) {
 
-    //set group
+    //set thread
     this.thread = thread;
+
+    //unpack actions onto our class
+    this.removePost = actions.removePost;
+    this.editPost = actions.editPost;
 
     //set auth
     this.user = user;
@@ -30,8 +34,14 @@ export default class View {
       toggleBody: e => this._toggleBody(e),
       togglePost: e => this._togglePost(e),
       peek: e => this._peek(e),
-      delete: e => this._delete(e)
+      delete: e => this._delete(e),
+      scrollToPost: e => this._scrollToPost(e)
  		};
+
+    socket.connection.onmessage = event => {
+      let message = JSON.parse(event.data).body;
+      this.addPost(message);
+    }
  	}
 
   //binds events --> mostly delegated events up in here
@@ -41,22 +51,25 @@ export default class View {
     let $listing = $id('List');
     let $prev = $id('prevpage');
 
+    //might as well keep a reference to the listing because we'll be adding to it
+    this.$listing = $listing;
+
     //clicks on listing section
     $on($listing, 'click', this._onPostClick.bind(this), false);
+    $on($listing, 'mousemove', this._onPostHover.bind(this), false);
     $on($prev, 'click', this._back.bind(this), false);
   }
 
   _delete(e) {
-    /*let content = e.target.innerHTML;
+    let content = e.target.innerHTML;
     if (content === 'delete') {
       this._cancelDelete();
       e.target.innerHTML = "sure?"
       e.target.id = 'delete-pending';
       return;
     }
-    let thread = e.target.parentNode.dataset.thread;
+
     let post = e.target.parentNode.dataset.post;
-    console.log(thread);
     let match;
     let owned = Object.keys(this.user.owned);
     for (let i = 0; i < owned.length; i++) {
@@ -65,11 +78,10 @@ export default class View {
       }
     }
     console.log(match);
-    if (match) this.deleteThread(thread, this.user.owned[match]);
+    if (match) this.removePost(post, this.user.owned[match]);
 
     //reload this page (but not refresh)
     router.check();
-    */
   }
 
   _togglePost(e) {
@@ -87,6 +99,24 @@ export default class View {
 
     //toggle post visibility
     target.classList.toggle('Post-Hide');
+  }
+
+  _scrollToPost(e) {
+    let post = $id(e.target.dataset.post.trim());
+
+    //if we don't get the post, add a strikethrough
+    if (!post) {
+      e.target.style.setProperty("text-decoration", "line-through");
+      return;
+    }
+
+    //else scroll into post-view
+    post.scrollIntoView();
+    window.scrollBy(0, -48);
+    post.classList.remove('enter-animation');
+
+    //hacky way to reset animation, but a must if we don't want to have to clone the element and replace it
+    window.setTimeout(() => post.classList.add('enter-animation', 0));
   }
 
   _cancelDelete() {
@@ -116,7 +146,7 @@ export default class View {
     let target = e.target;
     switch (target.dataset.type) {
       case 'author':
-      this._goToUser(target.textContent);
+      this._goToUser(e);
       break;
       case 'group':
       this.viewCommands.group(e);
@@ -147,9 +177,86 @@ export default class View {
       //deletes thread
       this.viewCommands.delete(e);
       break;
+      case 'ref':
+      //scroll to id of post
+      this.viewCommands.scrollToPost(e);
       default:
       this._cancelDelete(e);
     }
+  }
+
+  _removePeek() {
+    let post = $id('peek-post');
+    if (post) {
+      post.parentNode.removeChild(post);
+    }
+  }
+
+  //handle post clicks
+  _onPostHover(e) {
+    let target = e.target;
+    switch (target.dataset.type) {
+      case 'body':
+      this._removePeek();
+      break;
+      case 'content':
+      this._removePeek();
+      break;
+      case 'ref':
+      this._peekIntoPost(e);
+      break;
+    }
+  }
+
+  //lets us look at a post on reference hover
+  _peekIntoPost(e) {
+    console.log('peek');
+
+    this._removePeek();
+    let post = $id(e.target.dataset.post.trim());
+
+    //if we don't get the post, add a strikethrough
+    if (!post) {
+    //  e.target.style.setProperty("text-decoration", "line-through");
+      return;
+    }
+
+    let newPost = post.cloneNode(true);
+
+    let dimensions = post.getBoundingClientRect();
+
+    //check if dom element is in view on Y axis
+    let isInView = dimensions.bottom > 42 &&
+        dimensions.top < (window.innerHeight || document.documentElement.clientHeight);
+
+    console.log(isInView);
+
+    if (isInView) {
+      post.style.backgroundColor = "#ffffba";
+      //handler to remove highlight from post on mouseout
+      let removeSpotlight = (e) => {
+        post.style.backgroundColor = "white";
+        e.target.removeEventListener('mouseout', removeSpotlight, false);
+      }
+
+      //add spotlight, add mouseout listener, on mouseout we remove the spotlight
+      $on(e.target, 'mouseout', removeSpotlight, false);
+      return;
+    }
+
+
+
+    newPost.id = 'peek-post';
+    newPost.className = 'peeking-post';
+
+    //grab target bounding rectangle
+    let targetDimensions = e.target.getBoundingClientRect();
+
+    //else lets grab the post and bring it here
+    newPost.style.left = `${targetDimensions.left + window.scrollX + 92}px`;
+    newPost.style.top = `${targetDimensions.top + window.scrollY - 36}px`;
+    newPost.style.backgroundColor = 'white';
+    this.$listing.appendChild(newPost);
   }
 
   //reply to post
@@ -215,11 +322,42 @@ export default class View {
        <a class="Main-Footer-btn" id="prevpage" href="javascript:;">back</a>
       </div>
       `;
+      console.log(this.thread);
+      //desktop view information about groups --> allows group navigation
+      const threadInfo = `
+        <div id="Main-desktop-info" class="desktop">
+          <div class="GroupAuthor">
+            <p class="GroupAuthor-title">Made by:</p>
+            <p id="Main-desktop-author" class="GroupAuthor-name">${this.thread.posts[0].author}</p>
+          </div>
+          <div class="ThreadCreated">
+            <p>Created:</p>
+            <p>${generateTimestamp(this.thread.created)}</p>
+          </div>
+          <div class="ThreadNav">
+            <a class="Main-Footer-btn" href="http://${location.host}${this.thread.group}">back</a>
+            <a class="Main-Footer-btn" href="http://${location.host}${this.thread.group}">next</a>
+          </div>
+        </div>
+      `;
+
+      //desktop view information --> popular posts and stuff like that
+      const threadRight = `
+        <div id="Main-desktop-thread" class="desktop">
+          <div class="PopularList">
+            <span id="Main-desktop-title">
+              <span id="Main-desktop-title-text">Popular</span>
+            </span>
+          </div>
+        </div>
+      `;
 
       //final template for section
       return `
         <div id="Main-container">
           ${header}
+          ${threadInfo}
+          ${threadRight}
           ${list}
           ${footer}
         </div>
@@ -231,14 +369,29 @@ export default class View {
 
   //add post to view
   addPost(post) {
-    console.log(post);
-    console.log(post.replies.length);
-    let generateAddPost = async () => {
-      let data = await generatePost(this.thread, post, this.user);
-      console.log(data);
-      return data;
-    }
-    generateAddPost();
+    //get the embedded json
+    let message = JSON.parse(post);
+
+    //generate post and add it
+    let genPostAddIt = async () => {
+      let div = document.createElement('div');
+      div.innerHTML = await generatePost(this.thread.group, message, this.user);
+      this.$listing.appendChild(div);
+    };
+
+    //actually generate the post and add it to the DOM
+    genPostAddIt();
+
+    //update replies to posts that affect us
+    this.addReplies(message.responseTo);
+  }
+
+  //increment number of replies post has and
+  addReplies(postIds) {
+    postIds.forEach(postId => {
+      let post = qs(`[id='${postId}'] span.Footer-left-size`);
+      ++post.innerHTML;
+    });
   }
 
   //bake html into view
@@ -249,8 +402,5 @@ export default class View {
       $id('main').innerHTML = tmp;
       that.bind();
     });
-    this.addPost()
-    window.addPost = this.addPost;
-    socket.onMessage = this.addPost.bind(this);
   }
 }

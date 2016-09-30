@@ -401,3 +401,22 @@ body, figure {
 .Body-code {
   font-family: monaco, roboto, sans-serif;
   background-color: #FCFCFB; }
+
+/* Animation */
+@-webkit-keyframes fadeIn {
+  0% {
+    background-color: #ffffba; }
+  100% {
+    background-color: white; } }
+
+@keyframes fadeIn {
+  0% {
+    background-color: #ffffba; }
+  100% {
+    background-color: white; } }
+
+.enter-animation {
+  -webkit-animation: fadeIn 1s;
+  animation: fadeIn 1s;
+  -webkit-animation-timing-function: ease-in;
+  animation-timing-function: ease-in; }

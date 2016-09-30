@@ -16,8 +16,13 @@ export default {
     return this._posts;
   },
 
-  addPosts: (posts) => {
+  addPosts: posts => {
+    posts.forEach(post => this._posts.push(post));
+  },
 
+  addPost: post => {
+    
+    this._posts.push(post);
   }
 
 };

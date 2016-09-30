@@ -126,6 +126,34 @@ img {
   color: white !important;
 }
 
+.peeking-post {
+  background-color: white !important;
+  border: 1px solid #F9EBEB;
+  box-shadow: .5px .5px .5px rgba(0,0,0,0.1);
+}
+
+.peeking-post .Footer {
+  display: none;
+}
+
+.peeking-post .Body {
+  margin: 0px;
+  background-color: white !important;
+  min-height: 20px;
+}
+
+.peeking-post .Body-content {
+  margin: 3px;
+}
+
+.peeking-post [data-type="hide"] {
+  display: none;
+}
+
+.peeking-post p {
+  margin: 0px;
+}
+
 #nextpage {
   float: right;
   margin-right: 15px;
@@ -134,4 +162,10 @@ img {
 #prevpage {
   float: left;
   margin-left: 15px;
+}
+
+#peek-post {
+  position: absolute;
+  max-width: 300px;
+  max-height: 700px;
 }

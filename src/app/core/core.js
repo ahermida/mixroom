@@ -112,6 +112,10 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
     //get references in body
     const responseTo = getReferences(body);
 
+
+          //clear upload in store
+          store.upload = false;
+
     //try to send post to thread
     try {
 
@@ -127,19 +131,43 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
         id: resp.id
       });
 
-      //clear upload in store
-      store.upload = false;
+      //lets us know if we're peeking in a room to say something
+      let peeking = false;
 
+      //check if we're peeking
+      if (!socket.inRoom) {
+
+        //if so, join room so we can say something
+        socket.joinRoom(thread);
+
+        //let us know we're peeking
+        peeking = true;
+      }
+
+      //send the message to the group -- create date because our server usually does that
       socket.send(JSON.stringify({
         thread: thread,
         body: body,
+        id: resp.postId,
         author: identity,
         content: cont,
         responseTo: responseTo,
+        created: new Date(),
         replies: [],
         anonymous: anon,
         contentType: contentType
       }));
+
+      //get outta there if we were just peeking
+      if (peeking) {
+        socket.leaveRoom();
+
+        //reload page so we can see the nice reload
+        router.check();
+      }
+
+      //clear upload in store
+      store.upload = false;
 
     } catch(e) {
 

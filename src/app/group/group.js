@@ -82,7 +82,7 @@ export default async function start(group, page, auth) {
     auth: auth
   };
 
-  let utils = {
+  let actions = {
     deleteThread: deleteThread,
     saveThread: save,
     unsaveThread: unsave,
@@ -98,7 +98,7 @@ export default async function start(group, page, auth) {
   //group administrator ? -> group settings link
   //pass threads, along with thread actions
   //thread actions: save thread, delete ?, nav to thread
-  const grp = new view(group, data, user, page, utils);
+  const grp = new view(group, data, user, page, actions);
   grp.render();
   return grp;
 }

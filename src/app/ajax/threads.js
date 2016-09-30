@@ -95,30 +95,18 @@ export function createThread(grp, bdy, authr, cont, contType, anon) {
  */
 export function rmThread(thrd, id) {
   let endpoint = "/thread/modify";
-  if (!id) {
-    //Send Request
-    return fetch(`http://${apihost}${endpoint}`, {
-      method: 'DELETE',
-      mode: 'cors',
-      redirect: 'error',
-      headers: new Headers(makeHeaders(token, true)),
-      body: JSON.stringify({
-        thread: thrd
-      })
-    });
-  } else {
-    //Send Request
-    return fetch(`http://${apihost}${endpoint}`, {
-      method: 'DELETE',
-      mode: 'cors',
-      redirect: 'error',
-      headers: new Headers(makeHeaders(token, true)),
-      body: JSON.stringify({
-        thread: thrd,
-        id: id
-      })
-    });
-  }
+
+  //Send Request
+  return fetch(`http://${apihost}${endpoint}`, {
+    method: 'DELETE',
+    mode: 'cors',
+    redirect: 'error',
+    headers: new Headers(makeHeaders(token, true)),
+    body: JSON.stringify({
+      thread: thrd,
+      id: id
+    })
+  });
 }
 
 /**
@@ -190,7 +178,7 @@ export function post(thrd, identity, bdy, cont, respTo, anon, contType) {
  *   }
  * }
  */
-export function editPost(pst, bdy) {
+export function editPost(pst, bdy, id) {
   let endpoint = "/thread/post";
   return fetch(`http://${apihost}${endpoint}`, {
     method: 'PUT',
@@ -199,7 +187,8 @@ export function editPost(pst, bdy) {
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
       post: pst,
-      body: bdy
+      body: bdy,
+      id: id
     })
   });
 }
@@ -215,15 +204,16 @@ export function editPost(pst, bdy) {
  *   }
  * }
  */
-export function rmPost(pst) {
+export function rmPost(pst, id) {
   let endpoint = "/thread/post";
   return fetch(`http://${apihost}${endpoint}`, {
     method: 'DELETE',
-    mode: 'no-cors',
+    mode: 'cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
-      post: pst
+      post: pst,
+      id: id
     })
   });
 }

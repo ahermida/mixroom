@@ -98,7 +98,7 @@ export default function parse(body, author) {
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
 
   //set refs
-  htmlbody = author ? htmlbody.replace(ref, `<span data-id="$1" class="Body-ref">@${author}</span>`) : htmlbody;
+  htmlbody = author ? htmlbody.replace(ref, `<span data-post="$1" data-type="ref" class="Body-ref">@${author}</span>`) : htmlbody;
 
   //set links
   htmlbody = htmlbody.replace(links, match => {

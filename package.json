@@ -64,6 +64,7 @@
     "koa-send": "^3.2.0",
     "koa-static": "^2.0.0",
     "mongodb": "^2.1.7",
-    "node-uuid": "^1.4.7"
+    "node-uuid": "^1.4.7",
+    "xterm": "^1.1.3"
   }
 }
