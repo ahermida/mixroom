@@ -5,7 +5,7 @@
 import { threadLength } from '../ajax/threads.js';
 import oembed from './oembed.js';
 import { getContext } from './helpers.js';
-import parser from './parser';
+import { default as parser, escapeHTML} from './parser';
 
 /**
  * Nav View Templates
@@ -63,26 +63,6 @@ export function generateMenu(user, groups) {
       <li class="listsection"></li>
       ${getMenuGroups(groups)}
       <li class="listsection"></li>
-      <li id="TopNav-menu-secret" data-type="more" class="TopNav-menu-dropdown-row">
-        <span id="dd-icon-secret" class="icon icon-comment ddicon"></span>
-        <span class="ddtext">More</span>
-        <span id="TopNav-dropdown-down" data-type="more" class="icon icon-down-open-big"></span>
-      </li>
-      <ul id="TopNav-menu-secretmenu" class="dropdown hide">
-        <li id="TopNav-menu-about" data-type="about" class="TopNav-menu-dropdown-row ddnested">
-          <span id="dd-icon-about" class="icon icon-info ddicon"></span>
-          <span class="ddtext">About</span>
-        </li>
-        <li id="TopNav-menu-privacy" data-type="privacy" class="TopNav-menu-dropdown-row ddnested">
-          <span id="dd-icon-privacy" class="icon icon-chat ddicon"></span>
-          <span class="ddtext">Privacy</span>
-        </li>
-        <li id="TopNav-menu-faq" data-type="faq" class="TopNav-menu-dropdown-row ddnested">
-          <span id="dd-icon-faq" class="icon icon-help ddicon">
-          </span>
-          <span class="ddtext">How do I use this?</span>
-        </li>
-      </ul>
       <li id="TopNav-menu-relevant" data-type="rules" class="TopNav-menu-dropdown-row">
         <span id="dd-icon-relevant" class="icon icon-check ddicon"></span>
         <span class="ddtext">Rules for Posting</span>
@@ -175,26 +155,21 @@ export async function generatePost(group, post, user) {
   return filledpost;
 }
 
-//generate a *popular* section post
+//generate a *popular* section post --
 export async function generatePopularPost(post, user) {
-  const timestamp = post.created;
-  const postID = post.id;
-  const owned = Object.keys(user.owned);
-
+  let body;
+  if (post.body){
+    //edit post to be a string of 30 characters or less
+    post.body = post.body.length > 30 ? `${post.body.slice(0,30)}...` : post.body;
+    //replace newlines with spaces
+    body = post.body.replace(/\n/g, ' ');
+    //if no body
+  } else {
+    body = '(video)';
+  }
   let poppost = `
-    <div data-type="post" id="${postID}" class="PopularPost">
-      <header class="Header">
-      ${generatePopularPostHeader(post.group, post.author, timestamp)}
-      </header>
-      <div data-type="content" class="Content">
-      ${await generateContent(post.content, post.contentType)}
-      </div>
-      <div data-type="body" class="Body">
-      ${generateBody(post)}
-      </div>
-      <footer class="Footer">
-      ${generatePopFooter(post.size, post.thread, postID, user.user.anonymous, owned)}
-      </footer>
+    <div data-thread="${post.thread}" data-group=${post.group} class="PopularPost" data-type="post-link">
+      ${escapeHTML(body)}<span class="PopularPost-count">${post.replies.length}</span>
     </div>
   `;
 
@@ -222,7 +197,7 @@ export async function generateHeadPost(thread, user) {
       ${generateBody(post)}
       </div>
       <footer class="Footer">
-      ${await generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads)}
+      ${await generatePostHeadFooter(thread.size, threadID, postID, user.user.anonymous, ownedThreads, thread.group)}
       </footer>
     </div>
   `;
@@ -346,7 +321,7 @@ function generateButtons(postId, owned) {
 }
 
 //handle footer of thread post (head)
-async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) {
+async function generatePostHeadFooter(size, threadid, postid, anonymous, owned, group) {
   let length = size;
   let footer = `
   <div class="Footer-content">
@@ -354,7 +329,7 @@ async function generatePostHeadFooter(size, threadid, postid, anonymous, owned) 
       <span class="icon-chat Footer-left-icon"></span>
       <span class="Footer-left-size">${length || 0} ${length != 1 ? 'posts' : 'post'}</span>
     </span>
-    <span class="Footer-right" data-post="${postid}" data-thread="${threadid}">
+    <span class="Footer-right" data-post="${postid}" data-group="${group}" data-thread="${threadid}">
       ${anonymous ? '' : '<span data-type="save" class="Footer-right-save">save</span>'}
       ${generateDelete(postid, owned)}
       <span data-type="reply" class="Footer-right-reply space">reply</span>

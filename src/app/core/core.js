@@ -5,6 +5,7 @@
 import view from './navv.js';
 import store from './store.js';
 import {createThread, post} from '../ajax/threads.js';
+import {getAuth} from '../ajax/groups.js';
 import fastclick from 'fastclick';
 import fetch from 'isomorphic-fetch';
 import {validate} from './oembed.js';
@@ -12,12 +13,26 @@ import config from '../config.js';
 import socket from '../socket.js';
 import router from '../router/router.js';
 
+//
+
 /**
   AJAX Handlers passed in as view actions
  */
 
+/* checks authorization of a user in a group */
+ async function checkAuth(group) {
+   try {
+     let res = await getAuth(group);
+     let resp = res.json();
+     return resp;
+   } catch (e) {
+     //this happens when a group doesn't exist
+     return;
+   }
+ }
+
 /*  Handle File Upload   */
-async function handleUpload(file) {
+export async function handleUpload(file) {
   const uploadFile = file => {
     let data = new FormData();
     data.append('file', file);
@@ -47,7 +62,7 @@ async function handleUpload(file) {
 }
 
 /*  Handle Form Submission  */
-async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
+export async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
 
   const anon = identity === 'Anonymous' ? true : false;
 
@@ -180,7 +195,8 @@ async function handleSubmit(link = '', body, to, identity = 'Anonymous') {
 //options are functions passed into view handlers
 const options = {
   'handleUpload': handleUpload,
-  'handleSubmit': handleSubmit
+  'handleSubmit': handleSubmit,
+  'checkAuth': checkAuth
 };
 
 //create view obj
@@ -188,7 +204,7 @@ export const nav = new view(config.groups, store.user, options);
 
 //export extract references function
 export function getReferences(body) {
-  //regex for reference (post: 12312)
+  //regex for reference
   const ref = /\(post:(.*?)\)/g;
   let idrefs;
   let matches = body.match(ref);

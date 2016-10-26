@@ -3,6 +3,8 @@
  */
 
 import {getThread, rmPost, editPost} from '../ajax/threads.js';
+import {getPopular} from '../ajax/groups.js';
+import {handleUpload, handleSubmit} from '../core/core.js';
 import appstore from '../core/store.js';
 import store from './store.js';
 import view from './threadv.js';
@@ -33,15 +35,27 @@ export default async function start(threadid) {
     let user = {
       owned: appstore.owned,
       user: appstore.user
-    }
+    };
+
+    let pop = await getPopular(0);
+    let popjson = await pop.json();
+    //get array of threads
+    let popular = popjson.posts;
+
 
     let actions = {
       removePost: removePost,
+      handleSubmit: handleSubmit,
+      handleUpload: handleUpload,
       editPost: updatePost
-    }
+    };
+
+    let data = {
+      popular: popular
+    };
 
     //in thread actions
-    const thrd = new view(thread, user, actions, socket);
+    const thrd = new view(thread, user, actions, socket, data);
     thrd.render();
     return thrd;
 

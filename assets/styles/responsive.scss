@@ -44,17 +44,240 @@
 //desktop views
 @media only screen and (min-width : 900px) {
 
+  #rightimg {
+    width: 268px;
+    height: 325px;
+  }
+  
+  .Search-divider {
+    border: 1px solid #F9EBEB;
+  }
+
+  #List-size-switch {
+    position: absolute;
+    right: 0px;
+  }
+
+  // Switcher from http://jsfiddle.net/rebelliard/kvq411zb/
+  .rb-switcher input {
+    display: none; }
+
+  .rb-switcher i {
+    display: inline-block;
+    cursor: pointer;
+    padding-right: 20px;
+    transition: all ease 0.2s;
+    border-radius: 20px;
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.2); }
+
+  .rb-switcher i:before {
+    display: block;
+    content: '';
+    width: 20px;
+    height: 20px;
+    border-radius: 20px;
+    background: white;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); }
+
+  .rb-switcher :checked + i {
+    padding-right: 0;
+    padding-left: 20px;
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.2), inset 0 0 40px lightblue;
+  }
+
+  .rb-switcher.red :checked + i {
+    box-shadow: inset 0 0 1px rgba(0, 0, 0, 0.2), inset 0 0 40px red;
+  }
+
+  fieldset {
+    max-width: 250px;
+  }
+  label[for] {
+    cursor: pointer;
+  }
+  //end switcher stiles
+
+  .fly {
+    transform: translate3d(100vh, 0px, 0px);
+    transition: translation .1s ease;
+  }
+
+  .mobile {
+    display: none;
+  }
+
+  /**
+   *  Nightmode
+   */
+  .nightmode  {
+    * {
+      transition: background-color .5s ease;
+    }
+    #TopNav {
+      box-shadow: 0 0 5px 0 #ccc !important;
+    }
+
+    #TopNav-title-text {
+      color: #d7ddea;
+    }
+
+    .active ~ #dropdown-caret {
+        color: #232323;
+        background-color: transparent !important;
+        text-shadow: 1px 0 0 #CCC, 0 -1px 0 #CCC, 0 1px, -1px 0 0 #CCC;
+    }
+
+    .TopNav-menu-dropdown-row:hover {
+      background-color: #1f1f1f;
+    }
+    #TopNav-menu-list, .TopNav-menu-dropdown-row, #TopNav-right {
+      background-color: #232323;
+    }
+    #TopNav-menu-list, .TopNav-menu-dropdown-row {
+      span {
+        background-color: transparent !important;
+      }
+    }
+
+
+    input, button, textarea, #writer-label, #writer-buttons,
+    #writer-toggle, #writer-exit, #writer-upload, #writer-send, #TopNav-searchbox-exit-icon,
+    #TopNav-searchbox-exit, #TopNav-searchbox-clear, .icon-cancel-circled, #writer-upload-text {
+      background-color: grey !important;
+      color: white;
+    }
+    #writer-label {
+      padding: 0px;
+      margin-left: 15px;
+    }
+
+    #writer-buttons {
+      margin-bottom: 2px;
+    }
+
+    #TopNav-searchbox-bg {
+      background-color: rgba(0, 0, 0, 0.45) !important;
+    }
+    #TopNav-search-text, #TopNav-menu-text {
+      height: 42px;
+    }
+    nav {
+      box-shadow: 0 0 5px 0 rgba(148, 148, 148, 0.2);
+      background-color: #1f2022;
+      color: #a0a0a0;
+    }
+
+    div, span, p:not(.Body-green) {
+      background-color: #1f2022 !important;
+      color: #a0a0a0;
+    }
+  }
+
+  #term {
+    transition: opacity 1s ease-out;
+    opacity: 0;
+    position: absolute;
+    left: -999em;
+
+  }
+
+  /**
+   *  Developer mode
+   */
+  .devmode {
+    #term {
+      display: block !important;
+      position: absolute;
+      left: 20%;
+      width: 63vw;
+      top: 107px;
+      height: auto;
+      opacity: 1;
+    }
+    .terminal, .xterm-viewport {
+      background-color: transparent !important;
+    }
+    .terminal-cursor {
+      background-color: #d768cb !important;
+      color: #d768cb !important;
+    }
+    .xterm-rows div {
+      background-color: #000 !important;
+      color: white !important;
+    }
+    .xterm-rows {
+      background-color: #000 !important;
+      padding: 8px 5px;
+    }
+    #List {
+      max-height: calc(90vh - 42px);
+    }
+    * {
+      transition: transform .5s ease;
+    }
+    #List, #Poplisting, #writer, .Main-Footer {
+      transform: translate3d(100vw, 0px, 0px)
+    }
+    //make sure we cant scroll x
+    overflow-x: hidden;
+  }
+
+  /**
+   * Thread Big
+   */
+
+   .threadenlarge {
+     overflow-x: hidden;
+     iframe {
+       height: calc(0.5625 * 65vw);
+     }
+     * {
+       transition: transform, width .5s ease;
+     }
+
+     #List {
+       max-width: 67%;
+     }
+
+     #Poplisting {
+         transform: translate3d(100vw, 0px, 0px)
+     }
+   }
+
+  /**
+   * Fix navbar icons (remove them)
+   */
+
+  .TopNav-right .icon {
+    display: none;
+  }
+
+  #TopNav-menu, #TopNav-search, #TopNav-post {
+    width: auto !important;
+    right: none;
+    line-height: 42px;
+  }
+
+  #TopNav-search-text, #TopNav-post-text , #TopNav-menu-text {
+    right: unset;
+    position: relative;
+  }
+
   #svg-logo {
     margin-left: 18px;
     margin-top: 1.2px;
     margin-right: 0px;
   }
 
-  .TopNav-menu-dropdown-row, .Head-author, .GroupAuthor-name {
+  .TopNav-menu-dropdown-row, .GroupAuthor-name {
     cursor: pointer;
+    background-color: white;
   }
   .TopNav-menu-dropdown-row:hover {
     background-color: #F5F5F3;
+  }
+  .TopNav-menu-dropdown-row {
+    height: 45px;
   }
 
   .GroupAuthor-name:hover, .Head-author:hover {
@@ -198,9 +421,11 @@
   }
 
   #TopNav-menu-list {
+    background-color: white;
     border: 1px solid #CCC;
+    border-radius: 2px;
     position: absolute;
-    width: 280px;
+    width: 270px;
     z-index: 11;
     left: auto;
     top: 0px;
@@ -208,11 +433,14 @@
     font-size: 15px;
     overflow-y: hidden;
     font-size: 14px;
-    padding-bottom: 0px !important;
+    padding: 5px 0px 0px 0px;
   }
 
   #dropdown-caret {
+    color: white;
     display: none;
+    left: -1px;
+
   }
 
   .writemode .icon-pencil {
@@ -240,6 +468,112 @@
     box-shadow: none;
   }
 
+  #TopNav-input {
+    position: fixed;
+    top: 9px;
+    left: 20%;
+    padding-right: 0px;
+
+  }
+  #TopNav-GoToGroup {
+    width: 270px;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    border-right: none;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    text-indent: 5px;
+    height: 24px;
+  }
+
+  .Ready-button {
+    color: white !important;
+    background-color: #3b5998 !important;
+  }
+
+  #TopNav-input-button {
+    color: #afafaf;
+    border: 1px solid #ccc;
+    height: 24px;
+    width: 30px;
+    border-radius: 2px;
+    position: absolute;
+    border-left: 1px solid #ccc;
+    //top: px;
+    right: -28px;
+    line-height: 1px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    background-color: white;
+    border-left: none;
+    color: white;
+  }
+  #TopNav-input-button:focus {
+    outline: 0px;
+  }
+  #TopNav-GoToGroup:focus + #TopNav-input-button {
+      color: #6a80ad;
+      border: 1px solid #6a80ad !important;
+  }
+  #TopNav-GoToGroup:focus {
+    border: solid 1px #6a80ad;
+    outline: 0px;
+  }
+
+  #Main-listing-header {
+    font-size: 16px;
+    font-weight: 600;
+    position: absolute;
+    left: 20%;
+    top: 75px;
+    width: 500px;
+    border-bottom: 1px solid #ccc;
+    padding: 0px 0px 5px 0px;
+  }
+
+  #Tools {
+    font-size: 16px;
+    font-weight: 600;
+    position: absolute;
+    left: calc(20% - 100px);
+    top: 75px;
+    width: 85px;
+    border-bottom: 1px solid #ccc;
+    padding: 0px 0px 5px 0px;
+  }
+
+  #Tools-menu {
+    cursor: pointer;
+    position: absolute;
+    left: calc(20% - 100px);
+    top: 113px;
+    color: #3b5998;
+    width: 85px;
+    padding: 0px 0px 5px 0px;
+  }
+
+  #Tools-menu div:hover {
+    color: #A3D4FF;
+  }
+  #Tools-menu div:hover > span {
+    color: #3b5998;
+  }
+
+  #Tools-menu > div {
+    padding: 5px 0px;
+  }
+
+  .Tools-selected span {
+    display: block !important;
+    position: absolute;
+    left: -10px;
+    font-size: 16.5px;
+  }
+
+  #Main-listing-pg {
+    color: #ccc;
+  }
+
   .Created {
     font-size: 16px;
     padding-left: 5px;
@@ -256,6 +590,7 @@
   }
 
   #Main-desktop-info {
+    display:none;
     top: 47px;
     width: 18%;
     position: absolute;
@@ -303,7 +638,6 @@
   }
 
   .Content-wrapper {
-    max-height: 100vh;
     overflow: hidden;
   }
 
@@ -369,17 +703,19 @@
     display: flex;
   }
   #Main-container {
-    background-color: #FFF5F5;
+    background-color: white;
   }
 
   .TopNav {
     height: 42px;
   }
-  .PopularPost {
-    margin: 2.5px 0px;
-  }
-  .PopularPost .Head-right {
+
+  .Head-right {
     float: right;
+  }
+
+  .HeadPost img {
+    height: auto !important;
   }
 
   .HeadPost, .Post, #Main-desktop-group, #Main-desktop-thread {
@@ -392,6 +728,8 @@
   }
 
   .List {
+    background-color: white;
+    padding-top: 65px;
     min-height: calc(100vh - 90px);
     max-width: 500px;
     margin-left: 20%;
@@ -404,8 +742,13 @@
   }
 
   #TopNav-title-text {
-    top: 7px;
-    left: 68px;
+    top: 5.5px;
+    left: calc(20% - 100px);
+    color: #3b5998;
+  }
+  #TopNav-svg {
+    margin-left: 90px;
+    display:none;
   }
   //manage comment icon's margin
   .icon-comment:before {
@@ -422,13 +765,16 @@
     padding: 0px;
   }
   .TopNav-right {
-    top: -3px;
-    margin-right: 100px;
-    display: inline-block;
+    width: 270px;
+    padding-left: 0px;
+    display: inline-flex;
+  }
+
+  .TopNav-right span {
+    font-weight: 500 !important;
   }
 
   #TopNav-post {
-      top: -13px;
       right: auto;
       position: relative;
       display: inline-block;
@@ -441,39 +787,37 @@
   }
 
   #TopNav-post-text {
-    top: -5px;
-    right: 5px;
     font-size: 18px;
-    position: absolute;
     font-weight: bold;
     color: #CCCCCA;
   }
   #TopNav-search {
-    top: -15px;
+    display: flex;
+    margin: auto;
     right: auto;
     width: 92px;
     position: relative;
-    display: inline-block;
   }
   #TopNav-search .icon {
-    font-size: 22px;
+    font-size: 23px;
     position: relative;
-    top: -2px;
+    top: -3.5px;
   }
   #TopNav-search-text {
-    top: -3px;
-    right: 5px;
     font-size: 18px;
-    position: absolute;
     font-weight: bold;
     color: #CCCCCA;
   }
-  #TopNav-menu {
-    margin-left: 14px !important;
-    height: 48px;
-    right: auto;
-    width: 71px;
+  #TopNav-search-text-left {
     display: inline-block;
+    vertical-align: middle;
+    transform: rotate(45deg);
+  }
+  #TopNav-menu {
+    height: 42px;
+    display: inline-block;
+    right: 0px;
+    padding-right: 0px;
     position: relative;
     color: #CCCCCA;
   }
@@ -489,32 +833,249 @@
     position: absolute;
   }
   #TopNav-menu-text {
-    padding-left: 5px;
-    top: -3px;
     right: 0px;
     font-size: 18px;
-    position: absolute;
     font-weight: bold;
     color: inherit;
+  }
+
+  #TopNav-menu-text-left {
+    vertical-align: middle;
   }
 
   #TopNav-menu-icon {
     color: inherit;
   }
 
-
-  #TopNav-post, #TopNav-search, #TopNav-menu {
-    margin: 0px 8px;
-  }
   #prevpage {
-    margin-left: 10%;
+    margin-left: calc(20% - 100px);
   }
   #nextpage {
-    margin-right: 10%;
+    margin-right: 15.5%;
+  }
+
+  #Poplisting {
+    //give list and poplisting an easy transform
+    transition: transform .5s ease;
+    height: 360px;
+    position: fixed;
+    width: 270px;
+    background-color: white;
+    right: 163px;
+    top: 67px;
+    border: 1px solid #F9EBEB;
+  }
+
+  #Poplisting-title {
+    display: flex;
+    line-height: 24px;
+    min-height: 24px;
+    font-size: 16px;
+    border-bottom: 1px solid #ccc;
+    font-weight: 500;
+    padding: 5px 15px;
+  }
+  #Poplisting-title-label {
+    position: absolute;
+    right: 10px;
+    top: 7px;
+    color: #ccc;
+    font-size: 14px;
+
+  }
+
+  .PopularPost {
+    cursor: pointer;
+    color: #3b5998;
+    padding: 10px 15px;
+  }
+  .PopularPost:hover {
+    color: #A3D4FF;
+  }
+  .PopularPost-count {
+    position: absolute;
+    right: 20px;
+    color: #ccc;
+  }
+  #writer {
+    transition: width .2s, height .2s, background-color .2s, transform .2s;
+    position: fixed;
+    right: 6%;
+    top: 432px;
+    z-index: 11;
+  }
+
+  .Writer-fs {
+    transform: translate3d(0px, -385px, 0px);
+  }
+  .Writer-fs #writer{
+    overflow: visible;
+    left: calc(20% - 100px) !important;
+  }
+
+  .Writer-fs #writer-input {
+    height: 90vh;
+    padding-top: 30px;
+    width: calc(72.5vw + 117px)
+  }
+
+  .Writer-fs #writer-options {
+    top: 25px;
+    right: 8px;
+  }
+
+  #writer-label {
+    position: absolute;
+    top: 4px;
+    padding-left: 15px;
+    font-size: 14px;
+    color: #ccc;
+  }
+
+  #writer-exit {
+    cursor: pointer;
+    font-family: "Lucida Console", Monaco, monospace;
+    position: absolute;
+    right: 9px;
+    top: 6px;
+    font-size: 14px;
+    color: #3b5998;
+  }
+  .writer-selected {
+    top: 4px !important;
+  }
+  #writer-hide {
+    cursor: pointer;
+    color: #3b5998;
+  }
+
+
+  #writer-input {
+    transition: width .1s ease .2s, height .1s ease .2s, background-color .2s, transform .2s ease .1s;
+    font-size: 14px;
+    padding: 22px 15px 15px 15px;
+    width: 270px;
+    resize: none;
+    border: 1px solid #F9EBEB;
+    height: 160px;
+  }
+  #writer-input:focus {
+    border: 1px solid #3b5998;
+    outline: none;
+  }
+  #writer-input:focus + #writer-label {
+    color: #3b5998;
+  }
+  #writer-toggle {
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    color: #3b5998;
+    right: 22px;
+  }
+
+  #writer-buttons {
+    position: absolute;
+    color: #3b5998;
+    bottom: 5px;
+    background-color: transparent;
+    border: none;
+    right: 3px;
+  }
+
+  #writer-send {
+    color: #3b5998;
+    background-color: transparent;
+    border: none;
+  }
+
+  #writer-upload {
+    color: #3b5998;
+    background-color: transparent;
+    border: none;
+  }
+
+  #writer-options {
+    border-radius: 2px;
+    background-color: white;
+    position: fixed;
+    right: 6.6vw;
+    top: 460px;
+    width: 170px;
+    z-index: 12;
+    border: 1px solid #ccc;
+    color: black;
+    font-size: 14px;
+    font-family: sans-serif;
+  }
+  .writer-option {
+    padding: 5px;
+  }
+  #writer-link, #writer-username {
+    border-bottom: 1px solid #ccc;
+  }
+  #writer-username select {
+    outline: none;
+    width: 90px;
+    background-color: transparent;
+    border: none;
+    text-indent: 1px;
+    text-overflow: ellipsis;
+    cursor: pointer;
+    color: #3b5598;
+  }
+  #writer-link {
+    padding: 0px;
+  }
+  #writer-link input {
+    outline: none;
+    padding:0px;
+    border: none;
+    width: 100%;
+    text-indent: 5px;
+    min-height: 30px;
+  }
+
+  #writer-link input:focus {
+    margin: 0px;
+  }
+
+  #writer-send:focus, #writer-upload:focus {
+    outline:none;
+  }
+  #writer-send:hover, #writer-toggle:hover, #writer-exit:hover, #writer-hide:hover, #writer-upload:hover {
+    color: #A3D4FF;
+  }
+
+  //center options
+  .Mixroom-info {
+    text-align: center;
+    margin-top: 10px;
+  }
+  .Mixroom-info span {
+    padding: 0px 5px;
+  }
+  .Mixroom-info a {
+    font-size: 13px;
+    color: #ccc;
   }
 }
 
 @media only screen and (min-width : 900px) and (max-width : 1223px) {
+
+  /**
+   *  Developer mode
+   */
+  .devmode {
+    #term {
+      display: block !important;
+      position: absolute;
+      left: 20%;
+      width: 73vw;
+      top: 107px;
+      opacity: 1;
+    }
+  }
 
   #Main-desktop-group {
     top: 47px;
@@ -529,23 +1090,53 @@
   }
 
   .TopNav-right {
-    margin-right: 5%;
+    margin-right: 5.5%;
   }
 
   #TopNav-menu-list {
-    right: 5%;
+    right: 6%;
+  }
+
+  #Poplisting {
+    right: 6%;
   }
 
 }
 
+@media only screen and (min-width : 1052px) {
+
+  #TopNav-GoToGroup {
+    width: 472px;
+  }
+}
+
+
+
+
 //make media visible for large screens
 @media only screen  and (min-width : 1224px) {
+
+  /**
+   * Thread Big
+   */
+
+   .threadenlarge {
+     #List {
+       max-width: 49%;
+     }
+   }
+
   #Main-desktop-group {
+    display:none;
     top: 47px;
     width: 350px;
     background-color: #FFFFFF;
     position: absolute;
     left: calc(325px + 35%);
+  }
+
+  #TopNav-GoToGroup {
+    width: 472px;
   }
 
   #Main-desktop-thread {
@@ -558,10 +1149,24 @@
   }
 
   #TopNav-menu-list {
-    right: 14.5%;
+    right: 15.5%;
   }
 
   .TopNav-right {
-    margin-right: 14.5%;
+    margin-right: 15.1%;
   }
+
+  #Poplisting, #writer {
+    right: 15.5%;
+  }
+  .Writer-fs #writer-input {
+    width: calc(100vw * .723);
+  }
+  .Writer-fs {
+    transform: translate3d(0px, -385px, 0px);
+  }
+  #writer-options {
+    right: 16.1vw;
+  }
+
 }

@@ -55,6 +55,7 @@ img {
 
 .Body {
   width: 100%;
+  max-height: 450px;
   overflow: hidden; }
 
 .Body p {
@@ -67,18 +68,6 @@ img {
 .Body-ref {
   color: #3b5998;
   cursor: pointer; }
-
-/* POST BODY TEXT */
-.Body-title {
-  font-size: 16px;
-  font-weight: bold; }
-
-.Body-green {
-  color: #789922; }
-
-.Body-code {
-  font-size: 14px !important;
-  font-family: monaco, roboto, sans-serif; }
 
 .Thread .Body {
   max-height: 2000px;

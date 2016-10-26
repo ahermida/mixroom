@@ -28,6 +28,8 @@
     <link rel="stylesheet" href="/static/css/xterm.css" />
     <!-- xterm fullscreen addon styles-->
     <link rel="stylesheet" href="/static/css/fullscreen.css" />
+    <!-- highlight.js styles for code-->
+    <link rel="stylesheet" href="/static/css/highlight.css" />
     <!--
     <link href="" rel="stylesheet"/>
     <link href="##.png" rel="icon shortcut" sizes="64x64"/>
@@ -46,7 +48,7 @@
     <div id="app-container">
       <nav class="TopNav" id="navbar">
         <span class="TopNav-left">
-          <a href="/" class="TopNav-item">
+          <a href="/" id="TopNav-svg" class="TopNav-item">
           <!-- Application
             <span id="TopNav-icon">
             <circle cx="25" cy="20" r="10" stroke-width=".5" stroke="white" fill="white"/>
@@ -65,25 +67,29 @@
           <a href="/" class="TopNav-item" id="TopNav-title">
             <span id="TopNav-title-text">mixroom</span>
           </a>
+          <span id="TopNav-input" class="desktop">
+            <input id="TopNav-GoToGroup" placeholder="random">
+            <button id="TopNav-input-button">go</button>
+          </span>
         </span>
         <span class="TopNav-right">
           <a href="/" id="TopNav-post">
             <span class="icon icon-pencil DTReaction">
             </span>
             <span id="TopNav-post-text" class="desktop DTReaction">
-              post
+            + post
             </span>
           </a>
           <a href="/" id="TopNav-search">
             <span class="icon icon-search flip DTReaction"></span>
             <span id="TopNav-search-text" class="desktop DTReaction">
-              search
+            <span id="TopNav-search-text-left">⚲</span> search
             </span>
           </a>
           <button id="TopNav-menu">
             <span id="TopNav-menu-icon" class="icon icon-menu DTReaction"></span>
             <span id="TopNav-menu-text" class="desktop DTReaction">
-              menu
+              <span id="TopNav-menu-text-left">≡</span> menu
             </span>
             <span id="dropdown-caret" class="desktop">&#x25B2;</span>
           </button>
@@ -104,6 +110,7 @@
       <main id="main" class="scroll">
       {{{body}}}
       </main>
+      <div id="term" class="desktop"></div>
     </div>
     <!-- This javascript is escaped -->
     <script type="text/javascript">

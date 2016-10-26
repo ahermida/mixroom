@@ -19,6 +19,4 @@ var config = {
     * config.js
     * Holds MongoDB URI, Port, numCPUs, and Secret for JWT
     */
-
-
 exports.default = config;

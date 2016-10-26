@@ -4,6 +4,7 @@
 
 import {getGroup, getGroupInfo, getPopular, getAuth} from '../ajax/groups.js';
 import {saveThread, unsaveThread} from '../ajax/user.js';
+import {handleUpload, handleSubmit} from '../core/core.js';
 import {rmThread} from '../ajax/threads.js';
 import appstore from '../core/store.js'
 import view from './groupv.js';
@@ -86,7 +87,10 @@ export default async function start(group, page, auth) {
     deleteThread: deleteThread,
     saveThread: save,
     unsaveThread: unsave,
-    checkAuth: checkAuth
+    checkAuth: checkAuth,
+    getGroup: getGroup,
+    handleSubmit: handleSubmit,
+    handleUpload: handleUpload
   };
 
   let data = {

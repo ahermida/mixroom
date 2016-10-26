@@ -407,27 +407,8 @@ body, figure {
   color: #789922; }
 
 .Body-code {
-  overflow-wrap: break-word;
-  font-size: 14px !important;
-  font-family: monaco, roboto, sans-serif; }
-
-.Search-divider {
-  background-color: white !important;
-  padding: 15px 5px;
-  font-size: 16px;
-  font-weight: bold;
-  margin: 5px 0px; }
-
-.Search-group, .Search-users {
-  cursor: pointer;
-  padding: 15px 5px;
-  font-size: 16px;
-  font-weight: bold;
-  color: #3b5598;
-  margin: 5px 0px; }
-
-.Search-group:hover, .Search-users:hover {
-  color: #A3D4FF; }
+  font-family: monaco, roboto, sans-serif;
+  background-color: #FCFCFB; }
 
 /* Animation */
 @-webkit-keyframes fadeIn {
@@ -447,6 +428,3 @@ body, figure {
   animation: fadeIn 1s;
   -webkit-animation-timing-function: ease-in;
   animation-timing-function: ease-in; }
-
-.flip {
-  transform: rotate(180deg); }

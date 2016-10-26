@@ -14,6 +14,7 @@ export default class View {
     //get functions from options
     this.handleUpload = options.handleUpload;
     this.handleSubmit = options.handleSubmit;
+		this.checkAuth = options.checkAuth;
 
 		//set data
 		this.groups = groups;
@@ -26,7 +27,7 @@ export default class View {
 		this._openSearch = false;
 
     //event.keyCode code for enter is 13
-    const ENTER_KEY = 13;
+    this.ENTER_KEY = 13;
 
     //get a reference to DOM elements we need
     this.$nav = $id('navbar');
@@ -38,6 +39,8 @@ export default class View {
     this.$searchboxBg = $id('TopNav-searchbox-bg');
     this.$searchboxExit = $id('TopNav-searchbox-exit');
     this.$searchboxClear = $id('TopNav-searchbox-clear');
+		this.$groupsearch = $id('TopNav-GoToGroup');
+		this.$groupsearchbutton = $id('TopNav-input-button');
 
 		//account for references to later objects
 		this.$writermount = null;
@@ -74,21 +77,21 @@ export default class View {
       },
       clearSearch: (e) => {
         e.stopPropagation();
-        this._clearSearch()
+        this._clearSearch();
       },
       hideSearch: (e) => {
 				this._unsetActiveBody();
-        this._hideSearch(e)
+        this._hideSearch(e);
       },
       submitSearch: (e) => this._submitSearch(e),
       showMenu: (e) => {
 				//use this so we can see when the writer is open as opposed to menu (desktop view stuff)
 				this._setActiveBody();
-				this._showMenu(user, groups)
+				this._showMenu(user, groups);
 			},
       removeMenu: (e) => {
 				this._unsetActiveBody();
-				this._removeMenu()
+				this._removeMenu();
 			}
 		};
 	}
@@ -132,6 +135,9 @@ export default class View {
 
     //show menu
     $on(this.$menu, 'click', this.viewCommands.showMenu.bind(this), false);
+
+		//go to group
+		$on(this.$groupsearch, 'keyup', this._handleGoToGroup.bind(this), false);
   }
 
 	//Exposes the writer-opening action -- allowing target to be dynamically set
@@ -143,15 +149,26 @@ export default class View {
     this._showWriter(this.groups.auto, this.user, this.handleUpload, this.handleSubmit, to);
 	}
 
+	removeWriter() {
+		this._unsetActiveBody();
+		this._removeWriter();
+	}
+
 	//Exposes the writer and adds target post
 	openWriterRef(id) {
-		
+
 		//make sure writer is open
 		this.openWriter();
 
 		//now since it's open, we append the content (presumably an id)
 		this.$body.value += this.$body.value ? `\n(post: ${id})\n` : `(post: ${id})\n`;
 	}
+
+	//swaps the placeholder text in the group search / command bar
+	swapPlaceholder(newText) {
+
+	}
+
 
 	//navigate to group
 	_goToGroup(group) {
@@ -192,8 +209,10 @@ export default class View {
   _handleSearch(e) {
     if (e.keyCode === this.ENTER_KEY) {
       //transition to search view
-      //router.doSearch(e.target.value)
-
+      router.navigate(`/search/${e.target.value.replace(/\s/g, '_')}`);
+			this._hideSearch();
+			this.$searchbox.value = '';
+			this._unsetActiveBody();
     }
   }
 
@@ -220,8 +239,69 @@ export default class View {
     this.$searchboxBg.className = "hide"
   }
 
+	//handles the group navigation in the desktop view -- OnKeyUp
+  _handleGoToGroup(e) {
+
+		//handle the effect in which the button becomes blue and the text becomes white
+		if (!this.$groupsearchbutton.classList.contains('Ready-button') && e.target.value.length > 1) {
+			this.$groupsearchbutton.classList.toggle('Ready-button');
+		} else if (e.target.value.length < 2) {
+			this.$groupsearchbutton.classList.remove('Ready-button');
+		}
+    let groupName = router.location;
+    const badresp = (inputEl) => {
+      inputEl.placeholder = `Couldn't find group`;
+      setTimeout(() => inputEl.placeholder = groupName,3000);
+    };
+    if (e.keyCode === 13) {
+      const entered = e.target.value;
+      let smoothed = `/${entered.replace(/\//g, '')}/`;
+
+
+      let resp = this.checkAuth(smoothed);
+
+      //reject bad responses
+      if (!resp) badresp(e.target);
+
+      //handle json from response
+      resp.then(res => {
+
+        //check if allowed, reject if we're not
+        if (!res.allowed) {
+          badresp(e.target);
+        } else {
+				//since it's good, we'll grab the inputEl and change the value to the new group
+				e.target.placeholder = e.target.value;
+        //here we are allowed to visit group --> navigate to group
+        this._goToGroup(smoothed);
+        }
+      });
+
+			this.$groupsearchbutton.classList.remove('Ready-button');
+      e.target.value = '';
+    }
+  }
+
 	//show the writer box, created dynamically
   _showWriter(groups, user, handleUpload, handleSubmit, to = '') {
+		//if we can't open writer here, then let's flash notification
+		//check media, introduce desktop writer if needed, focus writer input
+		if (window.matchMedia('(min-width : 900px)').matches) {
+			if ($id('writer').classList.contains('hide')) {
+				//stop scroll on body
+				this._setActiveBody('writemode');
+				$id('writer').classList.toggle('hide');
+				$id('writer').dataset.to = 'local';
+				$id('writer-label').textContent = 'new post';
+				$id('writer-input').focus();
+			} else {
+				this._unsetActiveBody('writemode');
+				$id('writer').classList.remove('Writer-fs');
+				$id('writer').classList.toggle('hide');
+			}
+			//exit function before enabling mobile writer
+			return;
+		}
 
     //remove menu if it's open
     if (this._openMenu) this._removeMenu();
@@ -324,10 +404,11 @@ export default class View {
 				this._openWriter = true;
 				this._setActiveBody('writemode');
 				this.$writermount.className = '';
+
 			} else {
 				this._hiddenWriter = true;
-				this.$writermount.className = 'hide';
 				this._unsetActiveBody();
+				this.$writermount.className = 'hide';
 			}
     }
   }

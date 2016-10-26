@@ -116,7 +116,7 @@ body, figure {
 }
 
 .hide {
-  display:none;
+  display: none !important;
 }
 
 .hidden {
@@ -131,6 +131,16 @@ body, figure {
 .active {
   color: #5FB5FF !important;
 }
+
+.unselectable {
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
 
 #svg-logo {
   margin-top: 5px;
@@ -486,8 +496,29 @@ body, figure {
   color: #789922;
 }
 .Body-code {
+  overflow-wrap: break-word;
+  font-size: 14px !important;
   font-family: monaco, roboto, sans-serif;
-  background-color: #FCFCFB;
+}
+
+.Search-divider {
+  background-color: white !important;
+  padding: 15px 5px;
+  font-size: 16px;
+  font-weight: bold;
+  margin: 5px 0px;
+}
+
+.Search-group, .Search-users {
+  cursor: pointer;
+  padding: 15px 5px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #3b5598;
+  margin: 5px 0px;
+}
+.Search-group:hover, .Search-users:hover {
+  color: #A3D4FF;
 }
 
 /* Animation */
@@ -507,4 +538,8 @@ body, figure {
     animation: fadeIn 1s;
     -webkit-animation-timing-function: ease-in;
     animation-timing-function: ease-in;
+}
+
+.flip {
+  transform: rotate(180deg);
 }

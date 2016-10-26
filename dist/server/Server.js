@@ -49,11 +49,9 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //allows us to mount paths
 //small router by koa
 //kinda like flask/express -- but with generators!
-
 var Server = function () {
 
   //Initialize Routes and Server
-
   function Server(options) {
     (0, _classCallCheck3.default)(this, Server);
 

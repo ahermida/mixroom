@@ -101,5 +101,7 @@ export function handler(terminal) {
     terminal.write(data);
   });
 }
+const term = new xterm();
+window.term = term;
 
-export default xterm;
+export default term;

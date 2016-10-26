@@ -39,6 +39,7 @@ let location = isNode ? { pathname: ''} : location;
 const router = {
   root: '/',
   rootfn: null,
+  location: '/',
   routes: [],
   callbacks: [],
   getPath: function() {

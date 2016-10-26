@@ -7,17 +7,12 @@ import router from './router/router.js';
 import {getUser} from './ajax/user.js';
 import oembed from './core/oembed.js';
 import parser from './core/parser.js';
-import {default as xterm, handler} from './term.js';
+import './term.js';
+import './search/search.js';
 
 
 //handle getting user (usernames, username) data via ajax
 {
-  console.log(xterm);
-
-  let terminal = new xterm();
-  window.terminal = terminal;
-  console.log(terminal);
-  handler(terminal);
   //get user data and store it
   (async function user() {
     try {

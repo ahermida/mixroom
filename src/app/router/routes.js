@@ -13,7 +13,9 @@ import {getAuth} from '../ajax/groups.js';
 import config from '../config.js';
 import grp from '../group/group.js';
 import thrd from '../thread/thread.js';
+import srch from '../search/search.js';
 import socket from '../socket.js';
+import { nav} from '../core/core.js';
 
 //group gotten when hitting '/' route
 const main = config.groups.main;
@@ -23,16 +25,17 @@ export default function setup(router) {
 
   //middleware for routing
   router.onNavigate((path) => {
-    
+
     //leave real time connection in thread
     if (socket.inRoom) socket.leaveRoom();
 
     //clear view on route change --> maybe put an animation
-    document.getElementById('main').innerHTML = "";
+    //document.getElementById('main').innerHTML = "";
   });
 
   //set up root handler '/'
   router.onRoot(async () => {
+    router.location = 'random';
     let res = await getAuth(main);
     let resp = await res.json();
     grp(main, 0, resp);
@@ -40,20 +43,23 @@ export default function setup(router) {
 
   //route for user view and settings '/user/:username'
   router.add(/user\/(.*)/, (username) => {
-
+    router.location = 'user';
     //user view
     console.log('user');
   });
 
   //search '/search/:search'
   router.add(/search\/(.*)/, (search) => {
-
+    router.location = 'search';
+    search = search.replace(/_/g, ' ');
     //search view
+    srch(search)
     console.log('search');
   });
 
   //route for pagination on groups '/:group/:page'
   router.add(/(.*)\/t\/(.*)/, async (group, thread) => {
+    router.location = group;
     socket.joinRoom(thread);
     group = group ? group : '/';
     let res = await getAuth(`/${group}/`);
@@ -65,6 +71,7 @@ export default function setup(router) {
 
   //route for pagination on groups '/:group/:page'
   router.add(/(.*)\/(.*)/, async (group, page) => {
+    router.location = group;
     group = `/${group}/`;
     let res = await getAuth(group);
     let resp = await res.json();
@@ -76,6 +83,7 @@ export default function setup(router) {
 
   //route for group (page:0) '/:group' || if integer --> pagination for FP
   router.add(/(.*)/, async (group) => {
+    router.location = group;
     group = `/${group}/`;
     let res = await getAuth(group);
     let resp = await res.json();
