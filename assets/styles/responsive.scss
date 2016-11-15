@@ -48,7 +48,7 @@
     width: 268px;
     height: 325px;
   }
-  
+
   .Search-divider {
     border: 1px solid #F9EBEB;
   }
@@ -1050,7 +1050,9 @@
   //center options
   .Mixroom-info {
     text-align: center;
-    margin-top: 10px;
+    width: 270px;
+    position: absolute;
+    top: 365px;
   }
   .Mixroom-info span {
     padding: 0px 5px;
@@ -1120,11 +1122,11 @@
    * Thread Big
    */
 
-   .threadenlarge {
-     #List {
-       max-width: 49%;
-     }
-   }
+  .threadenlarge {
+    #List {
+      max-width: 58%;
+    }
+  }
 
   #Main-desktop-group {
     display:none;

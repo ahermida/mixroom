@@ -8,6 +8,10 @@ import path from 'path'; //helps manipulate filepaths
 import parse from 'co-busboy'; //handle multipart form data
 import uid from 'node-uuid'; //make unique id's
 import request from 'koa-request'; //koa request wrapper for oembed
+import gm from 'gm'; //graphics magick
+
+//set up imagemagick
+gm.subClass({imageMagick: true})
 
 //Route object that will be exported
 let routes = {};
@@ -49,7 +53,7 @@ routes.handleFP = function*() {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
     //do funky DB calls and stuff in here
-    let content = '<h1>Hello World! -- FP</h1>'; //get content by running client-side JS
+    let content = `<h1 class="spinny"><span class="spinny-vinny">¯\_ツ_/¯</span></h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
@@ -60,7 +64,7 @@ routes.handleGroup = function*(group) {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
     //do funky DB calls and stuff in here
-    let content = `<h1>Hello World! -- Group: ${group}</h1>`; //get content by running client-side JS
+    let content = `<h1 class="spinny"><span class="spinny-vinny">¯\_ツ_/¯</span></h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
@@ -71,7 +75,7 @@ routes.handleThread = function*(group, threadID) {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
     //do funky DB calls and stuff in here
-    let content = `<h1>Hello World! -- Group: ${group}, Thread: ${threadID}</h1>`; //get content by running client-side JS
+    let content = `<h1 class="spinny"><span class="spinny-vinny">¯\_ツ_/¯</span></h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
@@ -104,7 +108,7 @@ routes.handleSearch = function*(query) {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
     //do funky DB calls and stuff in here
-    let content = '<h1>Hello World! -- Search</h1>'; //get content by running client-side JS
+    let content = `<h1 class="spinny"><span class="spinny-vinny">¯\_ツ_/¯</span></h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
@@ -115,7 +119,7 @@ routes.handleSettings = function*(username) {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
     //do funky DB calls and stuff in here
-    let content = '<h1>Hello World! -- Settings</h1>'; //get content by running client-side JS
+    let content = `<h1 class="spinny"><span class="spinny-vinny">¯\_ツ_/¯</span></h1>`; //get content by running client-side JS
     let data = { bingo: 'bongo' };
     render(content, data).then(html => resolve(html)).catch(err => console.log(err));
  });
@@ -125,10 +129,10 @@ routes.handleSettings = function*(username) {
 routes.handleActivation = function*() {
   this.body = yield new Promise((resolve, reject) => {
     let that = this;
-    //do funky DB calls and stuff in here
-    let content = '<h1>Hello World! -- Activation</h1>'; //get content by running client-side JS
-    let data = { bingo: 'bongo' };
-    render(content, data).then(html => resolve(html)).catch(err => console.log(err));
+    fs.readFile(`${__dirname}/../../assets/template/activate.html`, {'encoding': 'utf8'}, function (err, layout) {
+      if (err) reject(err);
+      resolve(layout);
+    });
  });
 };
 
@@ -145,12 +149,13 @@ routes.handleUpload = function*() {
       }
     }
   });
-
   const uuid = uid.v1();
   let url;
+  let fsurl;
   let part
   while (part = yield parts) {
-    var stream = fs.createWriteStream(`${__dirname}/../../static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`);
+    fsurl = `${__dirname}/../../static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`
+    var stream = fs.createWriteStream(fsurl);
     url = `/static/uploads/${uuid}${path.extname(part.filename).toLowerCase()}`;
     part.pipe(stream);
   }
@@ -158,6 +163,12 @@ routes.handleUpload = function*() {
   //send back response as JSON
   let resp = JSON.stringify({
     "url": url
+  });
+  gm(fsurl)
+  .autoOrient()
+  .noProfile()
+  .write(fsurl, function (err) {
+    if (!err) console.log('done');
   });
 
   this.body = resp;

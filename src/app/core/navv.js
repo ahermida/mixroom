@@ -87,7 +87,7 @@ export default class View {
       showMenu: (e) => {
 				//use this so we can see when the writer is open as opposed to menu (desktop view stuff)
 				this._setActiveBody();
-				this._showMenu(user, groups);
+				this._showMenu(this.user, groups);
 			},
       removeMenu: (e) => {
 				this._unsetActiveBody();
@@ -104,6 +104,17 @@ export default class View {
 	//unset body class which prevents scroll (only on mobile)
 	_unsetActiveBody() {
 		document.body.className = '';
+	}
+
+	//do logout
+	_logout() {
+		document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+		window.location = '/';
+	}
+
+	//go to user
+	_goToUser(user) {
+		router.navigate(`/user/${user}`);
 	}
 
 	//bind all handlers --> we bind them to the 'this' context because that references the class
@@ -139,6 +150,11 @@ export default class View {
 		//go to group
 		$on(this.$groupsearch, 'keyup', this._handleGoToGroup.bind(this), false);
   }
+
+	//lets us update user after we get user data
+	updateUser(user) {
+		this.user = user;
+	}
 
 	//Exposes the writer-opening action -- allowing target to be dynamically set
 	openWriter(to) {
@@ -509,6 +525,13 @@ export default class View {
         case 'rules':
           console.log('Hit relevant')
           break;
+				case 'logout':
+					this._logout();
+					this._removeMenu();
+					break;
+				case 'username':
+					this._goToUser(e.target.dataset.username);
+					break;
       }
     };
 

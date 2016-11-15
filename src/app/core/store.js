@@ -40,27 +40,22 @@ const store = {
     } else {
       store._user = {
         username: user.username,
-        anonymous: user.anonymous,
+        anonymous: false,
         usernames: user.usernames,
         notifications: user.notifications,
         saved: user.saved
       };
+      store.loggedIn = true;
     }
   },
-
-  //get user data
   get user() {
     return this._user
   },
-
-  //get groups
   addGroups: groups => {
 
     //loop through array of groups & push them to our internal list
     groups.forEach(grp => this._groups.push());
   },
-
-  //get all groups that have been added so far
   get groups() {
 
     //get groups from internal store
@@ -76,14 +71,10 @@ const store = {
       window.localStorage._owned = JSON.stringify(store._owned);
     }
   },
-
-  //retrieve owned ids
   get owned() {
-
     //get owned ids
     return this._owned;
   },
-
   set upload(c) {
     if (!c) {
       this._uploadData.content = '';
@@ -93,10 +84,10 @@ const store = {
       this._uploadData.contentType = c.contentType;
     }
   },
-
   get upload() {
     return this._uploadData;
-  }
+  },
+  loggedIn: false
 };
 
 export default store;

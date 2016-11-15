@@ -8,7 +8,7 @@
     "server_watch": "nodemon --watch src/server.js --exec \"yarn run server_build\"",
     "client_build": "browserify -t [ babelify --presets [ es2015 stage-3 ] --plugins [ transform-runtime ] ] src/app/main.js -o static/bundle.js",
     "client_uglify": "uglifyjs --compress --output static/bundle.js -- static/bundle.js",
-    "client_watch": "nodemon --watch src/app --exec \"yarn run client_build\"",
+    "client_watch": "watchify src/app/main.js -t [ babelify --presets [ es2015 stage-3 ] --plugins [ transform-runtime ] ] -o static/bundle.js",
     "css_build": "node-sass assets/styles --output static/css",
     "css_watch": "nodemon -e scss --watch assets/styles --exec \"yarn run css_build\"",
     "build": "yarn run server_build && npm run client_build && yarn run css_build",
@@ -55,6 +55,7 @@
     "co-busboy": "^1.3.1",
     "co-fs": "^1.2.0",
     "fastclick": "^1.0.6",
+    "gm": "^1.23.0",
     "highlight.js": "^9.7.0",
     "isomorphic-fetch": "^2.2.1",
     "koa": "^1.2.0",
@@ -66,6 +67,7 @@
     "koa-static": "^2.0.0",
     "mongodb": "^2.1.7",
     "node-uuid": "^1.4.7",
+    "watchify": "^3.7.0",
     "xterm": "^1.1.3"
   }
 }

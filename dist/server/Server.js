@@ -97,7 +97,7 @@ var Server = function () {
     }));
 
     //set up body parser for easy-access to json
-    server.use((0, _koaBodyparser2.default)());
+    server.use((0, _koaBodyparser2.default)({ formLimit: '4mb' }));
 
     //  server.use(*()=> yield send(this, this.path, { root: __dirname + '/../../static' }))
 

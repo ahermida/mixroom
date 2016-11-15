@@ -38,11 +38,22 @@ var _koaRequest = require('koa-request');
 
 var _koaRequest2 = _interopRequireDefault(_koaRequest);
 
+var _gm = require('gm');
+
+var _gm2 = _interopRequireDefault(_gm);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//koa request wrapper for oembed
+//graphics magick
+
+//set up imagemagick
+//make unique id's
+//helps manipulate filepaths
+//DB represented as resolved promise
+_gm2.default.subClass({ imageMagick: true });
 
 //Route object that will be exported
+//koa request wrapper for oembed
 //handle multipart form data
 //filesystem used for serving templates
 /**
@@ -52,9 +63,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var routes = {};
 
 //Escape Content in JSON
-//make unique id's
-//helps manipulate filepaths
-//DB represented as resolved promise
 function encodeHTML(str) {
   var buf = [];
   for (var i = str.length - 1; i >= 0; i--) {
@@ -98,7 +106,7 @@ routes.handleFP = _regenerator2.default.mark(function _callee() {
           return new _promise2.default(function (resolve, reject) {
             var that = _this;
             //do funky DB calls and stuff in here
-            var content = '<h1>Hello World! -- FP</h1>'; //get content by running client-side JS
+            var content = '<h1 class="spinny"><span class="spinny-vinny">\xAF_\u30C4_/\xAF</span></h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
@@ -130,7 +138,7 @@ routes.handleGroup = _regenerator2.default.mark(function _callee2(group) {
           return new _promise2.default(function (resolve, reject) {
             var that = _this2;
             //do funky DB calls and stuff in here
-            var content = '<h1>Hello World! -- Group: ' + group + '</h1>'; //get content by running client-side JS
+            var content = '<h1 class="spinny"><span class="spinny-vinny">\xAF_\u30C4_/\xAF</span></h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
@@ -162,7 +170,7 @@ routes.handleThread = _regenerator2.default.mark(function _callee3(group, thread
           return new _promise2.default(function (resolve, reject) {
             var that = _this3;
             //do funky DB calls and stuff in here
-            var content = '<h1>Hello World! -- Group: ' + group + ', Thread: ' + threadID + '</h1>'; //get content by running client-side JS
+            var content = '<h1 class="spinny"><span class="spinny-vinny">\xAF_\u30C4_/\xAF</span></h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
@@ -250,7 +258,7 @@ routes.handleSearch = _regenerator2.default.mark(function _callee6(query) {
           return new _promise2.default(function (resolve, reject) {
             var that = _this6;
             //do funky DB calls and stuff in here
-            var content = '<h1>Hello World! -- Search</h1>'; //get content by running client-side JS
+            var content = '<h1 class="spinny"><span class="spinny-vinny">\xAF_\u30C4_/\xAF</span></h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
@@ -282,7 +290,7 @@ routes.handleSettings = _regenerator2.default.mark(function _callee7(username) {
           return new _promise2.default(function (resolve, reject) {
             var that = _this7;
             //do funky DB calls and stuff in here
-            var content = '<h1>Hello World! -- Settings</h1>'; //get content by running client-side JS
+            var content = '<h1 class="spinny"><span class="spinny-vinny">\xAF_\u30C4_/\xAF</span></h1>'; //get content by running client-side JS
             var data = { bingo: 'bongo' };
             render(content, data).then(function (html) {
               return resolve(html);
@@ -313,13 +321,9 @@ routes.handleActivation = _regenerator2.default.mark(function _callee8() {
           _context8.next = 2;
           return new _promise2.default(function (resolve, reject) {
             var that = _this8;
-            //do funky DB calls and stuff in here
-            var content = '<h1>Hello World! -- Activation</h1>'; //get content by running client-side JS
-            var data = { bingo: 'bongo' };
-            render(content, data).then(function (html) {
-              return resolve(html);
-            }).catch(function (err) {
-              return console.log(err);
+            _fs2.default.readFile(__dirname + '/../../assets/template/activate.html', { 'encoding': 'utf8' }, function (err, layout) {
+              if (err) reject(err);
+              resolve(layout);
             });
           });
 
@@ -336,7 +340,7 @@ routes.handleActivation = _regenerator2.default.mark(function _callee8() {
 
 //handle '/upload' route
 routes.handleUpload = _regenerator2.default.mark(function _callee9() {
-  var parts, uuid, url, part, stream, resp;
+  var parts, uuid, url, fsurl, part, stream, resp;
   return _regenerator2.default.wrap(function _callee9$(_context9) {
     while (1) {
       switch (_context9.prev = _context9.next) {
@@ -354,36 +358,41 @@ routes.handleUpload = _regenerator2.default.mark(function _callee9() {
           });
           uuid = _nodeUuid2.default.v1();
           url = void 0;
+          fsurl = void 0;
           part = void 0;
 
-        case 4:
-          _context9.next = 6;
+        case 5:
+          _context9.next = 7;
           return parts;
 
-        case 6:
+        case 7:
           if (!(part = _context9.sent)) {
-            _context9.next = 12;
+            _context9.next = 14;
             break;
           }
 
-          stream = _fs2.default.createWriteStream(__dirname + '/../../static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase());
+          fsurl = __dirname + '/../../static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase();
+          stream = _fs2.default.createWriteStream(fsurl);
 
           url = '/static/uploads/' + uuid + _path2.default.extname(part.filename).toLowerCase();
           part.pipe(stream);
-          _context9.next = 4;
+          _context9.next = 5;
           break;
 
-        case 12:
+        case 14:
 
           //send back response as JSON
           resp = (0, _stringify2.default)({
             "url": url
           });
 
+          (0, _gm2.default)(fsurl).autoOrient().noProfile().write(fsurl, function (err) {
+            if (!err) console.log('done');
+          });
 
           this.body = resp;
 
-        case 14:
+        case 17:
         case 'end':
           return _context9.stop();
       }

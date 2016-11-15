@@ -6,6 +6,7 @@ import oembed from '../core/oembed.js';
 import { generateHeadPost, generateTimestamp } from '../core/template.js';
 import { nav } from '../core/core.js';
 import router from '../router/router.js';
+import Listing from '../core/listing.js';
 
 //view for posts & threads
 export default class View {
@@ -16,7 +17,7 @@ export default class View {
     //set users
     this.users = data.users;
 
-    //set group
+    //set groups
     this.groups = data.groups;
 
     //set threads --> catch null threads (like when the page is empty)
@@ -35,17 +36,11 @@ export default class View {
     this.$container = $id('app-container');
     this.$main = $id('Main');
 
+    //set up listing (isThread, list, group, user)
+    this.listing = new Listing(false, this.threads, null, this.user);
+
     //setup commands for view actions
  		this.viewCommands = {
-      reply: (e) => this._reply(e),
-      open: (e) => this._open(e),
-      openDirectly: (e) => this._openDirectly(e),
-      group: (e) => this._goToGroup(e.target.textContent),
-      user: (e) => this._goToUser(e),
-      goToGroup: (e) => this._goToGroupDirectly(e),
-      savePost: (e) => this._savePost(e),
-      report: (e) => this._reportPost(e),
-      toggleBody: (e) => this._toggleBody(e),
       prevPage: (e) => this._prevPage(e),
       delete: (e) => this._deletePost(e),
       togglePost: (e) => this._togglePost(e),
@@ -64,10 +59,12 @@ export default class View {
     let $nightmode = $id('nightmode');
 
     //clicks on listing sections --> reuses _onPostClick for convenience
-    $on($listing, 'click', this._onPostClick.bind(this), false);
     $on($prev, 'click', this.viewCommands.prevPage.bind(this), false);
     $on($nightmode, 'click', this.viewCommands.toggleNM.bind(this), false);
     $on($previouspg, 'click', this.viewCommands.prevPage.bind(this), false);
+
+    //bind listing
+    this.listing.bind();
   }
 
   _toggleNM(e) {
@@ -79,200 +76,20 @@ export default class View {
     router.back();
   }
 
-  _postOwned(id) {
-    //checks if we own post (so we can add delete when we render)
-    if (this.user.auth.mod) return true;
-    let owned = false;
-    this.user.owned.forEach((currId) => {
-      if (currId === id) owned = true;
-    });
-    return owned;
-  }
-
-  _togglePost(e) {
-    //flip icon
-    e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
-
-    //because it's not initialized in the dom --> switches off
-    e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
-
-    //move up in the dom until we find the post
-    let target = e.target;
-    while (target.dataset.type != 'post') {
-      target = target.parentNode;
-    }
-
-    //toggle post visibility
-    target.classList.toggle('Post-Hide');
-  }
-
-  //handle post clicks
-  _onPostClick(e) {
-    let target = e.target;
-    switch (target.dataset.type) {
-      case 'author':
-      this._goToUser(target.textContent);
-      break;
-      case 'group':
-      this.viewCommands.group(e);
-      break;
-      case 'hide':
-      this.viewCommands.togglePost(e);
-      break;
-      case 'body':
-      this.viewCommands.toggleBody(e);
-      break;
-      case 'report':
-      //sends request off to dev server
-      this.viewCommands.report(e);
-      break;
-      case 'save':
-      //saves and unsaves posts
-      this.viewCommands.savePost(e);
-      break;
-      case 'reply':
-      //opens writer with thread as target
-      this.viewCommands.reply(e);
-      break;
-      case 'open':
-      //opens thread
-      this.viewCommands.open(e);
-      break;
-      case 'delete':
-      //deletes thread
-      this.viewCommands.delete(e);
-      break;
-      case 'group':
-      //go to group
-      this.viewCommands.goToGroup(e);
-      break;
-      case 'post-link':
-      //opens thread
-      this.viewCommands.openDirectly(e);
-      default:
-      this._cancelDelete(e);
-    }
-  }
-
-  //reply to post
-  _reply(e) {
-    let thread = e.target.parentNode.dataset.thread;
-    let group = e.target.parentNode.dataset.group;
-    router.navigate(`${group}t/${thread}`);
-    nav.openWriter(e.target.parentNode.dataset.thread);
-    this.$writerlabel.textContent = "new post to thread";
-    this.$writer.dataset.to = e.target.parentNode.dataset.thread;
-    this.$writer.classList.remove('Writer-fs');
-  }
-
-  //open thread
-  _open(e) {
-    nav.removeWriter();
-    let thread = e.target.parentNode.dataset.thread;
-    let group = e.target.parentNode.dataset.group;
-    router.navigate(`${group}t/${thread}`);
-  }
-
-  //go to group
-  _goToGroup(grp) {
-    nav.removeWriter();
-    router.navigate(grp);
-  }
-
-  //go to user
-  _goToUser(username) {
-    nav.removeWriter();
-    if (username !== 'Anonymous') router.navigate(`/user/${username}`);
-  }
-
-  //save post
-  _savePost(e) {
-    if (e.target.style.color === '#6879FF') {
-      //unlike
-      e.target.style.color = '#3b5998';
-      let thread = e.target.parentNode.dataset.thread;
-      unsavePost(thread);
-    } else {
-      //like
-      e.target.style.color = '#6879FF';
-      let thread = e.target.parentNode.dataset.thread;
-      savePost(thread);
-    }
-  }
-
-  //goes to group
-  _goToGroupDirectly(e) {
-    router.navigate(e.target.dataset.group);
-  }
-
-  //report post
-  _reportPost(e) {
-
-    //TODO: set up dev server and shoot off requests here
-    if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
-    e.target.innerHTML = 'report';
-  }
-
-  //cancel delete
-  _cancelDelete() {
-    //only one deleteable at a time
-    let pending = $id('delete-pending');
-    if (pending) {
-      pending.innerHTML = 'delete';
-      pending.id = '';
-    }
-  }
-
-  //delete post
-  _deletePost(e) {
-    let content = e.target.innerHTML;
-    if (content === 'delete') {
-      this._cancelDelete();
-      e.target.innerHTML = "sure?"
-      e.target.id = 'delete-pending';
-      return;
-    }
-    let thread = e.target.parentNode.dataset.thread;
-    let post = e.target.parentNode.dataset.post;
-    console.log(thread);
-    let match;
-    let owned = Object.keys(this.user.owned);
-    for (let i = 0; i < owned.length; i++) {
-      if (post === owned[i]) {
-        match = owned[i];
-      }
-    }
-    console.log(match);
-    if (match) this.deleteThread(thread, this.user.owned[match]);
-
-    //reload this page (but not refresh)
-    router.check();
-  }
-
   //generate html
   generateStaticView(user, users, threads, groups) {
-    const getposts = async () => {
-      let promises = threads.map(thread => generateHeadPost(thread, user));
-      let results = await Promise.all(promises);
-      return results.join('');
-    };
 
     const buildView = async () => {
-      //main header
-      const header = `
-        <div id="Main-Header">
 
-        </div>
-      `;
       //wrapper for listing
       const list = `
       <div id="List" class="List">
       ${users.length ? '' : '<div class="Search-divider">No Users Found</div>'}
-      ${users.map(user => `<div class="Search-group" data-type="user" data-group="${group}">${user}</div>`)}
+      ${users.map(user => `<div class="Search-group" data-type="user" data-user="${user}">${user}</div>`).join('')}
       ${groups.length ? '' : '<div class="Search-divider">No Groups found</div>'}
-      ${groups.map(group => `<div class="Search-group" data-type="group" data-group="${group}">${group}</div>`)}
+      ${groups.map(group => `<div class="Search-group" data-type="group" data-group="${group}">${group}</div>`).join('')}
       ${threads.length ? '' : '<div class="Search-divider">No Posts found</div>'}
-      ${threads.length ? await getposts() : ''}
+      ${threads.length ? await this.listing.generatePosts() : ''}
       </div>
       `;
 
@@ -320,24 +137,20 @@ export default class View {
       </div>
       `;
 
+
       let resetimg = async () => {
+        let img = $id('rightimg');
         try {
           let res = await this.getGif();
           let resJSON = await res.json();
           let url = resJSON.data.image_url;
-          let img = $id('rightimg');
           img ? img.src = url : window.clearInterval(resetimg);
         } catch (e) {
           console.log(`Couldn't fetch giphy`);
         }
       }
 
-      window.setInterval(resetimg, 8000);
-
-      let res = await this.getGif();
-      let resJSON = await res.json();
-      let url = resJSON.data.image_url;
-
+      window.setInterval(resetimg, 5000);
 
       //desktop view information --> popular posts and stuff like that
       const right = `

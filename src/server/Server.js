@@ -39,7 +39,7 @@ class Server {
     });
 
     //set up body parser for easy-access to json
-    server.use(bodyParser());
+    server.use(bodyParser({formLimit: '4mb'}));
 
   //  server.use(*()=> yield send(this, this.path, { root: __dirname + '/../../static' }))
 

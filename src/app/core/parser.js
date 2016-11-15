@@ -26,7 +26,7 @@ const italics = /~(\S*?)~/g;
 //regex for code
 const code = /\[code]([\s\S]*?)\[\/code]/g;
 //regex for reference
-const ref = /\(post:(.*?)\)/g;
+const ref = /\(post: (.*?)\)/g;
 //regex for mentions
 const mention = /@(\S*?)\s/g;
 //regex for getting links back into place
@@ -36,11 +36,15 @@ const codeChunks = /`c`o`d`e`/g;
 //regex for links ('holy grail' via Matthew O'Riordan)
 const url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
-//returns html for a given body
-export default function parse(body, author) {
+//returns html for a given body -- author is an object of mapped post-ids to authors
+export default function parse(body, author = {}) {
 
   //array of links that we'll keep for later
   let matches = [];
+
+  //keys of author
+  let postKeys = Object.keys(author);
+
   //set urls -- fails for javascript protocol (important) --> this way links won't be broken
   body = body.replace(url, (match, $1) => {
     matches.push(`<a class="Body-url" href="${$1.indexOf('http') == -1 ? `http://${$1}` : $1}">${$1}</a>`)
@@ -57,11 +61,6 @@ export default function parse(body, author) {
 
   //clean body before we even parse
   body = escapeHTML(body);
-
-  /*remove newlines between mutiline
-  body.replace(code, (match) => {
-    match.indexO
-  });*/
 
   //split by newlines
   let text = body.split(/\r\n|\r|\n/);
@@ -104,7 +103,17 @@ export default function parse(body, author) {
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
 
   //set refs
-  htmlbody = author ? htmlbody.replace(ref, `<span data-post="$1" data-type="ref" class="Body-ref">@${author}</span>`) : htmlbody;
+  htmlbody = htmlbody.replace(ref, (match, $1) => {
+    let postkey = postKeys.shift();
+    if (!postkey) {
+      return `<span data-post="${$1}" data-type="ref" class="Body-ref">@Anonymous</span>`;
+    } else {
+      let auth = author[$1];
+      window.$1 = $1;
+      window.author = author;
+      return `<span data-post="${$1}" data-type="ref" class="Body-ref">@${auth}</span>`;
+    }
+  });
 
   //set links
   htmlbody = htmlbody.replace(links, match => {
@@ -112,7 +121,6 @@ export default function parse(body, author) {
     let rematch = mat ? mat : '';
     return rematch;
   });
-
   //return html wrapped in parent div
   return `<div data-type="body" class="Body-content">${htmlbody}</div>`;
 }

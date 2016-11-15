@@ -43,7 +43,6 @@ export function searchThreads(content) {
   let endpoint = "/thread/search";
   return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -69,7 +68,6 @@ export function searchGroups(content) {
   let endpoint = "/group/search";
   return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
@@ -91,22 +89,20 @@ export function searchGroups(content) {
  * }
  */
 export function searchUsers(content) {
-  let usernames = content.split(' ');
   let endpoint = "/user/search";
   return fetch(`http://${apihost}${endpoint}`, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(token, true)),
     body: JSON.stringify({
-      usernames: usernames
+      text: content
     })
   });
 }
 
 export function getGif() {
   let gifKey = 'dc6zaTOxFJmzC';
-  // Giphy API URL
+  // Giphy API URLhttp://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=art&rating=pg-13
   let giphyURL = encodeURI(`http://api.giphy.com/v1/gifs/random?api_key=${gifKey}&tag=art&rating=pg-13`);
   return fetch(giphyURL, {
     method: 'GET'

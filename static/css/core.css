@@ -383,6 +383,9 @@ body, figure {
   top: 9px;
   font-size: 20px !important; }
 
+#TopNav-dropdown-logout {
+  line-height: 28px; }
+
 #dd-icon-privacy {
   color: #7BBDE6; }
 
@@ -426,7 +429,16 @@ body, figure {
   color: #3b5598;
   margin: 5px 0px; }
 
-.Search-group:hover, .Search-users:hover {
+#TopNav-user {
+  font-weight: 600;
+  color: #6879FF;
+  cursor: pointer;
+  font-size: 14px; }
+
+#TopNav-logout {
+  cursor: pointer; }
+
+.Search-group:hover, .Search-users:hover, #TopNav-user:hover {
   color: #A3D4FF; }
 
 /* Animation */
@@ -442,11 +454,37 @@ body, figure {
   100% {
     background-color: white; } }
 
+@keyframes spinny {
+  from {
+    transform: rotate(0deg); }
+  to {
+    transform: rotate(360deg); } }
+
 .enter-animation {
   -webkit-animation: fadeIn 1s;
   animation: fadeIn 1s;
   -webkit-animation-timing-function: ease-in;
   animation-timing-function: ease-in; }
+
+.spinny {
+  display: flex;
+  margin: auto;
+  margin-top: 30vh;
+  overflow: visible;
+  display: flex;
+  font-size: 15px;
+  background-color: #8979c7;
+  color: white;
+  width: 74px;
+  height: 74px;
+  border: 1px solid white;
+  border-radius: 74px; }
+
+.spinny-vinny {
+  display: flex;
+  margin: auto;
+  animation: spinny .2s;
+  animation-timing-function: ease-in-out; }
 
 .flip {
   transform: rotate(180deg); }

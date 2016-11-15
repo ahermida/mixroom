@@ -7,13 +7,23 @@ import oembed from './oembed.js';
 import { getContext } from './helpers.js';
 import { default as parser, escapeHTML} from './parser';
 
+
+//helper to generate a map of post-id to authors
+export function generateAuthors(posts) {
+  let authors = {};
+  posts.forEach(post => {
+    authors[post.id] = post.author;
+  });
+  return authors;
+}
+
 /**
  * Nav View Templates
  */
 
 //get template for either user logged in or not logged in
 function getUserMenu(user){
-  if (user.anonymous) {
+  if (user.usernames.length < 1) {
     return `
       <a href="/register" class="nostylelink">
         <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">
@@ -31,13 +41,16 @@ function getUserMenu(user){
       </a>
       `;
    } else {
+     //<span class="ddtext">${user.username}</span>
      return`
-       <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">
-         <span id="dd-icon-user" class="icon icon-cog ddicon">
+         <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">
+           <span id="dd-icon-user" class="icon icon-cog ddicon">
+           </span>
+         </li>
+         <span data-type="username" data-username="${user.username}" class="ddtext" id="TopNav-dropdown-logout">
+           <span data-type="username" data-username="${user.username}" id="TopNav-user">(${user.username}) profile</span>
+          <span data-type="logout" id="TopNav-logout">logout</span>
          </span>
-         <span class="ddtext">${user.username}</span>
-       </li>
-       <span id="TopNav-dropdown-logout">logout</span>
        `;
    }
 }
@@ -131,7 +144,7 @@ export function generateWriter(groups, usernames, to) {
  */
 
 //creates a post's html
-export async function generatePost(group, post, user) {
+export async function generatePost(group, post, user, authors) {
   const timestamp = post.created;
   const postID = post.id;
   const owned = Object.keys(user.owned);
@@ -145,7 +158,7 @@ export async function generatePost(group, post, user) {
       ${await generateContent(post.content, post.contentType)}
       </div>
       <div class="Body">
-      ${generateBody(post)}
+      ${generateBody(post, authors)}
       </div>
       <footer class="Footer">
       ${generatePostFooter(post, owned)}
@@ -284,13 +297,12 @@ async function generateContent(content, contentType) {
 }
 
 //handle body of post
-function generateBody(post) {
+function generateBody(post, authors) {
   let str = post.body;
-  let author = post.author;
 
   //generate string
   if (str) {
-    str = parser(str, author);
+    str = parser(str, authors);
   } else {
     str = '';
   }
@@ -377,4 +389,29 @@ function generatePostFooter(post, owned) {
   </div>
   `;
   return footer;
+}
+
+//generates lefthand tools -- here to clear out class
+export function generateTools(isThread, nightmode, devmode) {
+  let topTool;
+  if (isThread) {
+    topTool = `<div id="previous-pg" class="unselectable">
+      <span class="Tool-select hide">•</span>previous-pg
+    </div>`
+  } else {
+    topTool = `<div id="load-more" class="unselectable">
+      <span class="Tool-select hide">•</span>infinite-scroll
+    </div>`
+  }
+  return `
+  <div id="Tools-menu" class="desktop">
+    ${topTool}
+    <div class="unselectable ${nightmode ? 'Tools-selected' : ''}" id="nightmode">
+      <span class="Tool-select hide">•</span>night-mode
+    </div>
+    <div id="devmode" class="unselectable ${devmode ? 'Tools-selected' : ''}">
+      <span class="Tool-select hide">•</span>developers
+    </div>
+  </div>
+  `;
 }

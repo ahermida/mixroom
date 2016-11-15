@@ -25121,7 +25121,6 @@ function getGroup(grp, pg) {
   var endpoint = "/group/";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25147,7 +25146,6 @@ function getGroupInfo(grp) {
   var endpoint = "/group/info";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25172,7 +25170,6 @@ function getPopular(pg) {
   var endpoint = "/group/popular";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25197,7 +25194,6 @@ function createGroup(grp, anon) {
   var endpoint = "/group/modify";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25224,7 +25220,6 @@ function deleteGroup(grp) {
   //Send Request
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'DELETE',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ group: grp })
@@ -25247,7 +25242,6 @@ function getAuth(grp) {
   var endpoint = "/group/auth";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ 'group': grp })
@@ -25271,7 +25265,6 @@ function addAdmin(grp, usr) {
   //Send Request
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ group: grp, user: usr })
@@ -25294,7 +25287,6 @@ function rmAdmin(grp, usr) {
   var endpoint = "/group/modify";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'PUT',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({ group: grp, user: usr })
@@ -25372,7 +25364,6 @@ function searchThreads(content) {
   var endpoint = "/thread/search";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25398,7 +25389,6 @@ function searchGroups(content) {
   var endpoint = "/group/search";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25420,22 +25410,20 @@ function searchGroups(content) {
  * }
  */
 function searchUsers(content) {
-  var usernames = content.split(' ');
   var endpoint = "/user/search";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
-      usernames: usernames
+      text: content
     })
   });
 }
 
 function getGif() {
   var gifKey = 'dc6zaTOxFJmzC';
-  // Giphy API URL
+  // Giphy API URLhttp://api.giphy.com/v1/gifs/random?api_key=dc6zaTOxFJmzC&tag=art&rating=pg-13
   var giphyURL = encodeURI('http://api.giphy.com/v1/gifs/random?api_key=' + gifKey + '&tag=art&rating=pg-13');
   return (0, _isomorphicFetch2.default)(giphyURL, {
     method: 'GET'
@@ -25516,7 +25504,6 @@ function getThread(thrd) {
   var endpoint = "/thread/";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25541,7 +25528,6 @@ function createThread(grp, bdy, authr, cont, contType, anon) {
   var endpoint = "/thread/modify";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25598,7 +25584,6 @@ function threadLength(thrd) {
   //Send Request
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25623,7 +25608,6 @@ function post(thrd, identity, bdy, cont, respTo, anon, contType) {
   var endpoint = "/thread/post";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25654,7 +25638,6 @@ function editPost(pst, bdy, id) {
   var endpoint = "/thread/post";
   return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
     method: 'PUT',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers(makeHeaders(_cookie2.default, true)),
     body: (0, _stringify2.default)({
@@ -25715,10 +25698,9 @@ exports.getFriends = getFriends;
 exports.addFriend = addFriend;
 exports.acceptFriend = acceptFriend;
 exports.unfriend = unfriend;
+exports.getUserInfo = getUserInfo;
 
-var _isomorphicFetch = require('isomorphic-fetch');
-
-var _isomorphicFetch2 = _interopRequireDefault(_isomorphicFetch);
+require('isomorphic-fetch');
 
 var _config = require('../config.js');
 
@@ -25756,17 +25738,19 @@ var apihost = _config2.default.api;
  * }
  */
 function getUser() {
+  var heads = new Headers({
+    'access_token': _cookie2.default,
+    'Content-Type': 'text/plain'
+  });
+  console.log('token', _cookie2.default);
   var endpoint = "/user/";
   if (!_cookie2.default) {
     return;
   } else {
-    return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+    return fetch('http://' + apihost + endpoint, {
       method: 'GET',
-      mode: 'no-cors',
       redirect: 'error',
-      headers: new Headers({
-        'access_token': _cookie2.default
-      })
+      headers: heads
     });
   }
 }
@@ -25788,9 +25772,8 @@ function getSaved() {
   if (!_cookie2.default) {
     return;
   } else {
-    return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+    return fetch('http://' + apihost + endpoint, {
       method: 'GET',
-      mode: 'no-cors',
       redirect: 'error',
       headers: new Headers({
         'access_token': _cookie2.default
@@ -25816,9 +25799,8 @@ function addName(nm) {
     return;
   }
   var endpoint = "/user/name";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -25848,9 +25830,8 @@ function saveThread(mthread) {
   }
   var endpoint = "/user/saved";
 
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -25880,9 +25861,8 @@ function unsaveThread(mthread) {
   }
   var endpoint = "/user/saved";
 
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'PUT',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -25907,13 +25887,9 @@ function unsaveThread(mthread) {
  * }
  */
 function getUserThreads(page) {
-  if (!_cookie2.default) {
-    return;
-  }
-  var endpoint = "/user/saved";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  var endpoint = "/user/threads";
+  return fetch('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -25942,9 +25918,9 @@ function addUsername(usrname) {
     return;
   }
   var endpoint = "/user/username";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -25973,9 +25949,9 @@ function changeUsername(usrname) {
     return;
   }
   var endpoint = "/user/username";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'PUT',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -26005,9 +25981,9 @@ function rmUsername(usrname) {
   }
   var endpoint = "/user/username";
 
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'DELETE',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -26036,9 +26012,9 @@ function getNotifications() {
     return;
   }
   var endpoint = "/user/notifications";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'GET',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'access_token': _cookie2.default
@@ -26063,9 +26039,9 @@ function getFriends() {
     return;
   }
   var endpoint = "/user/friends";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'GET',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'access_token': _cookie2.default
@@ -26091,9 +26067,9 @@ function addFriend(username, frnd) {
   }
   var endpoint = "/user/username";
 
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'POST',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -26123,9 +26099,9 @@ function acceptFriend(username, frnd) {
     return;
   }
   var endpoint = "/user/username";
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'PUT',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -26156,9 +26132,9 @@ function unfriend(username, frnd) {
   }
   var endpoint = "/user/username";
 
-  return (0, _isomorphicFetch2.default)('http://' + apihost + endpoint, {
+  return fetch('http://' + apihost + endpoint, {
     method: 'DELETE',
-    mode: 'no-cors',
+
     redirect: 'error',
     headers: new Headers({
       'Content-Type': 'application/json',
@@ -26167,6 +26143,36 @@ function unfriend(username, frnd) {
     body: (0, _stringify2.default)({
       username: usrname,
       friend: frnd
+    })
+  });
+}
+
+/**
+ * [Async] -- Get a user's info
+ * @example
+ * async function doStuffWithThisFunc() {
+ *   try {
+ *     let data = await addName('dingdong');
+ *     console.log(data)
+ *   } catch(error) {
+ *     console.log(error);
+ *   }
+ * }
+ */
+function getUserInfo(username) {
+  if (!_cookie2.default) {
+    return;
+  }
+  var endpoint = "/user/";
+  return fetch('http://' + apihost + endpoint, {
+    method: 'POST',
+    redirect: 'error',
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      'access_token': _cookie2.default
+    }),
+    body: (0, _stringify2.default)({
+      username: username
     })
   });
 }
@@ -26230,17 +26236,11 @@ var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
-//
-
 /**
   AJAX Handlers passed in as view actions
  */
 
 /* checks authorization of a user in a group */
-/**
- * core.js is pretty much the controller for the nav & basic app functionality
- */
-
 var checkAuth = function () {
   var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(group) {
     var res, resp;
@@ -26276,7 +26276,9 @@ var checkAuth = function () {
 }();
 
 /*  Handle File Upload   */
-
+/**
+ * core.js is pretty much the controller for the nav & basic app functionality
+ */
 
 var handleUpload = exports.handleUpload = function () {
   var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2(file) {
@@ -26531,8 +26533,77 @@ var handleSubmit = exports.handleSubmit = function () {
 //options are functions passed into view handlers
 
 
+//handle getting user (usernames, username) data via ajax
+//get user data and store it
+var getUserInfo = function () {
+  var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
+    var usr, usrjson;
+    return _regenerator2.default.wrap(function _callee4$(_context4) {
+      while (1) {
+        switch (_context4.prev = _context4.next) {
+          case 0:
+            _context4.prev = 0;
+            _context4.next = 3;
+            return (0, _user.getUser)();
+
+          case 3:
+            usr = _context4.sent;
+            _context4.next = 6;
+            return usr.json();
+
+          case 6:
+            usrjson = _context4.sent;
+
+            if (!usrjson) {
+              _context4.next = 13;
+              break;
+            }
+
+            if (usrjson.username) {
+              _context4.next = 11;
+              break;
+            }
+
+            document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            return _context4.abrupt('return');
+
+          case 11:
+
+            //else continue
+            _store2.default.addUser(usrjson);
+            nav.updateUser(_store2.default.user);
+
+          case 13:
+            _context4.next = 18;
+            break;
+
+          case 15:
+            _context4.prev = 15;
+            _context4.t0 = _context4['catch'](0);
+
+
+            if (_context4.t0.statusCode === 401)
+
+              //let ourselves know if there was an error getting the user --> this happens when user doesn't exist
+              console.log('Err getting user');
+
+          case 18:
+          case 'end':
+            return _context4.stop();
+        }
+      }
+    }, _callee4, this, [[0, 15]]);
+  }));
+
+  return function getUserInfo() {
+    return _ref4.apply(this, arguments);
+  };
+}();
+
+//create view obj
+
+
 exports.getReferences = getReferences;
-exports.default = start;
 
 var _navv = require('./navv.js');
 
@@ -26545,6 +26616,8 @@ var _store2 = _interopRequireDefault(_store);
 var _threads = require('../ajax/threads.js');
 
 var _groups = require('../ajax/groups.js');
+
+var _user = require('../ajax/user.js');
 
 var _fastclick = require('fastclick');
 
@@ -26574,10 +26647,7 @@ var options = {
   'handleUpload': handleUpload,
   'handleSubmit': handleSubmit,
   'checkAuth': checkAuth
-};
-
-//create view obj
-var nav = exports.nav = new _navv2.default(_config2.default.groups, _store2.default.user, options);
+};var nav = exports.nav = new _navv2.default(_config2.default.groups, _store2.default.user, options);
 
 //export extract references function
 function getReferences(body) {
@@ -26594,16 +26664,77 @@ function getReferences(body) {
 }
 
 //initialize the core app
-function start() {
 
-  //adjust click events for mobile taps
-  (0, _fastclick2.default)(document.body);
+exports.default = function () {
+  var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
+    var usr, usrjson;
+    return _regenerator2.default.wrap(function _callee5$(_context5) {
+      while (1) {
+        switch (_context5.prev = _context5.next) {
+          case 0:
 
-  //bind handlers for base app
-  nav.bind();
-}
+            //adjust click events for mobile taps
+            (0, _fastclick2.default)(document.body);
 
-},{"../ajax/groups.js":274,"../ajax/threads.js":276,"../config.js":278,"../router/router.js":289,"../socket.js":293,"./navv.js":281,"./oembed.js":282,"./store.js":284,"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11,"fastclick":98,"isomorphic-fetch":267}],280:[function(require,module,exports){
+            //bind handlers for base app
+            nav.bind();
+
+            _context5.prev = 2;
+            _context5.next = 5;
+            return (0, _user.getUser)();
+
+          case 5:
+            usr = _context5.sent;
+            _context5.next = 8;
+            return usr.json();
+
+          case 8:
+            usrjson = _context5.sent;
+
+            if (!usrjson) {
+              _context5.next = 13;
+              break;
+            }
+
+            //if token is valid, but user has a problem, we should get an empty user
+            if (!usrjson.username) {
+              document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+            }
+
+            //else continue
+            _store2.default.addUser(usrjson);
+            return _context5.abrupt('return', nav.updateUser(_store2.default.user));
+
+          case 13:
+            _context5.next = 18;
+            break;
+
+          case 15:
+            _context5.prev = 15;
+            _context5.t0 = _context5['catch'](2);
+
+
+            if (_context5.t0.statusCode === 401)
+
+              //let ourselves know if there was an error getting the user --> this happens when user doesn't exist
+              console.log('Err getting user');
+
+          case 18:
+          case 'end':
+            return _context5.stop();
+        }
+      }
+    }, _callee5, this, [[2, 15]]);
+  }));
+
+  function start() {
+    return _ref5.apply(this, arguments);
+  }
+
+  return start;
+}();
+
+},{"../ajax/groups.js":274,"../ajax/threads.js":276,"../ajax/user.js":277,"../config.js":278,"../router/router.js":291,"../socket.js":295,"./navv.js":282,"./oembed.js":283,"./store.js":285,"babel-runtime/core-js/json/stringify":1,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11,"fastclick":98,"isomorphic-fetch":267}],280:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26614,6 +26745,7 @@ exports.qs = qs;
 exports.qsa = qsa;
 exports.$on = $on;
 exports.getContext = getContext;
+exports.spinner = spinner;
 
 var _config = require('../config.js');
 
@@ -26674,7 +26806,680 @@ function getContext() {
   return '/random/';
 }
 
+//will add a spinner on the left of the basic list view until we render the next
+function spinner() {
+  var list = $id('List');
+  if (list) {
+    list.style.display = "none";
+
+    //get other items associated with it and set them to none display
+    $id('Main-listing-header').style.display = "none";
+    $id('Tools-menu').style.display = "none";
+    var footer = document.getElementsByClassName('Main-Footer')[0];
+    if (footer) {
+      footer.style.display = "none";
+    }
+    var h1 = document.createElement('h1');
+    h1.className = 'spinny';
+    h1.innerHTML = '<span class="spinny-vinny">\xAF_\u30C4_/\xAF</span>';
+    $id('Main-container').appendChild(h1);
+  } else {
+    $id('main').innerHTML = '<h1 class="spinny><span class="spinny-vinny">\xAF_\u30C4_/\xAF</span></h1>"';
+  }
+}
+
 },{"../config.js":278}],281:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _promise = require('babel-runtime/core-js/promise');
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _typeof2 = require('babel-runtime/helpers/typeof');
+
+var _typeof3 = _interopRequireDefault(_typeof2);
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _core = require('./core.js');
+
+var _helpers = require('./helpers.js');
+
+var _template = require('./template.js');
+
+var _router = require('../router/router.js');
+
+var _router2 = _interopRequireDefault(_router);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ *  Class to render and handle listing
+ */
+
+var Listing = function () {
+  function Listing(isThread, list, group, user) {
+    var _this = this;
+
+    (0, _classCallCheck3.default)(this, Listing);
+
+    this.isThread = isThread;
+    this.list = list;
+    this.group = group;
+    this.user = user;
+
+    //keeps track of authors during render
+    this.authors = {};
+
+    //setup commands for view actions
+    this.viewCommands = {
+      reply: function reply(e) {
+        return _this._reply(e);
+      },
+      open: function open(e) {
+        return _this._open(e);
+      },
+      openDirectly: function openDirectly(e) {
+        return _this._openDirectly(e);
+      },
+      group: function group(e) {
+        return _this._goToGroup(e);
+      },
+      user: function user(e) {
+        return _this._goToUser(e);
+      },
+      savePost: function savePost(e) {
+        return _this._savePost(e);
+      },
+      report: function report(e) {
+        return _this._reportPost(e);
+      },
+      toggleBody: function toggleBody(e) {
+        return _this._toggleBody(e);
+      },
+      delete: function _delete(e) {
+        return _this._delete(e);
+      },
+      togglePost: function togglePost(e) {
+        return _this._togglePost(e);
+      },
+      scrollToPost: function scrollToPost(e) {
+        return _this._scrollToPost(e);
+      }
+    };
+  }
+
+  //binds events --> mostly delegated events up in here
+
+
+  (0, _createClass3.default)(Listing, [{
+    key: 'bind',
+    value: function bind() {
+
+      //get references (as elements are dynamically rendered)
+      var $listing = (0, _helpers.$id)('List');
+
+      //might as well keep a reference to the listing because we'll be adding to it
+      this.$listing = $listing;
+      if (this.isThread) {
+        (0, _helpers.$on)($listing, 'mousemove', this._onPostHover.bind(this), false);
+      }
+
+      this.$writer = (0, _helpers.$id)('writer');
+      this.$writerinput = (0, _helpers.$id)('writer-input');
+
+      //clicks on listing section
+      (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
+    }
+
+    //add post to view
+
+  }, {
+    key: 'addPost',
+    value: function addPost(post) {
+      var _this2 = this;
+
+      //get the embedded json
+      var message = JSON.parse(post);
+
+      //inser id to authors
+      this.authors[message.id] = message.author;
+
+      //generate post and add it
+      var genPostAddIt = function () {
+        var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+          var div;
+          return _regenerator2.default.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  div = document.createElement('div');
+                  _context.next = 3;
+                  return (0, _template.generatePost)(_this2.group, message, _this2.user, _this2.authors);
+
+                case 3:
+                  div.innerHTML = _context.sent;
+                  return _context.abrupt('return', div);
+
+                case 5:
+                case 'end':
+                  return _context.stop();
+              }
+            }
+          }, _callee, _this2);
+        }));
+
+        return function genPostAddIt() {
+          return _ref.apply(this, arguments);
+        };
+      }();
+
+      //actually generate the post and add it to the DOM
+      genPostAddIt().then(function (div) {
+        _this2.$listing.appendChild(div);
+
+        //update replies to posts that affect us
+        _this2.addReplies(message.responseTo);
+      });
+    }
+
+    //increment number of replies post has and
+
+  }, {
+    key: 'addReplies',
+    value: function addReplies(postIds) {
+      postIds.forEach(function (postId) {
+        var post = qs('[id=\'' + postId + '\'] span.Footer-left-size');
+        ++post.innerHTML;
+      });
+    }
+  }, {
+    key: '_delete',
+    value: function _delete(e) {
+      this.isThread ? this.deletePost(e) : this.deleteThread(e);
+    }
+
+    //just exposes _onPostClick (just want to preserve private _onPostClick)
+
+  }, {
+    key: 'handlePostClick',
+    value: function handlePostClick(e) {
+      this._onPostClick(e);
+    }
+
+    //handle post clicks
+
+  }, {
+    key: '_onPostClick',
+    value: function _onPostClick(e) {
+      var target = e.target;
+      switch (target.dataset.type) {
+        case 'author':
+          this._goToUser(e);
+          break;
+        case 'group':
+          this.viewCommands.group(e);
+          break;
+        case 'hide':
+          this.viewCommands.togglePost(e);
+          break;
+        case 'report':
+          //sends request off to dev server
+          this.viewCommands.report(e);
+          break;
+        case 'save':
+          //saves and unsaves posts
+          this.viewCommands.savePost(e);
+          break;
+        case 'reply':
+          //opens writer with thread as target
+          this.viewCommands.reply(e);
+          break;
+        case 'open':
+          //opens thread
+          this.viewCommands.open(e);
+          break;
+        case 'delete':
+          //deletes thread
+          this.viewCommands.delete(e);
+          break;
+        case 'ref':
+          //scroll to id of post
+          this.viewCommands.scrollToPost(e);
+          break;
+        case 'post-link':
+          //opens thread
+          this.viewCommands.openDirectly(e);
+          break;
+        default:
+          this._cancelDelete(e);
+      }
+    }
+
+    //open thread directly from element's thread id
+
+  }, {
+    key: '_openDirectly',
+    value: function _openDirectly(e) {
+      _core.nav.removeWriter();
+      _router2.default.navigate(e.target.dataset.group + 't/' + e.target.dataset.thread);
+      window.scroll(0, 0);
+    }
+  }, {
+    key: '_removePeek',
+    value: function _removePeek() {
+      var post = (0, _helpers.$id)('peek-post');
+      if (post) {
+        post.parentNode.removeChild(post);
+      }
+    }
+  }, {
+    key: '_deletePost',
+    value: function _deletePost(e) {
+      var content = e.target.innerHTML;
+      if (content === 'delete') {
+        this._cancelDelete();
+        e.target.innerHTML = "sure?";
+        e.target.id = 'delete-pending';
+        return;
+      }
+
+      var post = e.target.parentNode.dataset.post;
+      var match = void 0;
+      var owned = (0, _keys2.default)(this.user.owned);
+      for (var i = 0; i < owned.length; i++) {
+        if (post === owned[i]) {
+          match = owned[i];
+        }
+      }
+      console.log(match);
+      if (match) this.removePost(post, this.user.owned[match]);
+
+      //reload this page (but not refresh)
+      _router2.default.check();
+    }
+
+    //delete post
+
+  }, {
+    key: '_deleteThread',
+    value: function _deleteThread(e) {
+      var content = e.target.innerHTML;
+      if (content === 'delete') {
+        this._cancelDelete();
+        e.target.innerHTML = "sure?";
+        e.target.id = 'delete-pending';
+        return;
+      }
+      var thread = e.target.parentNode.dataset.thread;
+      var post = e.target.parentNode.dataset.post;
+      var match = void 0;
+      var owned = (0, _keys2.default)(this.user.owned);
+      for (var i = 0; i < owned.length; i++) {
+        if (post === owned[i]) {
+          match = owned[i];
+        }
+      }
+      if (match) this.deleteThread(thread, this.user.owned[match]);
+
+      //reload this page (but not refresh)
+      _router2.default.check();
+    }
+  }, {
+    key: '_scrollToPost',
+    value: function _scrollToPost(e) {
+      this._removePeek();
+      var post = (0, _helpers.$id)(e.target.dataset.post.trim());
+
+      //if we don't get the post, add a strikethrough
+      if (!post) {
+        e.target.style.setProperty("text-decoration", "line-through");
+        return;
+      }
+
+      //else scroll into post-view
+      post.scrollIntoView();
+      window.scrollBy(0, -48);
+      post.classList.remove('enter-animation');
+
+      //hacky way to reset animation, but a must if we don't want to have to clone the element and replace it
+      window.setTimeout(function () {
+        return post.classList.add('enter-animation', 0);
+      });
+    }
+
+    //handle post clicks
+
+  }, {
+    key: '_onPostHover',
+    value: function _onPostHover(e) {
+      var target = e.target;
+      switch (target.dataset.type) {
+        case 'body':
+          this._removePeek();
+          break;
+        case 'content':
+          this._removePeek();
+          break;
+        case 'ref':
+          this._peekIntoPost(e);
+          break;
+      }
+    }
+
+    //lets us look at a post on reference hover
+
+  }, {
+    key: '_peekIntoPost',
+    value: function _peekIntoPost(e) {
+
+      this._removePeek();
+      var post = (0, _helpers.$id)(e.target.dataset.post.trim());
+
+      //if we don't get the post, add a strikethrough
+      if (!post) {
+        //  e.target.style.setProperty("text-decoration", "line-through");
+        return;
+      }
+
+      var newPost = post.cloneNode(true);
+
+      var dimensions = post.getBoundingClientRect();
+
+      //check if dom element is in view on Y axis
+      var isInView = dimensions.bottom > 42 && dimensions.top < (window.innerHeight || document.documentElement.clientHeight);
+
+      if (isInView) {
+        var _ret = function () {
+          post.style.backgroundColor = "#ffffba";
+          //handler to remove highlight from post on mouseout
+          var removeSpotlight = function removeSpotlight(e) {
+            post.style.backgroundColor = "white";
+            e.target.removeEventListener('mouseout', removeSpotlight, false);
+          };
+
+          //add spotlight, add mouseout listener, on mouseout we remove the spotlight
+          (0, _helpers.$on)(e.target, 'mouseout', removeSpotlight, false);
+          return {
+            v: void 0
+          };
+        }();
+
+        if ((typeof _ret === 'undefined' ? 'undefined' : (0, _typeof3.default)(_ret)) === "object") return _ret.v;
+      }
+
+      newPost.id = 'peek-post';
+      newPost.className = 'peeking-post';
+
+      //grab target bounding rectangle
+      var targetDimensions = e.target.getBoundingClientRect();
+
+      //else lets grab the post and bring it here
+      newPost.style.left = targetDimensions.right + window.scrollX + 10 + 'px';
+      newPost.style.top = targetDimensions.top + window.scrollY - 36 + 'px';
+      newPost.style.backgroundColor = 'white';
+      this.$listing.appendChild(newPost);
+    }
+
+    //reply to post
+
+  }, {
+    key: '_reply',
+    value: function _reply(e) {
+      if (window.matchMedia('(min-width : 900px)').matches) {
+        if (this.$writer.classList.contains('hide')) {
+          this.$writer.classList.remove('hide');
+        }
+        var id = e.target.parentNode.dataset.post;
+        document.body.classList.add('writemode');
+
+        //now since it's open, we append the content (presumably an id)
+        this.$writerinput.value += this.$writerinput.value ? '\n(post: ' + id + ')\n' : '(post: ' + id + ')\n';
+        this.$writerinput.focus();
+      } else {
+        _core.nav.openWriterRef(e.target.parentNode.dataset.post);
+      }
+    }
+
+    //open thread
+
+  }, {
+    key: '_open',
+    value: function _open(e) {
+      document.body.classList.remove('writemode');
+      if (this.group) {
+        _router2.default.navigate(this.group + 't/' + e.target.parentNode.dataset.thread);
+      } else {
+        _core.nav.removeWriter();
+        var thread = e.target.parentNode.dataset.thread;
+        var group = e.target.parentNode.dataset.group;
+        _router2.default.navigate(group + 't/' + thread);
+      }
+    }
+
+    //go to group
+
+  }, {
+    key: '_goToGroup',
+    value: function _goToGroup(e) {
+      _router2.default.navigate(e.target.textContent);
+    }
+
+    //go to user
+
+  }, {
+    key: '_goToUser',
+    value: function _goToUser(e) {
+      if (e.target.textContent !== 'Anonymous') _router2.default.navigate('/user/' + e.target.textContent);
+    }
+
+    //save post -- does nothing yet
+
+  }, {
+    key: '_savePost',
+    value: function _savePost(e) {
+      e.target.style.color = e.target.style.color === '#6879FF' ? '#6879FF' : '#3b5998';
+    }
+
+    //report post -- does nothing yet
+
+  }, {
+    key: '_reportPost',
+    value: function _reportPost(e) {
+      if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
+      e.target.innerHTML = 'report';
+    }
+  }, {
+    key: '_toggleBody',
+    value: function _toggleBody(e) {
+      e.target.maxHeight = e.target.maxHeight === '400px' ? '1000px' : '400px';
+    }
+  }, {
+    key: '_cancelDelete',
+    value: function _cancelDelete() {
+      //only one deleteable at a time
+      var pending = (0, _helpers.$id)('delete-pending');
+      if (pending) {
+        pending.innerHTML = 'delete';
+        pending.id = '';
+      }
+    }
+  }, {
+    key: '_generatePosts',
+    value: function _generatePosts() {
+      var _this3 = this;
+
+      var getPosts = void 0;
+
+      //decide whether our function will produce head posts or regular posts
+      if (this.isThread) {
+        getPosts = function () {
+          var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+            var promises, results;
+            return _regenerator2.default.wrap(function _callee2$(_context2) {
+              while (1) {
+                switch (_context2.prev = _context2.next) {
+                  case 0:
+                    promises = _this3.list.map(function (post) {
+                      _this3.authors[post.id] = post.author;
+                      return (0, _template.generatePost)(_this3.group, post, _this3.user, _this3.authors);
+                    });
+                    _context2.next = 3;
+                    return _promise2.default.all(promises);
+
+                  case 3:
+                    results = _context2.sent;
+                    return _context2.abrupt('return', results.join(''));
+
+                  case 5:
+                  case 'end':
+                    return _context2.stop();
+                }
+              }
+            }, _callee2, _this3);
+          }));
+
+          return function getPosts() {
+            return _ref2.apply(this, arguments);
+          };
+        }();
+      } else {
+        getPosts = function () {
+          var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
+            var promises, results;
+            return _regenerator2.default.wrap(function _callee3$(_context3) {
+              while (1) {
+                switch (_context3.prev = _context3.next) {
+                  case 0:
+                    promises = _this3.list.map(function (thread) {
+                      return (0, _template.generateHeadPost)(thread, _this3.user);
+                    });
+                    _context3.next = 3;
+                    return _promise2.default.all(promises);
+
+                  case 3:
+                    results = _context3.sent;
+                    return _context3.abrupt('return', results.join(''));
+
+                  case 5:
+                  case 'end':
+                    return _context3.stop();
+                }
+              }
+            }, _callee3, _this3);
+          }));
+
+          return function getPosts() {
+            return _ref3.apply(this, arguments);
+          };
+        }();
+      }
+      //get the html for html
+      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
+        return _regenerator2.default.wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _context4.next = 2;
+                return getPosts();
+
+              case 2:
+                return _context4.abrupt('return', _context4.sent);
+
+              case 3:
+              case 'end':
+                return _context4.stop();
+            }
+          }
+        }, _callee4, _this3);
+      }))();
+    }
+
+    //generate html
+
+  }, {
+    key: 'generateStaticView',
+    value: function generateStaticView() {
+      var _this4 = this;
+
+      //get the html for html
+      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
+        return _regenerator2.default.wrap(function _callee5$(_context5) {
+          while (1) {
+            switch (_context5.prev = _context5.next) {
+              case 0:
+                _context5.next = 2;
+                return _this4._generatePosts();
+
+              case 2:
+                _context5.t0 = _context5.sent;
+                _context5.t1 = '<div id="List" class="List">' + _context5.t0;
+                return _context5.abrupt('return', _context5.t1 + '</div>');
+
+              case 5:
+              case 'end':
+                return _context5.stop();
+            }
+          }
+        }, _callee5, _this4);
+      }))();
+    }
+
+    //generate only the posts
+
+  }, {
+    key: 'generatePosts',
+    value: function generatePosts() {
+      var _this5 = this;
+
+      return (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee6() {
+        return _regenerator2.default.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return _this5._generatePosts();
+
+              case 2:
+                return _context6.abrupt('return', _context6.sent);
+
+              case 3:
+              case 'end':
+                return _context6.stop();
+            }
+          }
+        }, _callee6, _this5);
+      }))();
+    }
+  }]);
+  return Listing;
+}();
+
+exports.default = Listing;
+
+},{"../router/router.js":291,"./core.js":279,"./helpers.js":280,"./template.js":286,"babel-runtime/core-js/object/keys":3,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/typeof":10,"babel-runtime/regenerator":11}],282:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -26798,7 +27603,7 @@ var View = function () {
 			showMenu: function showMenu(e) {
 				//use this so we can see when the writer is open as opposed to menu (desktop view stuff)
 				_this._setActiveBody();
-				_this._showMenu(user, groups);
+				_this._showMenu(_this.user, groups);
 			},
 			removeMenu: function removeMenu(e) {
 				_this._unsetActiveBody();
@@ -26822,6 +27627,23 @@ var View = function () {
 		key: '_unsetActiveBody',
 		value: function _unsetActiveBody() {
 			document.body.className = '';
+		}
+
+		//do logout
+
+	}, {
+		key: '_logout',
+		value: function _logout() {
+			document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+			window.location = '/';
+		}
+
+		//go to user
+
+	}, {
+		key: '_goToUser',
+		value: function _goToUser(user) {
+			_router2.default.navigate('/user/' + user);
 		}
 
 		//bind all handlers --> we bind them to the 'this' context because that references the class
@@ -26863,6 +27685,14 @@ var View = function () {
 
 			//go to group
 			(0, _helpers.$on)(this.$groupsearch, 'keyup', this._handleGoToGroup.bind(this), false);
+		}
+
+		//lets us update user after we get user data
+
+	}, {
+		key: 'updateUser',
+		value: function updateUser(user) {
+			this.user = user;
 		}
 
 		//Exposes the writer-opening action -- allowing target to be dynamically set
@@ -27306,6 +28136,13 @@ var View = function () {
 					case 'rules':
 						console.log('Hit relevant');
 						break;
+					case 'logout':
+						_this5._logout();
+						_this5._removeMenu();
+						break;
+					case 'username':
+						_this5._goToUser(e.target.dataset.username);
+						break;
 				}
 			};
 
@@ -27342,7 +28179,7 @@ var View = function () {
 
 exports.default = View;
 
-},{"../router/router.js":289,"./helpers.js":280,"./template.js":285,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],282:[function(require,module,exports){
+},{"../router/router.js":291,"./helpers.js":280,"./template.js":286,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],283:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27548,12 +28385,17 @@ var oembed = function () {
 
 exports.default = oembed;
 
-},{"../config.js":278,"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":3,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11,"isomorphic-fetch":267}],283:[function(require,module,exports){
+},{"../config.js":278,"babel-runtime/core-js/json/stringify":1,"babel-runtime/core-js/object/keys":3,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11,"isomorphic-fetch":267}],284:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+
+var _keys = require('babel-runtime/core-js/object/keys');
+
+var _keys2 = _interopRequireDefault(_keys);
+
 exports.default = parse;
 exports.escapeHTML = escapeHTML;
 
@@ -27593,7 +28435,7 @@ var italics = /~(\S*?)~/g;
 //regex for code
 var code = /\[code]([\s\S]*?)\[\/code]/g;
 //regex for reference
-var ref = /\(post:(.*?)\)/g;
+var ref = /\(post: (.*?)\)/g;
 //regex for mentions
 var mention = /@(\S*?)\s/g;
 //regex for getting links back into place
@@ -27603,11 +28445,17 @@ var codeChunks = /`c`o`d`e`/g;
 //regex for links ('holy grail' via Matthew O'Riordan)
 var url = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
 
-//returns html for a given body
-function parse(body, author) {
+//returns html for a given body -- author is an object of mapped post-ids to authors
+function parse(body) {
+  var author = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
 
   //array of links that we'll keep for later
   var matches = [];
+
+  //keys of author
+  var postKeys = (0, _keys2.default)(author);
+
   //set urls -- fails for javascript protocol (important) --> this way links won't be broken
   body = body.replace(url, function (match, $1) {
     matches.push('<a class="Body-url" href="' + ($1.indexOf('http') == -1 ? 'http://' + $1 : $1) + '">' + $1 + '</a>');
@@ -27624,11 +28472,6 @@ function parse(body, author) {
 
   //clean body before we even parse
   body = escapeHTML(body);
-
-  /*remove newlines between mutiline
-  body.replace(code, (match) => {
-    match.indexO
-  });*/
 
   //split by newlines
   var text = body.split(/\r\n|\r|\n/);
@@ -27671,7 +28514,17 @@ function parse(body, author) {
   htmlbody = htmlbody.replace(mention, '<span class="Body-mention">$1</span>');
 
   //set refs
-  htmlbody = author ? htmlbody.replace(ref, '<span data-post="$1" data-type="ref" class="Body-ref">@' + author + '</span>') : htmlbody;
+  htmlbody = htmlbody.replace(ref, function (match, $1) {
+    var postkey = postKeys.shift();
+    if (!postkey) {
+      return '<span data-post="' + $1 + '" data-type="ref" class="Body-ref">@Anonymous</span>';
+    } else {
+      var auth = author[$1];
+      window.$1 = $1;
+      window.author = author;
+      return '<span data-post="' + $1 + '" data-type="ref" class="Body-ref">@' + auth + '</span>';
+    }
+  });
 
   //set links
   htmlbody = htmlbody.replace(links, function (match) {
@@ -27679,7 +28532,6 @@ function parse(body, author) {
     var rematch = mat ? mat : '';
     return rematch;
   });
-
   //return html wrapped in parent div
   return '<div data-type="body" class="Body-content">' + htmlbody + '</div>';
 }
@@ -27705,7 +28557,7 @@ function escapeHTML(html) {
   }
 }
 
-},{"../config.js":278,"highlight.js":100}],284:[function(require,module,exports){
+},{"../config.js":278,"babel-runtime/core-js/object/keys":3,"highlight.js":100}],285:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27761,20 +28613,17 @@ var store = {
     } else {
       store._user = {
         username: user.username,
-        anonymous: user.anonymous,
+        anonymous: false,
         usernames: user.usernames,
         notifications: user.notifications,
         saved: user.saved
       };
+      store.loggedIn = true;
     }
   },
-
-  //get user data
   get user() {
     return this._user;
   },
-
-  //get groups
   addGroups: function addGroups(groups) {
 
     //loop through array of groups & push them to our internal list
@@ -27782,8 +28631,6 @@ var store = {
       return undefined._groups.push();
     });
   },
-
-  //get all groups that have been added so far
   get groups() {
 
     //get groups from internal store
@@ -27799,14 +28646,10 @@ var store = {
       window.localStorage._owned = (0, _stringify2.default)(store._owned);
     }
   },
-
-  //retrieve owned ids
   get owned() {
-
     //get owned ids
     return this._owned;
   },
-
   set upload(c) {
     if (!c) {
       this._uploadData.content = '';
@@ -27816,15 +28659,15 @@ var store = {
       this._uploadData.contentType = c.contentType;
     }
   },
-
   get upload() {
     return this._uploadData;
-  }
+  },
+  loggedIn: false
 };
 
 exports.default = store;
 
-},{"../config.js":278,"babel-runtime/core-js/json/stringify":1}],285:[function(require,module,exports){
+},{"../config.js":278,"babel-runtime/core-js/json/stringify":1}],286:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -27850,7 +28693,7 @@ var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 //creates a post's html
 var generatePost = exports.generatePost = function () {
-  var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(group, post, user) {
+  var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(group, post, user, authors) {
     var timestamp, postID, owned, filledpost;
     return _regenerator2.default.wrap(function _callee$(_context) {
       while (1) {
@@ -27867,7 +28710,7 @@ var generatePost = exports.generatePost = function () {
             _context.t1 = _context.sent;
             _context.t2 = _context.t0 + _context.t1;
             _context.t3 = _context.t2 + '\n      </div>\n      <div class="Body">\n      ';
-            _context.t4 = generateBody(post);
+            _context.t4 = generateBody(post, authors);
             _context.t5 = _context.t3 + _context.t4;
             _context.t6 = _context.t5 + '\n      </div>\n      <footer class="Footer">\n      ';
             _context.t7 = generatePostFooter(post, owned);
@@ -27883,7 +28726,7 @@ var generatePost = exports.generatePost = function () {
     }, _callee, this);
   }));
 
-  return function generatePost(_x, _x2, _x3) {
+  return function generatePost(_x, _x2, _x3, _x4) {
     return _ref.apply(this, arguments);
   };
 }();
@@ -27920,7 +28763,7 @@ var generatePopularPost = exports.generatePopularPost = function () {
     }, _callee2, this);
   }));
 
-  return function generatePopularPost(_x4, _x5) {
+  return function generatePopularPost(_x5, _x6) {
     return _ref2.apply(this, arguments);
   };
 }();
@@ -27968,7 +28811,7 @@ var generateHeadPost = exports.generateHeadPost = function () {
     }, _callee3, this);
   }));
 
-  return function generateHeadPost(_x6, _x7) {
+  return function generateHeadPost(_x7, _x8) {
     return _ref3.apply(this, arguments);
   };
 }();
@@ -28027,7 +28870,7 @@ var generateContent = function () {
     }, _callee4, this);
   }));
 
-  return function generateContent(_x8, _x9) {
+  return function generateContent(_x9, _x10) {
     return _ref4.apply(this, arguments);
   };
 }();
@@ -28055,7 +28898,7 @@ var generatePostHeadFooter = function () {
     }, _callee5, this);
   }));
 
-  return function generatePostHeadFooter(_x10, _x11, _x12, _x13, _x14, _x15) {
+  return function generatePostHeadFooter(_x11, _x12, _x13, _x14, _x15, _x16) {
     return _ref5.apply(this, arguments);
   };
 }();
@@ -28063,10 +28906,12 @@ var generatePostHeadFooter = function () {
 //handle footer of thread post (head)
 
 
+exports.generateAuthors = generateAuthors;
 exports.generateMenu = generateMenu;
 exports.cutoff = cutoff;
 exports.generateWriter = generateWriter;
 exports.generateTimestamp = generateTimestamp;
+exports.generateTools = generateTools;
 
 var _threads = require('../ajax/threads.js');
 
@@ -28082,20 +28927,30 @@ var _parser2 = _interopRequireDefault(_parser);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+//helper to generate a map of post-id to authors
+/**
+ * dom template helpers
+ */
+
+function generateAuthors(posts) {
+  var authors = {};
+  posts.forEach(function (post) {
+    authors[post.id] = post.author;
+  });
+  return authors;
+}
+
 /**
  * Nav View Templates
  */
 
 //get template for either user logged in or not logged in
-/**
- * dom template helpers
- */
-
 function getUserMenu(user) {
-  if (user.anonymous) {
+  if (user.usernames.length < 1) {
     return '\n      <a href="/register" class="nostylelink">\n        <li id="TopNav-menu-signup" data-type="signup" class="TopNav-menu-dropdown-row ddtop">\n            <span id="dd-icon-signup" class="icon icon-book ddicon">\n            </span>\n            <span class="ddtext">Register for an account</span>\n        </li>\n      </a>\n      <a href="/login" class="nostylelink">\n        <li id="TopNav-menu-login" data-type="login" class="TopNav-menu-dropdown-row">\n            <span id="dd-icon-login" class="icon icon-book-open ddicon">\n            </span>\n            <span class="ddtext">Log in to your account</span>\n        </li>\n      </a>\n      ';
   } else {
-    return '\n       <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">\n         <span id="dd-icon-user" class="icon icon-cog ddicon">\n         </span>\n         <span class="ddtext">' + user.username + '</span>\n       </li>\n       <span id="TopNav-dropdown-logout">logout</span>\n       ';
+    //<span class="ddtext">${user.username}</span>
+    return '\n         <li id="TopNav-menu-username" data-type="user" class="TopNav-menu-dropdown-row ddtop">\n           <span id="dd-icon-user" class="icon icon-cog ddicon">\n           </span>\n         </li>\n         <span data-type="username" data-username="' + user.username + '" class="ddtext" id="TopNav-dropdown-logout">\n           <span data-type="username" data-username="' + user.username + '" id="TopNav-user">(' + user.username + ') profile</span>\n          <span data-type="logout" id="TopNav-logout">logout</span>\n         </span>\n       ';
   }
 }
 
@@ -28168,13 +29023,12 @@ function generatePostHeader(group, author, created) {
 function generatePopularPostHeader(group, author) {
   //title for each of the posts, replies should be overflow-x
   return '\n    <div class="Head-content">\n      <span class="Head-left">\n        <a data-type="group" class="Head-group">' + group + '</a>\n      </span>\n      <span class="Head-right">\n        <span data-type="author" class="Head-author">' + author + '</span>\n      </span>\n    </div>\n  ';
-}function generateBody(post) {
+}function generateBody(post, authors) {
   var str = post.body;
-  var author = post.author;
 
   //generate string
   if (str) {
-    str = (0, _parser2.default)(str, author);
+    str = (0, _parser2.default)(str, authors);
   } else {
     str = '';
   }
@@ -28216,7 +29070,218 @@ function generatePostFooter(post, owned) {
   return footer;
 }
 
-},{"../ajax/threads.js":276,"./helpers.js":280,"./oembed.js":282,"./parser":283,"babel-runtime/core-js/object/keys":3,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],286:[function(require,module,exports){
+//generates lefthand tools -- here to clear out class
+function generateTools(isThread, nightmode, devmode) {
+  var topTool = void 0;
+  if (isThread) {
+    topTool = '<div id="previous-pg" class="unselectable">\n      <span class="Tool-select hide">\u2022</span>previous-pg\n    </div>';
+  } else {
+    topTool = '<div id="load-more" class="unselectable">\n      <span class="Tool-select hide">\u2022</span>infinite-scroll\n    </div>';
+  }
+  return '\n  <div id="Tools-menu" class="desktop">\n    ' + topTool + '\n    <div class="unselectable ' + (nightmode ? 'Tools-selected' : '') + '" id="nightmode">\n      <span class="Tool-select hide">\u2022</span>night-mode\n    </div>\n    <div id="devmode" class="unselectable ' + (devmode ? 'Tools-selected' : '') + '">\n      <span class="Tool-select hide">\u2022</span>developers\n    </div>\n  </div>\n  ';
+}
+
+},{"../ajax/threads.js":276,"./helpers.js":280,"./oembed.js":283,"./parser":284,"babel-runtime/core-js/object/keys":3,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],287:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = require('babel-runtime/helpers/createClass');
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _core = require('../core/core.js');
+
+var _helpers = require('../core/helpers.js');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * Writer class
+ */
+
+var Writer = function () {
+  function Writer(isThread, usernames, group) {
+    (0, _classCallCheck3.default)(this, Writer);
+
+    this.isThread = isThread;
+    this.usernames = usernames;
+    this.group = group;
+  }
+
+  (0, _createClass3.default)(Writer, [{
+    key: 'bind',
+    value: function bind() {
+      //get refs
+      var $writertoggle = (0, _helpers.$id)('writer-toggle');
+      var $writerexit = (0, _helpers.$id)('writer-exit');
+      var $writerhide = (0, _helpers.$id)('writer-hide');
+      var $writerlink = (0, _helpers.$id)('writer-link-input');
+      var $writerupload = (0, _helpers.$id)('writer-upload-input');
+      var $writersend = (0, _helpers.$id)('writer-send');
+
+      //save a ref to writer & to options of it
+      this.$writer = (0, _helpers.$id)('writer');
+      this.$writeroptions = (0, _helpers.$id)('writer-options');
+      this.$writercontent = (0, _helpers.$id)('writer-upload-text');
+      this.$writerinput = (0, _helpers.$id)('writer-input'); //body
+      this.$writerusername = (0, _helpers.$id)('writer-username-option'); //anon or name
+      this.$writerlink = (0, _helpers.$id)('writer-link-input'); //link
+      this.$writerlabel = (0, _helpers.$id)('writer-label');
+      this.$writerupload = $writerupload;
+      this.$writerexit = $writerexit;
+
+      //apply event listeners
+      (0, _helpers.$on)($writertoggle, 'click', this._toggleInputSize.bind(this), false);
+      (0, _helpers.$on)($writerhide, 'click', this._hideWriter.bind(this), false);
+      (0, _helpers.$on)($writerexit, 'click', this._hideWriterOptions.bind(this), false);
+      (0, _helpers.$on)($writerlink, 'keyup', this._handleWriterLink.bind(this), false);
+      (0, _helpers.$on)($writerupload, 'change', this._writerUpload.bind(this), false);
+      (0, _helpers.$on)($writersend, 'click', this._send.bind(this), false);
+    }
+  }, {
+    key: '_toggleInputSize',
+    value: function _toggleInputSize(e) {
+      e.target.parentNode.classList.toggle('Writer-fs');
+      e.target.parentNode.classList.contains('Writer-fs') ? e.target.textContent = '–' : e.target.textContent = '+';
+      (0, _helpers.$id)('writer-input').focus();
+    }
+  }, {
+    key: '_writerUpload',
+    value: function _writerUpload(e) {
+      var _this = this;
+
+      var res = (0, _core.handleUpload)(this.$writerupload.files[0]);
+      res.then(function (success) {
+        if (success) {
+          _this.$writercontent.textContent = 'done';
+          return;
+        }
+
+        _this.$writercontent.textContent = 'failed';
+
+        window.setTimeout(function () {
+          _this.$writercontent.textContent = 'upload';
+        }, 3000);
+      });
+    }
+  }, {
+    key: '_send',
+    value: function _send(e) {
+      this.isThread ? this._sendToThread(e) : this._sendToGroup(e);
+    }
+  }, {
+    key: '_sendToGroup',
+    value: function _sendToGroup(e) {
+      var _this2 = this;
+
+      //(link = '', body, to, identity = 'Anonymous') params
+      var to = void 0;
+
+      //for this function i'm just gonna grab the necessary items from the dom
+      if (this.$writer.dataset.to === 'local') {
+        to = this.group;
+      } else {
+        to = this.$writer.dataset.to;
+      }
+
+      //check if they're posting with content
+      if (!this.$writerinput.value) {
+        return;
+      }
+
+      (0, _core.handleSubmit)(this.$writerlink.value, this.$writerinput.value, to, this.$writerusername.value);
+      this.$writer.classList.toggle('fly');
+      if (this.$writer.classList.contains('Writer-fs')) this.$writer.classList.toggle('Writer-fs');
+      document.body.classList.toggle('menu-active');
+      document.body.classList.toggle('writemode');
+
+      setTimeout(function () {
+        return _this2.$writer.classList.remove('fly');
+      }, 600);
+    }
+  }, {
+    key: '_sendToThread',
+    value: function _sendToThread(e) {
+      var _this3 = this;
+
+      //(link = '', body, to, identity = 'Anonymous') params
+      var to = 'this thread';
+
+      //check if they're posting with content
+      if (!this.$writerinput.value) {
+        return;
+      }
+
+      this.handleSubmit(this.$writerlink.value, this.$writerinput.value, to, this.$writerusername.value);
+      this.$writer.classList.toggle('fly');
+      if (this.$writer.classList.contains('Writer-fs')) this.$writer.classList.toggle('Writer-fs');
+      if (document.body.classList.contains('menu-active')) document.body.classList.toggle('menu-active');
+      if (document.body.classList.contains('writemode')) document.body.classList.toggle('writemode');
+      setTimeout(function () {
+        return _this3.$writer.classList.toggle('hide');
+      }, 200);
+      setTimeout(function () {
+        return _this3.$writer.classList.remove('fly');
+      }, 600);
+
+      //clear out input
+      this.$writerinput.value = '';
+    }
+  }, {
+    key: '_hideWriter',
+    value: function _hideWriter(e) {
+      this.$writer.classList.toggle('hide');
+      this.$writeroptions.classList.toggle('hide');
+      this.$writerexit.classList.toggle('flip');
+      this.$writerexit.classList.toggle('writer-selected');
+      if (this.$writer.classList.contains('Writer-fs')) {
+        this.$writer.classList.toggle('Writer-fs');
+        (0, _helpers.$id)('writer-toggle').textContent = '+';
+      }
+      document.body.classList.toggle('menu-active');
+      document.body.classList.toggle('writemode');
+    }
+  }, {
+    key: '_hideWriterOptions',
+    value: function _hideWriterOptions(e) {
+      e.target.classList.toggle('writer-selected');
+      e.target.classList.toggle('flip');
+      this.$writeroptions.classList.toggle('hide');
+      if (!this.$writeroptions.classList.contains('hide')) {
+        (0, _helpers.$id)('writer-link-input').focus();
+      }
+    }
+  }, {
+    key: '_handleWriterLink',
+    value: function _handleWriterLink(e) {
+      if (e.keyCode === 13) {
+        this.$writeroptions.classList.toggle('hide');
+        var exit = (0, _helpers.$id)('writer-exit');
+        exit.classList.toggle('flip');
+        exit.classList.toggle('writer-selected');
+      }
+    }
+  }, {
+    key: 'generateStaticView',
+    value: function generateStaticView() {
+      return '\n      <div id="writer" data-to="local" class="desktop hide">\n        <textarea placeholder="..." id="writer-input"></textarea>\n        <div id="writer-label">new post</div>\n        <div id="writer-exit" class="unselectable">^</div>\n        <div id="writer-options" class="desktop hide">\n          <div id="writer-link" class="writer-option"><input id="writer-link-input" placeholder="Share a link..."></div>\n          <div id="writer-username" class="writer-option">posting as\n            <select id="writer-username-option">\n              <option>Anonymous</option>\n              ' + this.usernames.map(function (username) {
+        return '<option>' + username + '</option>';
+      }) + '\n            </select>\n          </div>\n          <div id="writer-hide" class="writer-option">hide post</div>\n        </div>\n        <div id="writer-toggle">+</div>\n        <span id="writer-buttons">\n          <button id="writer-upload">\n            <label for="writer-upload-input">\n              <span id="writer-upload-text">upload</span>\n              <input accept=".webm, .mp4, .gif, .png, .jpeg, .jpg, .mov, .m4v" id="writer-upload-input" class="hide" type="file">\n            </label>\n          </button>\n          <button id="writer-send">send</button>\n        </span>\n      </div>\n      ';
+    }
+  }]);
+  return Writer;
+}();
+
+exports.default = Writer;
+
+},{"../core/core.js":279,"../core/helpers.js":280,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9}],288:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -28517,16 +29582,12 @@ exports.default = function () {
   return start;
 }();
 
-},{"../ajax/groups.js":274,"../ajax/threads.js":276,"../ajax/user.js":277,"../core/core.js":279,"../core/store.js":284,"./groupv.js":287,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],287:[function(require,module,exports){
+},{"../ajax/groups.js":274,"../ajax/threads.js":276,"../ajax/user.js":277,"../core/core.js":279,"../core/store.js":285,"./groupv.js":289,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],289:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -28565,6 +29626,14 @@ var _router2 = _interopRequireDefault(_router);
 var _term = require('../term.js');
 
 var _term2 = _interopRequireDefault(_term);
+
+var _listing = require('../core/listing.js');
+
+var _listing2 = _interopRequireDefault(_listing);
+
+var _writer = require('../core/writer.js');
+
+var _writer2 = _interopRequireDefault(_writer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -28626,43 +29695,17 @@ var View = function () {
     this.$container = (0, _helpers.$id)('app-container');
     this.$main = (0, _helpers.$id)('Main');
 
+    //set up listing (isThread, list, group, user)
+    this.listing = new _listing2.default(false, this.threads, this.group, this.user);
+    this.writer = new _writer2.default(false, this.user.user.usernames, this.group);
+
     //setup commands for view actions
     this.viewCommands = {
-      reply: function reply(e) {
-        return _this._reply(e);
-      },
-      open: function open(e) {
-        return _this._open(e);
-      },
-      openDirectly: function openDirectly(e) {
-        return _this._openDirectly(e);
-      },
-      group: function group(e) {
-        return _this._goToGroup(e.target.textContent);
-      },
-      user: function user(e) {
-        return _this._goToUser(e);
-      },
-      savePost: function savePost(e) {
-        return _this._savePost(e);
-      },
-      report: function report(e) {
-        return _this._reportPost(e);
-      },
-      toggleBody: function toggleBody(e) {
-        return _this._toggleBody(e);
-      },
       nextPage: function nextPage(e) {
         return _this._nextPage(e);
       },
       prevPage: function prevPage(e) {
         return _this._prevPage(e);
-      },
-      delete: function _delete(e) {
-        return _this._deletePost(e);
-      },
-      togglePost: function togglePost(e) {
-        return _this._togglePost(e);
       },
       toggleNM: function toggleNM(e) {
         return _this._toggleNM(e);
@@ -28681,142 +29724,27 @@ var View = function () {
     value: function bind() {
 
       //get references (as elements are dynamically rendered)
-      var $listing = (0, _helpers.$id)('List');
       var $prev = (0, _helpers.$id)('prevpage');
       var $next = (0, _helpers.$id)('nextpage');
       var $author = (0, _helpers.$id)('Main-desktop-author');
       var $popular = (0, _helpers.$id)('Poplisting');
-      var $writertoggle = (0, _helpers.$id)('writer-toggle');
-      var $writerexit = (0, _helpers.$id)('writer-exit');
-      var $writerhide = (0, _helpers.$id)('writer-hide');
-      var $writerlink = (0, _helpers.$id)('writer-link-input');
       var $loadmore = (0, _helpers.$id)('load-more');
       var $nightmode = (0, _helpers.$id)('nightmode');
       var $devmode = (0, _helpers.$id)('devmode');
-      var $writerupload = (0, _helpers.$id)('writer-upload-input');
-      var $writersend = (0, _helpers.$id)('writer-send');
 
-      //save a ref to writer & to options of it
-      this.$writer = (0, _helpers.$id)('writer');
-      this.$writeroptions = (0, _helpers.$id)('writer-options');
-      this.$writercontent = (0, _helpers.$id)('writer-upload-text');
-      this.$writerinput = (0, _helpers.$id)('writer-input'); //body
-      this.$writerusername = (0, _helpers.$id)('writer-username-option'); //anon or name
-      this.$writerlink = (0, _helpers.$id)('writer-link-input'); //link
-      this.$writerlabel = (0, _helpers.$id)('writer-label');
-      this.$writerupload = $writerupload;
-      this.$writerexit = $writerexit;
-
-      //clicks on listing sections --> reuses _onPostClick for convenience
-      (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
-      (0, _helpers.$on)($popular, 'click', this._onPostClick.bind(this), false);
+      //bind handlers
+      (0, _helpers.$on)($popular, 'click', this.listing.handlePostClick.bind(this.listing), false);
       (0, _helpers.$on)($loadmore, 'click', this._toggleLoadMore.bind(this), false);
-      (0, _helpers.$on)($writertoggle, 'click', this._toggleInputSize.bind(this), false);
-      (0, _helpers.$on)($writerhide, 'click', this._hideWriter.bind(this), false);
-      (0, _helpers.$on)($writerexit, 'click', this._hideWriterOptions.bind(this), false);
       (0, _helpers.$on)($nightmode, 'click', this.viewCommands.toggleNM.bind(this), false);
       (0, _helpers.$on)($devmode, 'click', this.viewCommands.toggleDM.bind(this), false);
-      (0, _helpers.$on)($writerlink, 'keyup', this._handleWriterLink.bind(this), false);
-      (0, _helpers.$on)($writerupload, 'change', this._writerUpload.bind(this), false);
-      (0, _helpers.$on)($writersend, 'click', this._writerSend.bind(this), false);
+
+      //set up handlers on listing
+      this.listing.bind();
+      this.writer.bind();
 
       //set up handlers for pagination
       if ($prev) (0, _helpers.$on)($prev, 'click', this.viewCommands.prevPage.bind(this), false);
       if ($next) (0, _helpers.$on)($next, 'click', this.viewCommands.nextPage.bind(this), false);
-    }
-  }, {
-    key: '_writerUpload',
-    value: function _writerUpload(e) {
-      var _this2 = this;
-
-      var res = this.handleUpload(this.$writerupload.files[0]);
-      res.then(function (success) {
-        if (success) {
-          _this2.$writercontent.textContent = 'done';
-          return;
-        }
-
-        _this2.$writercontent.textContent = 'failed';
-
-        window.setTimeout(function () {
-          _this2.$writercontent.textContent = 'upload';
-        }, 3000);
-      });
-    }
-  }, {
-    key: '_writerSend',
-    value: function _writerSend(e) {
-      var _this3 = this;
-
-      //(link = '', body, to, identity = 'Anonymous') params
-      var to = void 0;
-
-      //for this function i'm just gonna grab the necessary items from the dom
-      if (this.$writer.dataset.to === 'local') {
-        to = this.group;
-      } else {
-        to = this.$writer.dataset.to;
-      }
-
-      //check if they're posting with content
-      if (!this.$writerinput.value) {
-        return;
-      }
-
-      this.handleSubmit(this.$writerlink.value, this.$writerinput.value, to, this.$writerusername.value);
-      this.$writer.classList.toggle('fly');
-      if (this.$writer.classList.contains('Writer-fs')) this.$writer.classList.toggle('Writer-fs');
-      document.body.classList.toggle('menu-active');
-      document.body.classList.toggle('writemode');
-
-      setTimeout(function () {
-        return _this3.$writer.classList.remove('fly');
-      }, 600);
-    }
-  }, {
-    key: '_hideWriter',
-    value: function _hideWriter(e) {
-      this.$writer.classList.toggle('hide');
-      this.$writeroptions.classList.toggle('hide');
-      this.$writerexit.classList.toggle('flip');
-      this.$writerexit.classList.toggle('writer-selected');
-      if (this.$writer.classList.contains('Writer-fs')) {
-        this.$writer.classList.toggle('Writer-fs');
-        (0, _helpers.$id)('writer-toggle').textContent = '+';
-      }
-      document.body.classList.toggle('menu-active');
-      document.body.classList.toggle('writemode');
-    }
-  }, {
-    key: '_hideWriterOptions',
-    value: function _hideWriterOptions(e) {
-      e.target.classList.toggle('writer-selected');
-      e.target.classList.toggle('flip');
-      this.$writeroptions.classList.toggle('hide');
-      if (!this.$writeroptions.classList.contains('hide')) {
-        (0, _helpers.$id)('writer-link-input').focus();
-      }
-    }
-  }, {
-    key: '_handleWriterLink',
-    value: function _handleWriterLink(e) {
-      if (e.keyCode === 13) {
-        this.$writeroptions.classList.toggle('hide');
-        var exit = (0, _helpers.$id)('writer-exit');
-        exit.classList.toggle('flip');
-        exit.classList.toggle('writer-selected');
-      }
-    }
-  }, {
-    key: '_postOwned',
-    value: function _postOwned(id) {
-      //checks if we own post (so we can add delete when we render)
-      if (this.user.auth.mod) return true;
-      var owned = false;
-      this.user.owned.forEach(function (currId) {
-        if (currId === id) owned = true;
-      });
-      return owned;
     }
   }, {
     key: '_toggleNM',
@@ -28842,13 +29770,6 @@ var View = function () {
       }
     }
   }, {
-    key: '_toggleInputSize',
-    value: function _toggleInputSize(e) {
-      e.target.parentNode.classList.toggle('Writer-fs');
-      e.target.parentNode.classList.contains('Writer-fs') ? e.target.textContent = '–' : e.target.textContent = '+';
-      (0, _helpers.$id)('writer-input').focus();
-    }
-  }, {
     key: '_toggleLoadMore',
     value: function _toggleLoadMore(e) {
 
@@ -28869,7 +29790,7 @@ var View = function () {
   }, {
     key: '_handleScroll',
     value: function _handleScroll(e) {
-      var _this4 = this;
+      var _this2 = this;
 
       var height = Math.max(document.body.scrollHeight, document.body.offsetHeight);
       if (!this.doneLoading && window.pageYOffset >= height * .6 + 100 * this.page && !this.loadingMore) {
@@ -28877,14 +29798,14 @@ var View = function () {
         this.loadingMore = true;
         //give it a second to load more
         setTimeout(function () {
-          return _this4.loadingMore = false;
+          return _this2.loadingMore = false;
         }, 1000);
       }
     }
   }, {
     key: '_addMore',
     value: function _addMore(user, group, page) {
-      var _this5 = this;
+      var _this3 = this;
 
       var getposts = function () {
         var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
@@ -28894,7 +29815,7 @@ var View = function () {
               switch (_context.prev = _context.next) {
                 case 0:
                   _context.next = 2;
-                  return _this5.getGroup(group, page);
+                  return _this3.getGroup(group, page);
 
                 case 2:
                   res = _context.sent;
@@ -28907,8 +29828,8 @@ var View = function () {
                   if (!jres.threads || jres.threads.length != 30) {
 
                     //if there are less threads than there should be, we just stop endless scroll
-                    _this5.loadingMore = true;
-                    _this5.doneLoading = true;
+                    _this3.loadingMore = true;
+                    _this3.doneLoading = true;
                   }
                   promises = jres.threads.map(function (thread) {
                     return (0, _template.generateHeadPost)(thread, user);
@@ -28925,7 +29846,7 @@ var View = function () {
                   return _context.stop();
               }
             }
-          }, _callee, _this5);
+          }, _callee, _this3);
         }));
 
         return function getposts() {
@@ -28956,7 +29877,7 @@ var View = function () {
                   return _context2.stop();
               }
             }
-          }, _callee2, _this5);
+          }, _callee2, _this3);
         }));
 
         return function addThem() {
@@ -28966,24 +29887,6 @@ var View = function () {
 
       //put the new posts in the dom
       addThem();
-    }
-  }, {
-    key: '_togglePost',
-    value: function _togglePost(e) {
-      //flip icon
-      e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
-
-      //because it's not initialized in the dom --> switches off
-      e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
-
-      //move up in the dom until we find the post
-      var target = e.target;
-      while (target.dataset.type != 'post') {
-        target = target.parentNode;
-      }
-
-      //toggle post visibility
-      target.classList.toggle('Post-Hide');
     }
   }, {
     key: '_prevPage',
@@ -29000,190 +29903,22 @@ var View = function () {
       window.scrollTo(0, 0);
     }
 
-    //handle post clicks
-
-  }, {
-    key: '_onPostClick',
-    value: function _onPostClick(e) {
-      var target = e.target;
-      switch (target.dataset.type) {
-        case 'author':
-          this._goToUser(target.textContent);
-          break;
-        case 'group':
-          this.viewCommands.group(e);
-          break;
-        case 'hide':
-          this.viewCommands.togglePost(e);
-          break;
-        case 'report':
-          //sends request off to dev server
-          this.viewCommands.report(e);
-          break;
-        case 'save':
-          //saves and unsaves posts
-          this.viewCommands.savePost(e);
-          break;
-        case 'reply':
-          //opens writer with thread as target
-          this.viewCommands.reply(e);
-          break;
-        case 'open':
-          //opens thread
-          this.viewCommands.open(e);
-          break;
-        case 'delete':
-          //deletes thread
-          this.viewCommands.delete(e);
-          break;
-        case 'post-link':
-          //opens thread
-          this.viewCommands.openDirectly(e);
-        default:
-          this._cancelDelete(e);
-      }
-    }
-
-    //reply to post
-
-  }, {
-    key: '_reply',
-    value: function _reply(e) {
-      _core.nav.openWriter(e.target.parentNode.dataset.thread);
-      this.$writerlabel.textContent = "new post to thread";
-      this.$writer.dataset.to = e.target.parentNode.dataset.thread;
-      this.$writer.classList.remove('Writer-fs');
-    }
-
-    //open thread
-
-  }, {
-    key: '_open',
-    value: function _open(e) {
-      _core.nav.removeWriter();
-      _router2.default.navigate(this.group + 't/' + e.target.parentNode.dataset.thread);
-    }
-
-    //open thread directly from element's thread id
-
-  }, {
-    key: '_openDirectly',
-    value: function _openDirectly(e) {
-      _core.nav.removeWriter();
-      _router2.default.navigate(e.target.dataset.group + 't/' + e.target.dataset.thread);
-    }
-
-    //go to group
-
-  }, {
-    key: '_goToGroup',
-    value: function _goToGroup(grp) {
-      _core.nav.removeWriter();
-      _router2.default.navigate(grp);
-    }
-
-    //go to user
-
-  }, {
-    key: '_goToUser',
-    value: function _goToUser(username) {
-      _core.nav.removeWriter();
-      if (username !== 'Anonymous') _router2.default.navigate('/user/' + username);
-    }
-
-    //save post
-
-  }, {
-    key: '_savePost',
-    value: function _savePost(e) {
-      if (e.target.style.color === '#6879FF') {
-        //unlike
-        e.target.style.color = '#3b5998';
-        var thread = e.target.parentNode.dataset.thread;
-        unsavePost(thread);
-      } else {
-        //like
-        e.target.style.color = '#6879FF';
-        var _thread = e.target.parentNode.dataset.thread;
-        savePost(_thread);
-      }
-    }
-
-    //report post
-
-  }, {
-    key: '_reportPost',
-    value: function _reportPost(e) {
-
-      //TODO: set up dev server and shoot off requests here
-      if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
-      e.target.innerHTML = 'report';
-    }
-
-    //cancel delete
-
-  }, {
-    key: '_cancelDelete',
-    value: function _cancelDelete() {
-      //only one deleteable at a time
-      var pending = (0, _helpers.$id)('delete-pending');
-      if (pending) {
-        pending.innerHTML = 'delete';
-        pending.id = '';
-      }
-    }
-
-    //delete post
-
-  }, {
-    key: '_deletePost',
-    value: function _deletePost(e) {
-      var content = e.target.innerHTML;
-      if (content === 'delete') {
-        this._cancelDelete();
-        e.target.innerHTML = "sure?";
-        e.target.id = 'delete-pending';
-        return;
-      }
-      var thread = e.target.parentNode.dataset.thread;
-      var post = e.target.parentNode.dataset.post;
-      console.log(thread);
-      var match = void 0;
-      var owned = (0, _keys2.default)(this.user.owned);
-      for (var i = 0; i < owned.length; i++) {
-        if (post === owned[i]) {
-          match = owned[i];
-        }
-      }
-      console.log(match);
-      if (match) this.deleteThread(thread, this.user.owned[match]);
-
-      //reload this page (but not refresh)
-      _router2.default.check();
-    }
-  }, {
-    key: '_toggleBody',
-    value: function _toggleBody(e) {
-      console.log(e.target);
-      e.target.style.maxHeight = e.target.style.maxHeight === '500px' ? 'none' : '500px';
-    }
-
     //generate html
 
   }, {
     key: 'generateStaticView',
     value: function generateStaticView(threads, info, popular, user) {
-      var _this6 = this;
+      var _this4 = this;
 
-      var getposts = function () {
+      var getpopularposts = function () {
         var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
           var promises, results;
           return _regenerator2.default.wrap(function _callee3$(_context3) {
             while (1) {
               switch (_context3.prev = _context3.next) {
                 case 0:
-                  promises = threads.map(function (thread) {
-                    return (0, _template.generateHeadPost)(thread, user);
+                  promises = popular.map(function (post) {
+                    return (0, _template.generatePopularPost)(post, user);
                   });
                   _context3.next = 3;
                   return _promise2.default.all(promises);
@@ -29197,104 +29932,61 @@ var View = function () {
                   return _context3.stop();
               }
             }
-          }, _callee3, _this6);
+          }, _callee3, _this4);
         }));
 
-        return function getposts() {
+        return function getpopularposts() {
           return _ref3.apply(this, arguments);
         };
       }();
 
-      var getpopularposts = function () {
+      var buildView = function () {
         var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
-          var promises, results;
+          var list, writer, listingHeader, footer, popularInfo, tools;
           return _regenerator2.default.wrap(function _callee4$(_context4) {
             while (1) {
               switch (_context4.prev = _context4.next) {
                 case 0:
-                  promises = popular.map(function (post) {
-                    return (0, _template.generatePopularPost)(post, user);
-                  });
-                  _context4.next = 3;
-                  return _promise2.default.all(promises);
+                  _context4.next = 2;
+                  return _this4.listing.generateStaticView();
 
-                case 3:
-                  results = _context4.sent;
-                  return _context4.abrupt('return', results.join(''));
+                case 2:
+                  list = _context4.sent;
 
-                case 5:
+
+                  //generate writer
+                  writer = _this4.writer.generateStaticView();
+                  listingHeader = '\n      <div id="Main-listing-header" class="desktop">\n        <div class="Main-listing-group">Recent Posts ' + (_this4.page > 0 ? '<span id="Main-listing-pg">[page ' + (_this4.page + 1) + ']</span>' : '') + '</div>\n      </div>\n      ';
+
+                  //pagination controls
+
+                  footer = '\n      <div class="Main-Footer">\n      ' + (_this4.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : '') + '\n      ' + (_this4.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : '') + '\n      </div>\n      ';
+
+                  //desktop view information --> popular posts and stuff like that
+
+                  _context4.next = 8;
+                  return getpopularposts();
+
+                case 8:
+                  _context4.t0 = _context4.sent;
+                  _context4.t1 = '\n        <div id="Poplisting" class="desktop">\n          <div class="PopularList">\n            <span id="Poplisting-title">\n              Popular Today\n            </span>\n            <span id="Poplisting-title-label">replies</span>\n            ' + _context4.t0;
+                  popularInfo = _context4.t1 + '\n          </div>\n          <div class="Mixroom-info" >\n            <span><a href="static/placeholder.html">Terms</a></span>\n            <span><a href="static/placeholder.html">Privacy</a></span>\n            <span><a href="static/placeholder.html">Advertise</a></span>\n          </div>\n        </div>\n      ';
+                  tools = (0, _template.generateTools)(false, _this4.$container.classList.contains('nightmode'), _this4.$container.classList.contains('devmode'));
+
+                  //final template for section
+
+                  return _context4.abrupt('return', '\n        <div id="Main-container">\n          ' + listingHeader + '\n          ' + popularInfo + '\n          ' + tools + '\n          ' + list + '\n          ' + footer + '\n          ' + writer + '\n        </div>\n        ');
+
+                case 13:
                 case 'end':
                   return _context4.stop();
               }
             }
-          }, _callee4, _this6);
-        }));
-
-        return function getpopularposts() {
-          return _ref4.apply(this, arguments);
-        };
-      }();
-
-      var buildView = function () {
-        var _ref5 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee5() {
-          var header, list, user, writer, footer, groupInfo, popularInfo, listingHeader, tools;
-          return _regenerator2.default.wrap(function _callee5$(_context5) {
-            while (1) {
-              switch (_context5.prev = _context5.next) {
-                case 0:
-                  //main header
-                  header = '\n        <div id="Main-Header">\n\n        </div>\n      ';
-                  //wrapper for listing
-
-                  _context5.next = 3;
-                  return getposts();
-
-                case 3:
-                  _context5.t0 = _context5.sent;
-                  _context5.t1 = '\n      <div id="List" class="List">\n      ' + _context5.t0;
-                  list = _context5.t1 + '\n      </div>\n      ';
-
-
-                  //user has other info catalogued under user, particularly, usernames
-                  user = _this6.user.user;
-                  writer = '\n        <div id="writer" data-to="local" class="desktop hide">\n          <textarea placeholder="..." id="writer-input"></textarea>\n          <div id="writer-label">new post</div>\n          <div id="writer-exit" class="unselectable">^</div>\n          <div id="writer-options" class="desktop hide">\n            <div id="writer-link" class="writer-option"><input id="writer-link-input" placeholder="Share a link..."></div>\n            <div id="writer-username" class="writer-option">posting as\n              <select id="writer-username-option">\n                <option>Anonymous</option>\n                ' + user.usernames.map(function (username) {
-                    return '<option>' + username + '</option>';
-                  }) + '\n              </select>\n            </div>\n            <div id="writer-hide" class="writer-option">hide post</div>\n          </div>\n          <div id="writer-toggle">+</div>\n          <span id="writer-buttons">\n            <button id="writer-upload">\n              <label for="writer-upload-input">\n                <span id="writer-upload-text">upload</span>\n                <input accept=".webm, .mp4, .gif, .png, .jpeg, .jpg, .mov, .m4v" id="writer-upload-input" class="hide" type="file">\n              </label>\n            </button>\n            <button id="writer-send">send</button>\n          </span>\n        </div>\n        ';
-
-                  //pagination controls
-
-                  footer = '\n      <div class="Main-Footer">\n      ' + (_this6.page > 0 ? '<a class="Main-Footer-btn" id="prevpage" href="javascript:;">prev</a>' : '') + '\n      ' + (_this6.threads.length === 30 ? '<a class="Main-Footer-btn" id="nextpage" href="javascript:;">next</a>' : '') + '\n      </div>\n      ';
-
-                  //desktop view information about groups --> allows group navigation
-
-                  groupInfo = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupName">' + info.name + '</div>\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p id="Main-desktop-author" class="GroupAuthor-name">' + info.author + '</p>\n          </div>\n          <div class="GroupPage">\n            <p class="GroupPage-page">Page:</p>\n            <p class="GroupPage-num">' + _this6.page + '</p>\n          </div>\n          <div class="Created">\n            <p>Created</p>\n            <p>' + (0, _template.generateTimestamp)(info.created) + '</p>\n          </div>\n          <div class="GroupNav">\n            <input id="GroupNav-input" placeholder="Go to group...">\n          </div>\n        </div>\n      ';
-
-                  //desktop view information --> popular posts and stuff like that
-
-                  _context5.next = 12;
-                  return getpopularposts();
-
-                case 12:
-                  _context5.t2 = _context5.sent;
-                  _context5.t3 = '\n        <div id="Poplisting" class="desktop">\n          <div class="PopularList">\n            <span id="Poplisting-title">\n              Popular Today\n            </span>\n            <span id="Poplisting-title-label">replies</span>\n            ' + _context5.t2;
-                  popularInfo = _context5.t3 + '\n          </div>\n          <div class="Mixroom-info" >\n            <span><a href="static/placeholder.html">Terms</a></span>\n            <span><a href="static/placeholder.html">Privacy</a></span>\n            <span><a href="static/placeholder.html">Advertise</a></span>\n          </div>\n        </div>\n      ';
-                  listingHeader = '\n      <div id="Main-listing-header" class="desktop">\n        <div class="Main-listing-group">Recent Posts ' + (_this6.page > 0 ? '<span id="Main-listing-pg">[page ' + (_this6.page + 1) + ']</span>' : '') + '</div>\n      </div>\n      ';
-                  tools = '\n      <div id="Tools-menu" class="desktop">\n        <div id="load-more" class="unselectable">\n          <span class="Tool-select hide">\u2022</span>infinite-scroll\n        </div>\n        <div class="unselectable ' + (_this6.$container.classList.contains('nightmode') ? 'Tools-selected' : '') + '" id="nightmode">\n          <span class="Tool-select hide">\u2022</span>night-mode\n        </div>\n        <div id="devmode" class="unselectable ' + (_this6.$container.classList.contains('devmode') ? 'Tools-selected' : '') + '">\n          <span class="Tool-select hide">\u2022</span>developers\n        </div>\n      </div>\n      ';
-
-                  //final template for section
-
-                  return _context5.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + listingHeader + '\n          ' + popularInfo + '\n          ' + tools + '\n          ' + list + '\n          ' + footer + '\n          ' + writer + '\n        </div>\n        ');
-
-                case 18:
-                case 'end':
-                  return _context5.stop();
-              }
-            }
-          }, _callee5, _this6);
+          }, _callee4, _this4);
         }));
 
         return function buildView() {
-          return _ref5.apply(this, arguments);
+          return _ref4.apply(this, arguments);
         };
       }();
 
@@ -29319,16 +30011,8 @@ var View = function () {
 
 exports.default = View;
 
-},{"../core/core.js":279,"../core/helpers.js":280,"../core/oembed.js":282,"../core/template.js":285,"../router/router.js":289,"../term.js":294,"babel-runtime/core-js/object/keys":3,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],288:[function(require,module,exports){
+},{"../core/core.js":279,"../core/helpers.js":280,"../core/listing.js":281,"../core/oembed.js":283,"../core/template.js":286,"../core/writer.js":287,"../router/router.js":291,"../term.js":296,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],290:[function(require,module,exports){
 'use strict';
-
-var _regenerator = require('babel-runtime/regenerator');
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
-
-var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
-
-var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
 var _core = require('./core/core.js');
 
@@ -29341,8 +30025,6 @@ var _store2 = _interopRequireDefault(_store);
 var _router = require('./router/router.js');
 
 var _router2 = _interopRequireDefault(_router);
-
-var _user = require('./ajax/user.js');
 
 var _oembed = require('./core/oembed.js');
 
@@ -29358,74 +30040,14 @@ require('./search/search.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-//handle getting user (usernames, username) data via ajax
-/*
-  main.js -- entry point for the application
-*/
-{
-  //get user data and store it
-  (function () {
-    var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-      var usr, usrjson;
-      return _regenerator2.default.wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _context.prev = 0;
-              _context.next = 3;
-              return (0, _user.getUser)();
+//bind basic UI
+(0, _core2.default)().then(function () {
+  return _router2.default.start();
+}); /*
+      main.js -- entry point for the application
+    */
 
-            case 3:
-              usr = _context.sent;
-              _context.next = 6;
-              return usr.json();
-
-            case 6:
-              usrjson = _context.sent;
-
-              if (usrjson) {
-                _context.next = 9;
-                break;
-              }
-
-              return _context.abrupt('return');
-
-            case 9:
-
-              //else continue
-              _store2.default.addUser(usrjson);
-
-              _context.next = 15;
-              break;
-
-            case 12:
-              _context.prev = 12;
-              _context.t0 = _context['catch'](0);
-              return _context.abrupt('return');
-
-            case 15:
-            case 'end':
-              return _context.stop();
-          }
-        }
-      }, _callee, this, [[0, 12]]);
-    }));
-
-    function user() {
-      return _ref.apply(this, arguments);
-    }
-
-    return user;
-  })()();
-
-  //bind basic UI
-  (0, _core2.default)();
-
-  //bind view for route
-  _router2.default.start();
-}
-
-},{"./ajax/user.js":277,"./core/core.js":279,"./core/oembed.js":282,"./core/parser.js":283,"./core/store.js":284,"./router/router.js":289,"./search/search.js":291,"./term.js":294,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],289:[function(require,module,exports){
+},{"./core/core.js":279,"./core/oembed.js":283,"./core/parser.js":284,"./core/store.js":285,"./router/router.js":291,"./search/search.js":293,"./term.js":296}],291:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29555,7 +30177,7 @@ exports.default = router;
 
 window.router = router;
 
-},{"../config.js":278,"./routes.js":290}],290:[function(require,module,exports){
+},{"../config.js":278,"./routes.js":292}],292:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29586,6 +30208,10 @@ var _thread = require('../thread/thread.js');
 
 var _thread2 = _interopRequireDefault(_thread);
 
+var _user = require('../user/user.js');
+
+var _user2 = _interopRequireDefault(_user);
+
 var _search = require('../search/search.js');
 
 var _search2 = _interopRequireDefault(_search);
@@ -29595,6 +30221,8 @@ var _socket = require('../socket.js');
 var _socket2 = _interopRequireDefault(_socket);
 
 var _core = require('../core/core.js');
+
+var _helpers = require('../core/helpers.js');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29623,7 +30251,7 @@ function setup(router) {
     if (_socket2.default.inRoom) _socket2.default.leaveRoom();
 
     //clear view on route change --> maybe put an animation
-    //document.getElementById('main').innerHTML = "";
+    (0, _helpers.spinner)();
   });
 
   //set up root handler '/'
@@ -29658,6 +30286,7 @@ function setup(router) {
   //route for user view and settings '/user/:username'
   router.add(/user\/(.*)/, function (username) {
     router.location = 'user';
+    (0, _user2.default)(username);
     //user view
     console.log('user');
   });
@@ -29698,7 +30327,7 @@ function setup(router) {
                 break;
               }
 
-              return _context2.abrupt('return', router.navigate('/404'));
+              return _context2.abrupt('return');
 
             case 11:
               //setup thread view
@@ -29743,7 +30372,7 @@ function setup(router) {
                 break;
               }
 
-              return _context3.abrupt('return', router.navigate('/404'));
+              return _context3.abrupt('return');
 
             case 10:
 
@@ -29789,7 +30418,7 @@ function setup(router) {
                 break;
               }
 
-              return _context4.abrupt('return', router.navigate('/404'));
+              return _context4.abrupt('return');
 
             case 10:
               //setup group
@@ -29809,7 +30438,7 @@ function setup(router) {
   }());
 }
 
-},{"../ajax/groups.js":274,"../config.js":278,"../core/core.js":279,"../group/group.js":286,"../search/search.js":291,"../socket.js":293,"../thread/thread.js":296,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],291:[function(require,module,exports){
+},{"../ajax/groups.js":274,"../config.js":278,"../core/core.js":279,"../core/helpers.js":280,"../group/group.js":288,"../search/search.js":293,"../socket.js":295,"../thread/thread.js":298,"../user/user.js":301,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],293:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -29891,6 +30520,11 @@ var unsave = function () {
     return _ref2.apply(this, arguments);
   };
 }();
+
+/*    nav.removeWriter();
+    let thread = e.target.parentNode.dataset.thread;
+    let group = e.target.parentNode.dataset.group;
+    router.navigate(`${group}t/${thread}`);*/
 
 //init for group controller (or whatever you'd like to call it)
 
@@ -30030,7 +30664,7 @@ exports.default = function () {
   return start;
 }();
 
-},{"../ajax/search.js":275,"../ajax/user.js":277,"../core/store.js":284,"./searchv.js":292,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11,"isomorphic-fetch":267}],292:[function(require,module,exports){
+},{"../ajax/search.js":275,"../ajax/user.js":277,"../core/store.js":285,"./searchv.js":294,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11,"isomorphic-fetch":267}],294:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30041,17 +30675,9 @@ var _regenerator = require('babel-runtime/regenerator');
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _promise = require('babel-runtime/core-js/promise');
-
-var _promise2 = _interopRequireDefault(_promise);
-
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -30075,9 +30701,16 @@ var _router = require('../router/router.js');
 
 var _router2 = _interopRequireDefault(_router);
 
+var _listing = require('../core/listing.js');
+
+var _listing2 = _interopRequireDefault(_listing);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 //view for posts & threads
+/**
+ * groupv.js is the view for the group
+ */
 var View = function () {
 
   //pass in top groups and user -- with username, id, notifications
@@ -30090,7 +30723,7 @@ var View = function () {
     //set users
     this.users = data.users;
 
-    //set group
+    //set groups
     this.groups = data.groups;
 
     //set threads --> catch null threads (like when the page is empty)
@@ -30109,35 +30742,11 @@ var View = function () {
     this.$container = (0, _helpers.$id)('app-container');
     this.$main = (0, _helpers.$id)('Main');
 
+    //set up listing (isThread, list, group, user)
+    this.listing = new _listing2.default(false, this.threads, null, this.user);
+
     //setup commands for view actions
     this.viewCommands = {
-      reply: function reply(e) {
-        return _this._reply(e);
-      },
-      open: function open(e) {
-        return _this._open(e);
-      },
-      openDirectly: function openDirectly(e) {
-        return _this._openDirectly(e);
-      },
-      group: function group(e) {
-        return _this._goToGroup(e.target.textContent);
-      },
-      user: function user(e) {
-        return _this._goToUser(e);
-      },
-      goToGroup: function goToGroup(e) {
-        return _this._goToGroupDirectly(e);
-      },
-      savePost: function savePost(e) {
-        return _this._savePost(e);
-      },
-      report: function report(e) {
-        return _this._reportPost(e);
-      },
-      toggleBody: function toggleBody(e) {
-        return _this._toggleBody(e);
-      },
       prevPage: function prevPage(e) {
         return _this._prevPage(e);
       },
@@ -30170,10 +30779,12 @@ var View = function () {
       var $nightmode = (0, _helpers.$id)('nightmode');
 
       //clicks on listing sections --> reuses _onPostClick for convenience
-      (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
       (0, _helpers.$on)($prev, 'click', this.viewCommands.prevPage.bind(this), false);
       (0, _helpers.$on)($nightmode, 'click', this.viewCommands.toggleNM.bind(this), false);
       (0, _helpers.$on)($previouspg, 'click', this.viewCommands.prevPage.bind(this), false);
+
+      //bind listing
+      this.listing.bind();
     }
   }, {
     key: '_toggleNM',
@@ -30186,208 +30797,6 @@ var View = function () {
     value: function _prevPage(e) {
       _router2.default.back();
     }
-  }, {
-    key: '_postOwned',
-    value: function _postOwned(id) {
-      //checks if we own post (so we can add delete when we render)
-      if (this.user.auth.mod) return true;
-      var owned = false;
-      this.user.owned.forEach(function (currId) {
-        if (currId === id) owned = true;
-      });
-      return owned;
-    }
-  }, {
-    key: '_togglePost',
-    value: function _togglePost(e) {
-      //flip icon
-      e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
-
-      //because it's not initialized in the dom --> switches off
-      e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
-
-      //move up in the dom until we find the post
-      var target = e.target;
-      while (target.dataset.type != 'post') {
-        target = target.parentNode;
-      }
-
-      //toggle post visibility
-      target.classList.toggle('Post-Hide');
-    }
-
-    //handle post clicks
-
-  }, {
-    key: '_onPostClick',
-    value: function _onPostClick(e) {
-      var target = e.target;
-      switch (target.dataset.type) {
-        case 'author':
-          this._goToUser(target.textContent);
-          break;
-        case 'group':
-          this.viewCommands.group(e);
-          break;
-        case 'hide':
-          this.viewCommands.togglePost(e);
-          break;
-        case 'body':
-          this.viewCommands.toggleBody(e);
-          break;
-        case 'report':
-          //sends request off to dev server
-          this.viewCommands.report(e);
-          break;
-        case 'save':
-          //saves and unsaves posts
-          this.viewCommands.savePost(e);
-          break;
-        case 'reply':
-          //opens writer with thread as target
-          this.viewCommands.reply(e);
-          break;
-        case 'open':
-          //opens thread
-          this.viewCommands.open(e);
-          break;
-        case 'delete':
-          //deletes thread
-          this.viewCommands.delete(e);
-          break;
-        case 'group':
-          //go to group
-          this.viewCommands.goToGroup(e);
-          break;
-        case 'post-link':
-          //opens thread
-          this.viewCommands.openDirectly(e);
-        default:
-          this._cancelDelete(e);
-      }
-    }
-
-    //reply to post
-
-  }, {
-    key: '_reply',
-    value: function _reply(e) {
-      var thread = e.target.parentNode.dataset.thread;
-      var group = e.target.parentNode.dataset.group;
-      _router2.default.navigate(group + 't/' + thread);
-      _core.nav.openWriter(e.target.parentNode.dataset.thread);
-      this.$writerlabel.textContent = "new post to thread";
-      this.$writer.dataset.to = e.target.parentNode.dataset.thread;
-      this.$writer.classList.remove('Writer-fs');
-    }
-
-    //open thread
-
-  }, {
-    key: '_open',
-    value: function _open(e) {
-      _core.nav.removeWriter();
-      var thread = e.target.parentNode.dataset.thread;
-      var group = e.target.parentNode.dataset.group;
-      _router2.default.navigate(group + 't/' + thread);
-    }
-
-    //go to group
-
-  }, {
-    key: '_goToGroup',
-    value: function _goToGroup(grp) {
-      _core.nav.removeWriter();
-      _router2.default.navigate(grp);
-    }
-
-    //go to user
-
-  }, {
-    key: '_goToUser',
-    value: function _goToUser(username) {
-      _core.nav.removeWriter();
-      if (username !== 'Anonymous') _router2.default.navigate('/user/' + username);
-    }
-
-    //save post
-
-  }, {
-    key: '_savePost',
-    value: function _savePost(e) {
-      if (e.target.style.color === '#6879FF') {
-        //unlike
-        e.target.style.color = '#3b5998';
-        var thread = e.target.parentNode.dataset.thread;
-        unsavePost(thread);
-      } else {
-        //like
-        e.target.style.color = '#6879FF';
-        var _thread = e.target.parentNode.dataset.thread;
-        savePost(_thread);
-      }
-    }
-
-    //goes to group
-
-  }, {
-    key: '_goToGroupDirectly',
-    value: function _goToGroupDirectly(e) {
-      _router2.default.navigate(e.target.dataset.group);
-    }
-
-    //report post
-
-  }, {
-    key: '_reportPost',
-    value: function _reportPost(e) {
-
-      //TODO: set up dev server and shoot off requests here
-      if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
-      e.target.innerHTML = 'report';
-    }
-
-    //cancel delete
-
-  }, {
-    key: '_cancelDelete',
-    value: function _cancelDelete() {
-      //only one deleteable at a time
-      var pending = (0, _helpers.$id)('delete-pending');
-      if (pending) {
-        pending.innerHTML = 'delete';
-        pending.id = '';
-      }
-    }
-
-    //delete post
-
-  }, {
-    key: '_deletePost',
-    value: function _deletePost(e) {
-      var content = e.target.innerHTML;
-      if (content === 'delete') {
-        this._cancelDelete();
-        e.target.innerHTML = "sure?";
-        e.target.id = 'delete-pending';
-        return;
-      }
-      var thread = e.target.parentNode.dataset.thread;
-      var post = e.target.parentNode.dataset.post;
-      console.log(thread);
-      var match = void 0;
-      var owned = (0, _keys2.default)(this.user.owned);
-      for (var i = 0; i < owned.length; i++) {
-        if (post === owned[i]) {
-          match = owned[i];
-        }
-      }
-      console.log(match);
-      if (match) this.deleteThread(thread, this.user.owned[match]);
-
-      //reload this page (but not refresh)
-      _router2.default.check();
-    }
 
     //generate html
 
@@ -30396,73 +30805,39 @@ var View = function () {
     value: function generateStaticView(user, users, threads, groups) {
       var _this2 = this;
 
-      var getposts = function () {
-        var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
-          var promises, results;
-          return _regenerator2.default.wrap(function _callee$(_context) {
-            while (1) {
-              switch (_context.prev = _context.next) {
-                case 0:
-                  promises = threads.map(function (thread) {
-                    return (0, _template.generateHeadPost)(thread, user);
-                  });
-                  _context.next = 3;
-                  return _promise2.default.all(promises);
-
-                case 3:
-                  results = _context.sent;
-                  return _context.abrupt('return', results.join(''));
-
-                case 5:
-                case 'end':
-                  return _context.stop();
-              }
-            }
-          }, _callee, _this2);
-        }));
-
-        return function getposts() {
-          return _ref.apply(this, arguments);
-        };
-      }();
-
       var buildView = function () {
-        var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-          var header, list, user, writer, listingHeader, footer, resetimg, res, resJSON, url, right, tools;
-          return _regenerator2.default.wrap(function _callee3$(_context3) {
+        var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
+          var list, user, writer, listingHeader, footer, resetimg, right, tools;
+          return _regenerator2.default.wrap(function _callee2$(_context2) {
             while (1) {
-              switch (_context3.prev = _context3.next) {
+              switch (_context2.prev = _context2.next) {
                 case 0:
-                  //main header
-                  header = '\n        <div id="Main-Header">\n\n        </div>\n      ';
-                  //wrapper for listing
-
-                  _context3.t0 = '\n      <div id="List" class="List">\n      ' + (users.length ? '' : '<div class="Search-divider">No Users Found</div>') + '\n      ' + users.map(function (user) {
-                    return '<div class="Search-group" data-type="user" data-group="' + group + '">' + user + '</div>';
-                  }) + '\n      ' + (groups.length ? '' : '<div class="Search-divider">No Groups found</div>') + '\n      ' + groups.map(function (group) {
+                  _context2.t0 = '\n      <div id="List" class="List">\n      ' + (users.length ? '' : '<div class="Search-divider">No Users Found</div>') + '\n      ' + users.map(function (user) {
+                    return '<div class="Search-group" data-type="user" data-user="' + user + '">' + user + '</div>';
+                  }).join('') + '\n      ' + (groups.length ? '' : '<div class="Search-divider">No Groups found</div>') + '\n      ' + groups.map(function (group) {
                     return '<div class="Search-group" data-type="group" data-group="' + group + '">' + group + '</div>';
-                  }) + '\n      ' + (threads.length ? '' : '<div class="Search-divider">No Posts found</div>') + '\n      ';
+                  }).join('') + '\n      ' + (threads.length ? '' : '<div class="Search-divider">No Posts found</div>') + '\n      ';
 
                   if (!threads.length) {
-                    _context3.next = 8;
+                    _context2.next = 7;
                     break;
                   }
 
-                  _context3.next = 5;
-                  return getposts();
+                  _context2.next = 4;
+                  return _this2.listing.generatePosts();
 
-                case 5:
-                  _context3.t1 = _context3.sent;
-                  _context3.next = 9;
+                case 4:
+                  _context2.t1 = _context2.sent;
+                  _context2.next = 8;
                   break;
 
-                case 8:
-                  _context3.t1 = '';
+                case 7:
+                  _context2.t1 = '';
 
-                case 9:
-                  _context3.t2 = _context3.t1;
-                  _context3.t3 = _context3.t0 + _context3.t2;
-                  list = _context3.t3 + '\n      </div>\n      ';
+                case 8:
+                  _context2.t2 = _context2.t1;
+                  _context2.t3 = _context2.t0 + _context2.t2;
+                  list = _context2.t3 + '\n      </div>\n      ';
 
 
                   //user has other info catalogued under user, particularly, usernames
@@ -30477,83 +30852,69 @@ var View = function () {
                   footer = '\n      <div class="Main-Footer">\n       <a class="Main-Footer-btn mobile" id="prevpage" href="javascript:;">back</a>\n      </div>\n      ';
 
                   resetimg = function () {
-                    var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-                      var _res, _resJSON, _url, img;
-
-                      return _regenerator2.default.wrap(function _callee2$(_context2) {
+                    var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
+                      var img, res, resJSON, url;
+                      return _regenerator2.default.wrap(function _callee$(_context) {
                         while (1) {
-                          switch (_context2.prev = _context2.next) {
+                          switch (_context.prev = _context.next) {
                             case 0:
-                              _context2.prev = 0;
-                              _context2.next = 3;
+                              img = (0, _helpers.$id)('rightimg');
+                              _context.prev = 1;
+                              _context.next = 4;
                               return _this2.getGif();
 
-                            case 3:
-                              _res = _context2.sent;
-                              _context2.next = 6;
-                              return _res.json();
+                            case 4:
+                              res = _context.sent;
+                              _context.next = 7;
+                              return res.json();
 
-                            case 6:
-                              _resJSON = _context2.sent;
-                              _url = _resJSON.data.image_url;
-                              img = (0, _helpers.$id)('rightimg');
+                            case 7:
+                              resJSON = _context.sent;
+                              url = resJSON.data.image_url;
 
-                              img ? img.src = _url : window.clearInterval(resetimg);
-                              _context2.next = 15;
+                              img ? img.src = url : window.clearInterval(resetimg);
+                              _context.next = 15;
                               break;
 
                             case 12:
-                              _context2.prev = 12;
-                              _context2.t0 = _context2['catch'](0);
+                              _context.prev = 12;
+                              _context.t0 = _context['catch'](1);
 
                               console.log('Couldn\'t fetch giphy');
 
                             case 15:
                             case 'end':
-                              return _context2.stop();
+                              return _context.stop();
                           }
                         }
-                      }, _callee2, _this2, [[0, 12]]);
+                      }, _callee, _this2, [[1, 12]]);
                     }));
 
                     return function resetimg() {
-                      return _ref3.apply(this, arguments);
+                      return _ref2.apply(this, arguments);
                     };
                   }();
 
-                  window.setInterval(resetimg, 8000);
-
-                  _context3.next = 20;
-                  return _this2.getGif();
-
-                case 20:
-                  res = _context3.sent;
-                  _context3.next = 23;
-                  return res.json();
-
-                case 23:
-                  resJSON = _context3.sent;
-                  url = resJSON.data.image_url;
+                  window.setInterval(resetimg, 5000);
 
                   //desktop view information --> popular posts and stuff like that
-
                   right = '\n        <div id="Poplisting" class="desktop">\n          <div class="PopularList">\n            <span id="Poplisting-title">...</span>\n            <img id="rightimg" src="http://' + window.location.host + '/static/uploads/yup.gif">\n          </div>\n          <div class="Mixroom-info" >\n            <span><a href="static/placeholder.html">Terms</a></span>\n            <span><a href="static/placeholder.html">Privacy</a></span>\n            <span><a href="static/placeholder.html">Advertise</a></span>\n          </div>\n        </div>\n      ';
                   tools = '\n      <div id="Tools-menu" class="desktop">\n        <div id="previous-pg" class="unselectable">\n          <span class="Tool-select hide">\u2022</span>previous-pg\n        </div>\n        <div class="unselectable ' + (_this2.$container.classList.contains('nightmode') ? 'Tools-selected' : '') + '" id="nightmode">\n          <span class="Tool-select hide">\u2022</span>night-mode\n        </div>\n      </div>\n      ';
 
                   //final template for section
 
-                  return _context3.abrupt('return', '\n        <div id="Main-container">\n          ' + listingHeader + '\n          ' + tools + '\n          ' + list + '\n          ' + right + '\n          ' + writer + '\n          ' + footer + '\n        </div>\n        ');
+                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + listingHeader + '\n          ' + tools + '\n          ' + list + '\n          ' + right + '\n          ' + writer + '\n          ' + footer + '\n        </div>\n        ');
 
-                case 28:
+                case 20:
                 case 'end':
-                  return _context3.stop();
+                  return _context2.stop();
               }
             }
-          }, _callee3, _this2);
+          }, _callee2, _this2);
         }));
 
         return function buildView() {
-          return _ref2.apply(this, arguments);
+          return _ref.apply(this, arguments);
         };
       }();
 
@@ -30574,14 +30935,11 @@ var View = function () {
     }
   }]);
   return View;
-}(); /**
-      * groupv.js is the view for the group
-      */
-
+}();
 
 exports.default = View;
 
-},{"../core/core.js":279,"../core/helpers.js":280,"../core/oembed.js":282,"../core/template.js":285,"../router/router.js":289,"babel-runtime/core-js/object/keys":3,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],293:[function(require,module,exports){
+},{"../core/core.js":279,"../core/helpers.js":280,"../core/listing.js":281,"../core/oembed.js":283,"../core/template.js":286,"../router/router.js":291,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],295:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30684,7 +31042,7 @@ window.socket = socket;
 
 exports.default = socket;
 
-},{"./config.js":278,"babel-runtime/core-js/json/stringify":1}],294:[function(require,module,exports){
+},{"./config.js":278,"babel-runtime/core-js/json/stringify":1}],296:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30802,7 +31160,7 @@ window.term = term;
 
 exports.default = term;
 
-},{"xterm":272}],295:[function(require,module,exports){
+},{"xterm":272}],297:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -30844,7 +31202,7 @@ exports.default = {
 
 };
 
-},{"../config.js":278}],296:[function(require,module,exports){
+},{"../config.js":278}],298:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31027,7 +31385,7 @@ exports.default = function () {
   return start;
 }();
 
-},{"../ajax/groups.js":274,"../ajax/threads.js":276,"../core/core.js":279,"../core/store.js":284,"../socket.js":293,"./store.js":295,"./threadv.js":297,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],297:[function(require,module,exports){
+},{"../ajax/groups.js":274,"../ajax/threads.js":276,"../core/core.js":279,"../core/store.js":285,"../socket.js":295,"./store.js":297,"./threadv.js":299,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],299:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -31045,14 +31403,6 @@ var _promise2 = _interopRequireDefault(_promise);
 var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
-
-var _typeof2 = require('babel-runtime/helpers/typeof');
-
-var _typeof3 = _interopRequireDefault(_typeof2);
-
-var _keys = require('babel-runtime/core-js/object/keys');
-
-var _keys2 = _interopRequireDefault(_keys);
 
 var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
 
@@ -31079,6 +31429,14 @@ var _router2 = _interopRequireDefault(_router);
 var _term = require('../term.js');
 
 var _term2 = _interopRequireDefault(_term);
+
+var _listing = require('../core/listing.js');
+
+var _listing2 = _interopRequireDefault(_listing);
+
+var _writer = require('../core/writer.js');
+
+var _writer2 = _interopRequireDefault(_writer);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -31107,48 +31465,10 @@ var View = function () {
     //set auth
     this.user = user;
 
-    socket.connection.onmessage = function (event) {
-      var message = JSON.parse(event.data).body;
-      _this.addPost(message);
-    };
-
     this.popular = data.popular;
 
     //setup commands for view actions
     this.viewCommands = {
-      reply: function reply(e) {
-        return _this._reply(e);
-      },
-      group: function group(e) {
-        return _this._goToGroup(e);
-      },
-      user: function user(e) {
-        return _this._goToUser(e);
-      },
-      hidePost: function hidePost(e) {
-        return _this._hidePost(e);
-      },
-      showPost: function showPost(e) {
-        return _this._showPost(e);
-      },
-      report: function report(e) {
-        return _this._reportPost(e);
-      },
-      toggleBody: function toggleBody(e) {
-        return _this._toggleBody(e);
-      },
-      togglePost: function togglePost(e) {
-        return _this._togglePost(e);
-      },
-      peek: function peek(e) {
-        return _this._peek(e);
-      },
-      delete: function _delete(e) {
-        return _this._delete(e);
-      },
-      scrollToPost: function scrollToPost(e) {
-        return _this._scrollToPost(e);
-      },
       goBack: function goBack(e) {
         return _this._goBack(e);
       },
@@ -31169,6 +31489,19 @@ var View = function () {
     //save a ref to app-container (so if we need to switch nightmode we can)
     this.$container = (0, _helpers.$id)('app-container');
     this.$main = (0, _helpers.$id)('Main');
+
+    //bring in list to render
+    this.listing = new _listing2.default(true, this.thread.posts, this.thread.group, this.user);
+    this.writer = new _writer2.default(true, this.user.user.usernames, this.group);
+
+    //lets us render posts added post initial-render properly
+    this.authors = {};
+
+    //bind socket
+    socket.connection.onmessage = function (event) {
+      var message = JSON.parse(event.data).body;
+      _this.listing.addPost(message);
+    };
   }
 
   //binds events --> mostly delegated events up in here
@@ -31179,49 +31512,24 @@ var View = function () {
     value: function bind() {
 
       //get references (as elements are dynamically rendered)
-      var $listing = (0, _helpers.$id)('List');
       var $prev = (0, _helpers.$id)('prevpage');
       var $popular = (0, _helpers.$id)('Poplisting');
-      var $writertoggle = (0, _helpers.$id)('writer-toggle');
-      var $writerexit = (0, _helpers.$id)('writer-exit');
-      var $writerhide = (0, _helpers.$id)('writer-hide');
-      var $writerlink = (0, _helpers.$id)('writer-link-input');
-      var $writerupload = (0, _helpers.$id)('writer-upload-input');
-      var $writersend = (0, _helpers.$id)('writer-send');
       var $previouspg = (0, _helpers.$id)('previous-pg');
       var $nightmode = (0, _helpers.$id)('nightmode');
       var $devmode = (0, _helpers.$id)('devmode');
       var $listsizetoggle = (0, _helpers.$id)('List-size-switch');
 
-      //save a ref to writer & to options of it
-      this.$writer = (0, _helpers.$id)('writer');
-      this.$writeroptions = (0, _helpers.$id)('writer-options');
-      this.$writercontent = (0, _helpers.$id)('writer-upload-text');
-      this.$writerinput = (0, _helpers.$id)('writer-input'); //body
-      this.$writerusername = (0, _helpers.$id)('writer-username-option'); //anon or name
-      this.$writerlink = (0, _helpers.$id)('writer-link-input'); //link
-      this.$writerlabel = (0, _helpers.$id)('writer-label');
-      this.$writerupload = $writerupload;
-      this.$writerexit = $writerexit;
-
-      //might as well keep a reference to the listing because we'll be adding to it
-      this.$listing = $listing;
-
-      //clicks on listing section
-      (0, _helpers.$on)($listing, 'click', this._onPostClick.bind(this), false);
-      (0, _helpers.$on)($listing, 'mousemove', this._onPostHover.bind(this), false);
-      (0, _helpers.$on)($popular, 'click', this._onPostClick.bind(this), false);
-      (0, _helpers.$on)($prev, 'click', this._back.bind(this), false);
-      (0, _helpers.$on)($writertoggle, 'click', this._toggleInputSize.bind(this), false);
-      (0, _helpers.$on)($writerhide, 'click', this._hideWriter.bind(this), false);
-      (0, _helpers.$on)($writerexit, 'click', this._hideWriterOptions.bind(this), false);
+      //bind handlers
+      (0, _helpers.$on)($popular, 'click', this.listing.handlePostClick.bind(this.listing), false);
+      (0, _helpers.$on)($prev, 'click', this.viewCommands.goBack.bind(this), false);
       (0, _helpers.$on)($nightmode, 'click', this.viewCommands.toggleNM.bind(this), false);
       (0, _helpers.$on)($devmode, 'click', this.viewCommands.toggleDM.bind(this), false);
       (0, _helpers.$on)($previouspg, 'click', this.viewCommands.goBack.bind(this), false);
-      (0, _helpers.$on)($writerlink, 'keyup', this._handleWriterLink.bind(this), false);
-      (0, _helpers.$on)($writerupload, 'change', this._writerUpload.bind(this), false);
-      (0, _helpers.$on)($writersend, 'click', this._writerSend.bind(this), false);
       (0, _helpers.$on)($listsizetoggle, 'change', this._toggleListSize.bind(this), false);
+
+      //bind listing & writer
+      this.listing.bind();
+      this.writer.bind();
     }
   }, {
     key: '_toggleListSize',
@@ -31265,166 +31573,6 @@ var View = function () {
       (0, _helpers.$id)('writer-input').focus();
     }
   }, {
-    key: '_writerUpload',
-    value: function _writerUpload(e) {
-      var _this2 = this;
-
-      var res = this.handleUpload(this.$writerupload.files[0]);
-      res.then(function (success) {
-        if (success) {
-          _this2.$writercontent.textContent = 'done';
-          return;
-        }
-
-        _this2.$writercontent.textContent = 'failed';
-
-        window.setTimeout(function () {
-          _this2.$writercontent.textContent = 'upload';
-        }, 3000);
-      });
-    }
-  }, {
-    key: '_writerSend',
-    value: function _writerSend(e) {
-      var _this3 = this;
-
-      //(link = '', body, to, identity = 'Anonymous') params
-      var to = 'this thread';
-
-      //check if they're posting with content
-      if (!this.$writerinput.value) {
-        return;
-      }
-
-      this.handleSubmit(this.$writerlink.value, this.$writerinput.value, to, this.$writerusername.value);
-      this.$writer.classList.toggle('fly');
-      if (this.$writer.classList.contains('Writer-fs')) this.$writer.classList.toggle('Writer-fs');
-      if (document.body.classList.contains('menu-active')) document.body.classList.toggle('menu-active');
-      if (document.body.classList.contains('writemode')) document.body.classList.toggle('writemode');
-      setTimeout(function () {
-        return _this3.$writer.classList.toggle('hide');
-      }, 200);
-      setTimeout(function () {
-        return _this3.$writer.classList.remove('fly');
-      }, 600);
-
-      //clear out input
-      this.$writerinput.value = '';
-    }
-  }, {
-    key: '_hideWriter',
-    value: function _hideWriter(e) {
-      this.$writer.classList.toggle('hide');
-      this.$writeroptions.classList.toggle('hide');
-      this.$writerexit.classList.toggle('flip');
-      this.$writerexit.classList.toggle('writer-selected');
-      if (this.$writer.classList.contains('Writer-fs')) {
-        this.$writer.classList.toggle('Writer-fs');
-        (0, _helpers.$id)('writer-toggle').textContent = '+';
-      }
-      document.body.classList.toggle('menu-active');
-      document.body.classList.toggle('writemode');
-    }
-  }, {
-    key: '_hideWriterOptions',
-    value: function _hideWriterOptions(e) {
-      e.target.classList.toggle('writer-selected');
-      e.target.classList.toggle('flip');
-      this.$writeroptions.classList.toggle('hide');
-      if (!this.$writeroptions.classList.contains('hide')) {
-        (0, _helpers.$id)('writer-link-input').focus();
-      }
-    }
-  }, {
-    key: '_handleWriterLink',
-    value: function _handleWriterLink(e) {
-      if (e.keyCode === 13) {
-        this.$writeroptions.classList.toggle('hide');
-        var exit = (0, _helpers.$id)('writer-exit');
-        exit.classList.toggle('flip');
-        exit.classList.toggle('writer-selected');
-      }
-    }
-  }, {
-    key: '_delete',
-    value: function _delete(e) {
-      var content = e.target.innerHTML;
-      if (content === 'delete') {
-        this._cancelDelete();
-        e.target.innerHTML = "sure?";
-        e.target.id = 'delete-pending';
-        return;
-      }
-
-      var post = e.target.parentNode.dataset.post;
-      var match = void 0;
-      var owned = (0, _keys2.default)(this.user.owned);
-      for (var i = 0; i < owned.length; i++) {
-        if (post === owned[i]) {
-          match = owned[i];
-        }
-      }
-      console.log(match);
-      if (match) this.removePost(post, this.user.owned[match]);
-
-      //reload this page (but not refresh)
-      _router2.default.check();
-    }
-  }, {
-    key: '_togglePost',
-    value: function _togglePost(e) {
-      //flip icon
-      e.target.className = e.target.dataset.open === 'true' ? 'icon-down-open-big' : 'icon-up-open-big';
-
-      //because it's not initialized in the dom --> switches off
-      e.target.dataset.open = e.target.dataset.open === 'true' ? 'false' : 'true';
-
-      //move up in the dom until we find the post
-      var target = e.target;
-      while (target.dataset.type != 'post') {
-        target = target.parentNode;
-      }
-
-      //toggle post visibility
-      target.classList.toggle('Post-Hide');
-    }
-  }, {
-    key: '_scrollToPost',
-    value: function _scrollToPost(e) {
-      var post = (0, _helpers.$id)(e.target.dataset.post.trim());
-
-      //if we don't get the post, add a strikethrough
-      if (!post) {
-        e.target.style.setProperty("text-decoration", "line-through");
-        return;
-      }
-
-      //else scroll into post-view
-      post.scrollIntoView();
-      window.scrollBy(0, -48);
-      post.classList.remove('enter-animation');
-
-      //hacky way to reset animation, but a must if we don't want to have to clone the element and replace it
-      window.setTimeout(function () {
-        return post.classList.add('enter-animation', 0);
-      });
-    }
-  }, {
-    key: '_cancelDelete',
-    value: function _cancelDelete() {
-      //only one deleteable at a time
-      var pending = (0, _helpers.$id)('delete-pending');
-      if (pending) {
-        pending.innerHTML = 'delete';
-        pending.id = '';
-      }
-    }
-  }, {
-    key: '_back',
-    value: function _back() {
-      _router2.default.back();
-    }
-  }, {
     key: '_prevPage',
     value: function _prevPage(e) {
       if (page <= 1) _router2.default.navigate(this.group);
@@ -31436,231 +31584,22 @@ var View = function () {
       _router2.default.navigate('' + this.group + ++page);
     }
 
-    //handle post clicks
-
-  }, {
-    key: '_onPostClick',
-    value: function _onPostClick(e) {
-      var target = e.target;
-      switch (target.dataset.type) {
-        case 'author':
-          this._goToUser(e);
-          break;
-        case 'group':
-          this.viewCommands.group(e);
-          break;
-        case 'hide':
-          this.viewCommands.togglePost(e);
-          break;
-        case 'report':
-          //sends request off to dev server
-          this.viewCommands.report(e);
-          break;
-        case 'save':
-          //saves and unsaves posts
-          this.viewCommands.savePost(e);
-          break;
-        case 'reply':
-          //opens writer with thread as target
-          this.viewCommands.reply(e);
-          break;
-        case 'open':
-          //opens thread
-          this.viewCommands.open(e);
-          break;
-        case 'delete':
-          //deletes thread
-          this.viewCommands.delete(e);
-          break;
-        case 'ref':
-          //scroll to id of post
-          this.viewCommands.scrollToPost(e);
-          break;
-        case 'post-link':
-          //opens thread
-          this.viewCommands.openDirectly(e);
-          break;
-        default:
-          this._cancelDelete(e);
-      }
-    }
-
-    //open thread directly from element's thread id
-
-  }, {
-    key: '_openDirectly',
-    value: function _openDirectly(e) {
-      _core.nav.removeWriter();
-      _router2.default.navigate(e.target.dataset.group + 't/' + e.target.dataset.thread);
-      window.scroll(0, 0);
-    }
-  }, {
-    key: '_removePeek',
-    value: function _removePeek() {
-      var post = (0, _helpers.$id)('peek-post');
-      if (post) {
-        post.parentNode.removeChild(post);
-      }
-    }
-
-    //handle post clicks
-
-  }, {
-    key: '_onPostHover',
-    value: function _onPostHover(e) {
-      var target = e.target;
-      switch (target.dataset.type) {
-        case 'body':
-          this._removePeek();
-          break;
-        case 'content':
-          this._removePeek();
-          break;
-        case 'ref':
-          this._peekIntoPost(e);
-          break;
-      }
-    }
-
-    //lets us look at a post on reference hover
-
-  }, {
-    key: '_peekIntoPost',
-    value: function _peekIntoPost(e) {
-      console.log('peek');
-
-      this._removePeek();
-      var post = (0, _helpers.$id)(e.target.dataset.post.trim());
-
-      //if we don't get the post, add a strikethrough
-      if (!post) {
-        //  e.target.style.setProperty("text-decoration", "line-through");
-        return;
-      }
-
-      var newPost = post.cloneNode(true);
-
-      var dimensions = post.getBoundingClientRect();
-
-      //check if dom element is in view on Y axis
-      var isInView = dimensions.bottom > 42 && dimensions.top < (window.innerHeight || document.documentElement.clientHeight);
-
-      console.log(isInView);
-
-      if (isInView) {
-        var _ret = function () {
-          post.style.backgroundColor = "#ffffba";
-          //handler to remove highlight from post on mouseout
-          var removeSpotlight = function removeSpotlight(e) {
-            post.style.backgroundColor = "white";
-            e.target.removeEventListener('mouseout', removeSpotlight, false);
-          };
-
-          //add spotlight, add mouseout listener, on mouseout we remove the spotlight
-          (0, _helpers.$on)(e.target, 'mouseout', removeSpotlight, false);
-          return {
-            v: void 0
-          };
-        }();
-
-        if ((typeof _ret === 'undefined' ? 'undefined' : (0, _typeof3.default)(_ret)) === "object") return _ret.v;
-      }
-
-      newPost.id = 'peek-post';
-      newPost.className = 'peeking-post';
-
-      //grab target bounding rectangle
-      var targetDimensions = e.target.getBoundingClientRect();
-
-      //else lets grab the post and bring it here
-      newPost.style.left = targetDimensions.left + window.scrollX + 92 + 'px';
-      newPost.style.top = targetDimensions.top + window.scrollY - 36 + 'px';
-      newPost.style.backgroundColor = 'white';
-      this.$listing.appendChild(newPost);
-    }
-
-    //reply to post
-
-  }, {
-    key: '_reply',
-    value: function _reply(e) {
-      if (window.matchMedia('(min-width : 900px)').matches) {
-        if (this.$writer.classList.contains('hide')) {
-          this.$writer.classList.remove('hide');
-        }
-        var id = e.target.parentNode.dataset.post;
-        document.body.classList.add('writemode');
-
-        //now since it's open, we append the content (presumably an id)
-        this.$writerinput.value += this.$writerinput.value ? '\n(post: ' + id + ')\n' : '(post: ' + id + ')\n';
-        this.$writerinput.focus();
-      } else {
-        _core.nav.openWriterRef(e.target.parentNode.dataset.post);
-      }
-    }
-
-    //open thread
-
-  }, {
-    key: '_open',
-    value: function _open(e) {
-      _router2.default.navigate(this.group + 't/' + e.target.parentNode.dataset.thread);
-    }
-
-    //go to group
-
-  }, {
-    key: '_goToGroup',
-    value: function _goToGroup(e) {
-      _router2.default.navigate(e.target.textContent);
-    }
-
-    //go to user
-
-  }, {
-    key: '_goToUser',
-    value: function _goToUser(e) {
-      if (e.target.textContent !== 'Anonymous') _router2.default.navigate('/user/' + e.target.textContent);
-    }
-
-    //save post -- does nothing yet
-
-  }, {
-    key: '_savePost',
-    value: function _savePost(e) {
-      e.target.style.color = e.target.style.color === '#6879FF' ? '#6879FF' : '#3b5998';
-    }
-
-    //report post -- does nothing yet
-
-  }, {
-    key: '_reportPost',
-    value: function _reportPost(e) {
-      if (e.target.textContent === 'report') return e.target.innerHTML = 'unreport';
-      e.target.innerHTML = 'report';
-    }
-  }, {
-    key: '_toggleBody',
-    value: function _toggleBody(e) {
-      e.target.maxHeight = e.target.maxHeight === '400px' ? '1000px' : '400px';
-    }
-
     //generate html
 
   }, {
     key: 'generateStaticView',
     value: function generateStaticView(thread) {
-      var _this4 = this;
+      var _this2 = this;
 
-      var getposts = function () {
+      var getpopularposts = function () {
         var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee() {
           var promises, results;
           return _regenerator2.default.wrap(function _callee$(_context) {
             while (1) {
               switch (_context.prev = _context.next) {
                 case 0:
-                  promises = thread.posts.map(function (post) {
-                    return (0, _template.generatePost)(thread.group, post, _this4.user);
+                  promises = _this2.popular.map(function (post) {
+                    return (0, _template.generatePopularPost)(post, _this2.user);
                   });
                   _context.next = 3;
                   return _promise2.default.all(promises);
@@ -31674,169 +31613,69 @@ var View = function () {
                   return _context.stop();
               }
             }
-          }, _callee, _this4);
+          }, _callee, _this2);
         }));
 
-        return function getposts() {
+        return function getpopularposts() {
           return _ref.apply(this, arguments);
         };
       }();
 
-      var getpopularposts = function () {
+      var buildView = function () {
         var _ref2 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee2() {
-          var promises, results;
+          var list, writer, footer, popularInfo, tools, user, listingHeader;
           return _regenerator2.default.wrap(function _callee2$(_context2) {
             while (1) {
               switch (_context2.prev = _context2.next) {
                 case 0:
-                  promises = _this4.popular.map(function (post) {
-                    return (0, _template.generatePopularPost)(post, _this4.user);
-                  });
-                  _context2.next = 3;
-                  return _promise2.default.all(promises);
+                  _context2.next = 2;
+                  return _this2.listing.generateStaticView();
 
-                case 3:
-                  results = _context2.sent;
-                  return _context2.abrupt('return', results.join(''));
+                case 2:
+                  list = _context2.sent;
 
-                case 5:
+
+                  //generate writer
+                  writer = _this2.writer.generateStaticView();
+
+                  //pagination controls
+
+                  footer = '\n      <div class="Main-Footer">\n       <a class="Main-Footer-btn mobile" id="prevpage" href="javascript:;">back</a>\n      </div>\n      ';
+
+                  //desktop view information --> popular posts and stuff like that
+
+                  _context2.next = 7;
+                  return getpopularposts();
+
+                case 7:
+                  _context2.t0 = _context2.sent;
+                  _context2.t1 = '\n        <div id="Poplisting" class="desktop">\n          <div class="PopularList">\n            <span id="Poplisting-title">\n              Popular Today\n            </span>\n            <span id="Poplisting-title-label">replies</span>\n            ' + _context2.t0;
+                  popularInfo = _context2.t1 + '\n          </div>\n          <div class="Mixroom-info" >\n            <span><a href="static/placeholder.html">Terms</a></span>\n            <span><a href="static/placeholder.html">Privacy</a></span>\n            <span><a href="static/placeholder.html">Advertise</a></span>\n          </div>\n        </div>\n      ';
+                  tools = (0, _template.generateTools)(true, _this2.$container.classList.contains('nightmode'), _this2.$container.classList.contains('devmode'));
+
+                  //user object
+
+                  user = _this2.user.user;
+                  listingHeader = '\n        <div id="Main-listing-header" class="desktop unselectable">\n          <div class="Main-listing-group unselectable">Thread Posts\n          <label id="List-size-switch" class="rb-switcher">\n            <input type="checkbox">\n            <i></i>\n          </label></div>\n        </div>\n        ';
+
+                  //final template for section
+
+                  return _context2.abrupt('return', '\n        <div id="Main-container">\n          ' + listingHeader + '\n          ' + popularInfo + '\n          ' + writer + '\n          ' + tools + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
+
+                case 14:
                 case 'end':
                   return _context2.stop();
               }
             }
-          }, _callee2, _this4);
+          }, _callee2, _this2);
         }));
 
-        return function getpopularposts() {
+        return function buildView() {
           return _ref2.apply(this, arguments);
         };
       }();
 
-      var buildView = function () {
-        var _ref3 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee3() {
-          var header, list, footer, threadInfo, popularInfo, tools, user, writer, listingHeader;
-          return _regenerator2.default.wrap(function _callee3$(_context3) {
-            while (1) {
-              switch (_context3.prev = _context3.next) {
-                case 0:
-                  //main header
-                  header = '\n        <div id="Main-Header">\n\n        </div>\n      ';
-                  //wrapper for listing
-
-                  _context3.next = 3;
-                  return getposts();
-
-                case 3:
-                  _context3.t0 = _context3.sent;
-                  _context3.t1 = '\n      <div id="List" class="List">\n      ' + _context3.t0;
-                  list = _context3.t1 + '\n      </div>\n      ';
-
-
-                  //pagination controls
-                  footer = '\n      <div class="Main-Footer">\n       <a class="Main-Footer-btn mobile" id="prevpage" href="javascript:;">back</a>\n      </div>\n      ';
-
-                  console.log(_this4.thread);
-                  //desktop view information about groups --> allows group navigation
-                  threadInfo = '\n        <div id="Main-desktop-info" class="desktop">\n          <div class="GroupAuthor">\n            <p class="GroupAuthor-title">Made by:</p>\n            <p id="Main-desktop-author" class="GroupAuthor-name">' + _this4.thread.posts[0].author + '</p>\n          </div>\n          <div class="ThreadCreated">\n            <p>Created:</p>\n            <p>' + (0, _template.generateTimestamp)(_this4.thread.created) + '</p>\n          </div>\n          <div class="ThreadNav">\n            <a class="Main-Footer-btn" href="http://' + location.host + _this4.thread.group + '">back</a>\n            <a class="Main-Footer-btn" href="http://' + location.host + _this4.thread.group + '">next</a>\n          </div>\n        </div>\n      ';
-
-                  //desktop view information --> popular posts and stuff like that
-
-                  _context3.next = 11;
-                  return getpopularposts();
-
-                case 11:
-                  _context3.t2 = _context3.sent;
-                  _context3.t3 = '\n        <div id="Poplisting" class="desktop">\n          <div class="PopularList">\n            <span id="Poplisting-title">\n              Popular Today\n            </span>\n            <span id="Poplisting-title-label">replies</span>\n            ' + _context3.t2;
-                  popularInfo = _context3.t3 + '\n          </div>\n          <div class="Mixroom-info" >\n            <span><a href="static/placeholder.html">Terms</a></span>\n            <span><a href="static/placeholder.html">Privacy</a></span>\n            <span><a href="static/placeholder.html">Advertise</a></span>\n          </div>\n        </div>\n      ';
-                  tools = '\n      <div id="Tools-menu" class="desktop">\n        <div id="previous-pg" class="unselectable">\n          <span class="Tool-select hide">\u2022</span>previous-pg\n        </div>\n        <div class="unselectable ' + (_this4.$container.classList.contains('nightmode') ? 'Tools-selected' : '') + '" id="nightmode">\n          <span class="Tool-select hide">\u2022</span>night-mode\n        </div>\n        <div id="devmode" class="unselectable ' + (_this4.$container.classList.contains('devmode') ? 'Tools-selected' : '') + '">\n          <span class="Tool-select hide">\u2022</span>developers\n        </div>\n      </div>\n      ';
-
-                  //user object
-
-                  user = _this4.user.user;
-
-                  //writer for sending posts in desktop mode
-
-                  writer = '\n        <div id="writer" data-to="local" class="desktop hide">\n          <textarea placeholder="..." id="writer-input"></textarea>\n          <div id="writer-label">new post</div>\n          <div id="writer-exit" class="unselectable">^</div>\n          <div id="writer-options" class="desktop hide">\n            <div id="writer-link" class="writer-option"><input id="writer-link-input" placeholder="Share a link..."></div>\n            <div id="writer-username" class="writer-option">posting as\n              <select id="writer-username-option">\n                <option>Anonymous</option>\n                ' + user.usernames.map(function (username) {
-                    return '<option>' + username + '</option>';
-                  }) + '\n              </select>\n            </div>\n            <div id="writer-hide" class="writer-option">hide post</div>\n          </div>\n          <div id="writer-toggle">+</div>\n          <span id="writer-buttons">\n            <button id="writer-upload">\n              <label for="writer-upload-input">\n                <span id="writer-upload-text">upload</span>\n                <input accept=".webm, .mp4, .gif, .png, .jpeg, .jpg, .mov, .m4v" id="writer-upload-input" class="hide" type="file">\n              </label>\n            </button>\n            <button id="writer-send">send</button>\n          </span>\n        </div>\n        ';
-                  listingHeader = '\n          <div id="Main-listing-header" class="desktop unselectable">\n            <div class="Main-listing-group unselectable">Thread Posts\n            <label id="List-size-switch" class="rb-switcher">\n              <input type="checkbox">\n              <i></i>\n            </label></div>\n          </div>\n          ';
-
-                  //final template for section
-
-                  return _context3.abrupt('return', '\n        <div id="Main-container">\n          ' + header + '\n          ' + popularInfo + '\n          ' + listingHeader + '\n          ' + writer + '\n          ' + tools + '\n          ' + list + '\n          ' + footer + '\n        </div>\n        ');
-
-                case 19:
-                case 'end':
-                  return _context3.stop();
-              }
-            }
-          }, _callee3, _this4);
-        }));
-
-        return function buildView() {
-          return _ref3.apply(this, arguments);
-        };
-      }();
-
       return buildView();
-    }
-
-    //add post to view
-
-  }, {
-    key: 'addPost',
-    value: function addPost(post) {
-      var _this5 = this;
-
-      //get the embedded json
-      var message = JSON.parse(post);
-
-      //generate post and add it
-      var genPostAddIt = function () {
-        var _ref4 = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee4() {
-          var div;
-          return _regenerator2.default.wrap(function _callee4$(_context4) {
-            while (1) {
-              switch (_context4.prev = _context4.next) {
-                case 0:
-                  div = document.createElement('div');
-                  _context4.next = 3;
-                  return (0, _template.generatePost)(_this5.thread.group, message, _this5.user);
-
-                case 3:
-                  div.innerHTML = _context4.sent;
-
-                  _this5.$listing.appendChild(div);
-
-                case 5:
-                case 'end':
-                  return _context4.stop();
-              }
-            }
-          }, _callee4, _this5);
-        }));
-
-        return function genPostAddIt() {
-          return _ref4.apply(this, arguments);
-        };
-      }();
-
-      //actually generate the post and add it to the DOM
-      genPostAddIt();
-
-      //update replies to posts that affect us
-      this.addReplies(message.responseTo);
-    }
-
-    //increment number of replies post has and
-
-  }, {
-    key: 'addReplies',
-    value: function addReplies(postIds) {
-      postIds.forEach(function (postId) {
-        var post = (0, _helpers.qs)('[id=\'' + postId + '\'] span.Footer-left-size');
-        ++post.innerHTML;
-      });
     }
 
     //bake html into view
@@ -31857,4 +31696,174 @@ var View = function () {
 
 exports.default = View;
 
-},{"../core/core.js":279,"../core/helpers.js":280,"../core/oembed.js":282,"../core/template.js":285,"../router/router.js":289,"../term.js":294,"babel-runtime/core-js/object/keys":3,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/helpers/typeof":10,"babel-runtime/regenerator":11}]},{},[288]);
+},{"../core/core.js":279,"../core/helpers.js":280,"../core/listing.js":281,"../core/oembed.js":283,"../core/template.js":286,"../core/writer.js":287,"../router/router.js":291,"../term.js":296,"babel-runtime/core-js/promise":4,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/helpers/classCallCheck":8,"babel-runtime/helpers/createClass":9,"babel-runtime/regenerator":11}],300:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var View = function View() {
+  (0, _classCallCheck3.default)(this, View);
+};
+
+exports.default = View;
+
+},{"babel-runtime/helpers/classCallCheck":8}],301:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = require('babel-runtime/regenerator');
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = require('babel-runtime/helpers/asyncToGenerator');
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _user = require('../ajax/user.js');
+
+var _groups = require('../ajax/groups.js');
+
+var _core = require('../core/core.js');
+
+var _store = require('../core/store.js');
+
+var _store2 = _interopRequireDefault(_store);
+
+var _myuserview = require('./myuserview.js');
+
+var _myuserview2 = _interopRequireDefault(_myuserview);
+
+var _userview = require('./userview.js');
+
+var _userview2 = _interopRequireDefault(_userview);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/**
+ * user.js -- sets up view, and passes in data / options
+ */
+
+console.log(_user.getUserThreads);
+//init for group controller (or whatever you'd like to call it)
+
+exports.default = function () {
+  var _ref = (0, _asyncToGenerator3.default)(_regenerator2.default.mark(function _callee(username) {
+    var localUser, view, getThreads, userThreads, getUserData, userData;
+    return _regenerator2.default.wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            localUser = _store2.default.user;
+            view = void 0;
+
+            //if we are the user that we're trying to load, load that view
+
+            if (!(localUser.usernames.indexOf(username) !== -1)) {
+              _context.next = 18;
+              break;
+            }
+
+            _context.prev = 3;
+            _context.next = 6;
+            return (0, _user.getUserThreads)();
+
+          case 6:
+            getThreads = _context.sent;
+            _context.next = 9;
+            return getThreads.json();
+
+          case 9:
+            userThreads = _context.sent;
+
+            view = new _myuserview2.default();
+            //create view
+            _context.next = 16;
+            break;
+
+          case 13:
+            _context.prev = 13;
+            _context.t0 = _context['catch'](3);
+
+
+            //fail
+            console.log(_context.t0);
+
+          case 16:
+            _context.next = 31;
+            break;
+
+          case 18:
+            _context.prev = 18;
+            _context.next = 21;
+            return (0, _user.getUserInfo)(username);
+
+          case 21:
+            getUserData = _context.sent;
+            _context.next = 24;
+            return getUserData.json();
+
+          case 24:
+            userData = _context.sent;
+
+            view = new _userview2.default();
+
+            _context.next = 31;
+            break;
+
+          case 28:
+            _context.prev = 28;
+            _context.t1 = _context['catch'](18);
+
+
+            //failed request so let's log what happened
+            console.log(_context.t1);
+
+          case 31:
+            return _context.abrupt('return', view);
+
+          case 32:
+          case 'end':
+            return _context.stop();
+        }
+      }
+    }, _callee, this, [[3, 13], [18, 28]]);
+  }));
+
+  function start(_x) {
+    return _ref.apply(this, arguments);
+  }
+
+  return start;
+}();
+
+},{"../ajax/groups.js":274,"../ajax/user.js":277,"../core/core.js":279,"../core/store.js":285,"./myuserview.js":300,"./userview.js":302,"babel-runtime/helpers/asyncToGenerator":7,"babel-runtime/regenerator":11}],302:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _classCallCheck2 = require("babel-runtime/helpers/classCallCheck");
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var View = function View() {
+  (0, _classCallCheck3.default)(this, View);
+};
+
+exports.default = View;
+
+},{"babel-runtime/helpers/classCallCheck":8}]},{},[290]);

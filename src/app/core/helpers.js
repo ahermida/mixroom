@@ -56,3 +56,25 @@ export function getContext() {
   //if none of the above, default to /random/
   return '/random/';
 }
+
+//will add a spinner on the left of the basic list view until we render the next
+export function spinner() {
+  let list = $id('List');
+  if (list) {
+    list.style.display = "none";
+
+    //get other items associated with it and set them to none display
+    $id('Main-listing-header').style.display = "none";
+    $id('Tools-menu').style.display = "none";
+    let footer = document.getElementsByClassName('Main-Footer')[0];
+    if (footer) {
+      footer.style.display = "none";
+    }
+    let h1 = document.createElement('h1');
+    h1.className = 'spinny';
+    h1.innerHTML = `<span class="spinny-vinny">¯\_ツ_/¯</span>`;
+    $id('Main-container').appendChild(h1);
+  } else {
+    $id('main').innerHTML = `<h1 class="spinny><span class="spinny-vinny">¯\_ツ_/¯</span></h1>"`;
+  }
+}

@@ -13,9 +13,11 @@ import {getAuth} from '../ajax/groups.js';
 import config from '../config.js';
 import grp from '../group/group.js';
 import thrd from '../thread/thread.js';
+import usr from '../user/user.js';
 import srch from '../search/search.js';
 import socket from '../socket.js';
-import { nav} from '../core/core.js';
+import {nav} from '../core/core.js';
+import {spinner} from '../core/helpers.js'
 
 //group gotten when hitting '/' route
 const main = config.groups.main;
@@ -30,7 +32,7 @@ export default function setup(router) {
     if (socket.inRoom) socket.leaveRoom();
 
     //clear view on route change --> maybe put an animation
-    //document.getElementById('main').innerHTML = "";
+    spinner();
   });
 
   //set up root handler '/'
@@ -44,6 +46,7 @@ export default function setup(router) {
   //route for user view and settings '/user/:username'
   router.add(/user\/(.*)/, (username) => {
     router.location = 'user';
+    usr(username);
     //user view
     console.log('user');
   });
@@ -64,7 +67,7 @@ export default function setup(router) {
     group = group ? group : '/';
     let res = await getAuth(`/${group}/`);
     let resp = await res.json();
-    if (!resp.allowed && group != "/404/") return router.navigate('/404');
+    if (!resp.allowed && group != "/404/") return;
     //setup thread view
     thrd(thread);
   });
@@ -75,7 +78,7 @@ export default function setup(router) {
     group = `/${group}/`;
     let res = await getAuth(group);
     let resp = await res.json();
-    if (!resp.allowed && group != "/404/") return router.navigate('/404');
+    if (!resp.allowed && group != "/404/") return;
 
     //setup group once again -- squiggles are a string -> int type conversion
     grp(group, ~~page, resp);
@@ -87,7 +90,7 @@ export default function setup(router) {
     group = `/${group}/`;
     let res = await getAuth(group);
     let resp = await res.json();
-    if (!resp.allowed && group != "/404/") return router.navigate('/404');
+    if (!resp.allowed && group != "/404/") return;
     //setup group
     grp(group, 0, resp);
   });

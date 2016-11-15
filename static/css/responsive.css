@@ -703,7 +703,9 @@
     color: #A3D4FF; }
   .Mixroom-info {
     text-align: center;
-    margin-top: 10px; }
+    width: 270px;
+    position: absolute;
+    top: 365px; }
   .Mixroom-info span {
     padding: 0px 5px; }
   .Mixroom-info a {
@@ -745,7 +747,7 @@
    * Thread Big
    */
   .threadenlarge #List {
-    max-width: 49%; }
+    max-width: 58%; }
   #Main-desktop-group {
     display: none;
     top: 47px;

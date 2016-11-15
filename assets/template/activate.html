@@ -28,14 +28,53 @@
     <title>Mixroom</title>
     <meta name="description" content="Posts and other stuff"/>
   </head>
+  <script>
+  var urlsplit = window.location.href.split('/');
+  var token = urlsplit[urlsplit.length - 1];
+  //post function, easy stuff
+  function get(url) {
+    let request = new XMLHttpRequest();
+    let data;
+    request.open("GET", url, true);
+    let adapter = {
+      header: function(p1, p2) {
+        request.setRequestHeader(p1, p2);
+        return adapter;
+      },
+      end: function(success, failure) {
+        data ? request.send(data) : request.send();
+        request.onreadystatechange = function() {
+          if (request.readyState === 4) {
+            if (request.status === 200 || request.status === 204 || 202) {
+              success();
+            } else {
+              let err = new Error("Request to " + url + " failed." + request.responseText);
+              failure(err);
+            }
+          }
+        };
+      }
+    };
+    return adapter;
+  };
+
+  function createCookie(name,value,days) {
+    if (days) {
+      var date = new Date();
+      date.setTime(date.getTime()+(days*24*60*60*1000));
+      var expires = "; expires="+date.toGMTString();
+    }
+    else var expires = "";
+    document.cookie = name+"="+value+expires+"; path=/";
+  }
+
+  createCookie('access_token', token, 30);
+
+  get('/api/auth/activate').header('access_token', token).end(function(success) {
+    window.location = "/";
+  });
+  </script>
   <body>
-    <!-- application html -->
-    <h1 id="login">Login</h1>
-    <h5>email</h5>
-    <input id="email" placeholder="example@gmail.com">
-    <h5>password</h5>
-    <input id="password" placeholder="password...">
-    <button id="submit">submit</button>
-    <script type="text/javascript" src="/static/js/login.js"></script>
+    rerouting...
   </body>
 </html>

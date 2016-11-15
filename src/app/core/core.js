@@ -6,14 +6,13 @@ import view from './navv.js';
 import store from './store.js';
 import {createThread, post} from '../ajax/threads.js';
 import {getAuth} from '../ajax/groups.js';
+import {getUser} from '../ajax/user.js';
 import fastclick from 'fastclick';
 import fetch from 'isomorphic-fetch';
 import {validate} from './oembed.js';
 import config from '../config.js';
 import socket from '../socket.js';
 import router from '../router/router.js';
-
-//
 
 /**
   AJAX Handlers passed in as view actions
@@ -30,6 +29,7 @@ import router from '../router/router.js';
      return;
    }
  }
+
 
 /*  Handle File Upload   */
 export async function handleUpload(file) {
@@ -199,6 +199,38 @@ const options = {
   'checkAuth': checkAuth
 };
 
+//handle getting user (usernames, username) data via ajax
+//get user data and store it
+async function getUserInfo() {
+  try {
+    //attempt to get user
+    let usr = await getUser();
+
+    //in the likely case we're not logged in & have no token, return
+    let usrjson = await usr.json();
+
+    if (usrjson) {
+
+      //if token is valid, but user has a problem, we should get an empty user
+      if (!usrjson.username) {
+        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        return;
+      }
+
+      //else continue
+      store.addUser(usrjson);
+      nav.updateUser(store.user)
+    }
+
+  } catch (err) {
+
+    if (err.statusCode === 401)
+
+    //let ourselves know if there was an error getting the user --> this happens when user doesn't exist
+    console.log('Err getting user');
+  }
+}
+
 //create view obj
 export const nav = new view(config.groups, store.user, options);
 
@@ -214,12 +246,41 @@ export function getReferences(body) {
   return idrefs || [];
 }
 
+
 //initialize the core app
-export default function start() {
+export default async function start() {
 
   //adjust click events for mobile taps
   fastclick(document.body);
 
   //bind handlers for base app
   nav.bind();
+
+  try {
+    //attempt to get user
+    let usr = await getUser();
+
+    //in the likely case we're not logged in & have no token, return
+    let usrjson = await usr.json();
+
+    if (usrjson) {
+
+      //if token is valid, but user has a problem, we should get an empty user
+      if (!usrjson.username) {
+        document.cookie = 'access_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      }
+
+      //else continue
+      store.addUser(usrjson);
+      return nav.updateUser(store.user)
+    }
+
+  } catch (err) {
+
+    if (err.statusCode === 401)
+
+    //let ourselves know if there was an error getting the user --> this happens when user doesn't exist
+    console.log('Err getting user');
+  }
+
 }

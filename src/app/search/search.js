@@ -24,6 +24,10 @@ async function unsave(threadId) {
   }
 }
 
+/*    nav.removeWriter();
+    let thread = e.target.parentNode.dataset.thread;
+    let group = e.target.parentNode.dataset.group;
+    router.navigate(`${group}t/${thread}`);*/
 
 //init for group controller (or whatever you'd like to call it)
 export default async function start(txt) {
