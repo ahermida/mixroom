@@ -1,5 +1,7 @@
-# sudopost
-An anonymous social app. This is the code for the server and front-end. (API endpoints found [here](https://github.com/ahermida/sudopostAPI))
+# Mixroom
+This is a social app. This is the code for the server and front-end. (API endpoints found [here](https://github.com/ahermida/mixroomAPI))
+
+I built this as an attempt to learn more about how web services work. It uses NGINX for routing with the API.
 
 You're gonna need to use ```npm``` to get all of the dependencies. Just run
  ```npm install``` in the root directory to do this.
